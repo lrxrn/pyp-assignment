@@ -88,8 +88,12 @@ def edit_customer():
     while True:
         edit_customer_check = input(f"Choose a customer to edit from 1 to {n} (type \"c\" to cancel): ")
         if edit_customer_check.isnumeric():
-            edit_customer_num = int(edit_customer_check) - 1
-            break
+            if int(edit_customer_check) > n:
+                print(f"Invalid input. Please enter a number from 1 to {n} or \"c\" to cancel")
+                continue
+            else:
+                edit_customer_num = int(edit_customer_check) - 1
+                break
         if edit_customer_check == "c":
             manage_customer()
         else:
