@@ -97,7 +97,7 @@ def edit_customer():
     if edit_customer_detail == "1":
         print("-" * 50)
         print("Edit username")
-        new_username = validate_and_input("Enter new username: ", 0)
+        new_username = validate_and_input("Enter new username: ", 0, "username")
 
         edit_customer_list(splitcustomerinfo[0], 0, new_username)
 
