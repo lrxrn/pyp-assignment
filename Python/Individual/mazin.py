@@ -41,6 +41,7 @@ def validate_and_input(prompt, index, type="string"):
                             print("Invalid email")
                     else:
                         return inp_value
+        return inp_value
 
 
 def add_customer():
@@ -51,7 +52,7 @@ def add_customer():
     new_customer_password = validate_and_input("Enter new customer password: ", 3, "pwd")
     customer_file = open("customer_list", "a")
     customer_file.write(
-        f"\n{new_customer_username}, {new_customer_email}, {new_customer_name}, {new_customer_password}, customer")
+        f"\n{new_customer_username.lower()}, {new_customer_email.lower()}, {new_customer_name}, {new_customer_password}, customer")
     customer_file.close()
     print("New customer added")
     manage_customer()
