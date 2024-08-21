@@ -41,7 +41,6 @@ def validate_and_input(prompt, index, type="string"):
                             print("Invalid email")
                     else:
                         return inp_value
-        return inp_value
 
 
 def add_customer():
@@ -56,6 +55,20 @@ def add_customer():
     customer_file.close()
     print("New customer added")
     manage_customer()
+
+
+def edit_customer_list(edit, index, new_value):
+    file = open("customer_list", "r")
+    lines = file.readlines()
+
+    for i, line in enumerate(lines):
+        if line.startswith(edit):
+            customer_info = line.split(", ")
+            customer_info[index] = new_value
+            lines[i] = ", ".join(customer_info)
+
+    file = open("customer_list", "w")
+    file.writelines(lines)
 
 
 def edit_customer():
@@ -86,17 +99,8 @@ def edit_customer():
         print("Edit username")
         new_username = validate_and_input("Enter new username: ", 0)
 
-        file = open("customer_list", "r")
-        lines = file.readlines()
+        edit_customer_list(splitcustomerinfo[0], 0, new_username)
 
-        for i, line in enumerate(lines):
-            if line.startswith(splitcustomerinfo[0]):
-                customer_info = line.split(", ")
-                customer_info[0] = new_username
-                lines[i] = ", ".join(customer_info)
-
-        file = open("customer_list", "w")
-        file.writelines(lines)
         print("Username has been changed successfully.")
         manage_customer()
 
@@ -105,17 +109,8 @@ def edit_customer():
         print("Edit email")
         new_email = validate_and_input("Enter new email: ", 1, "email")
 
-        file = open("customer_list", "r")
-        lines = file.readlines()
+        edit_customer_list(splitcustomerinfo[0], 1, new_email)
 
-        for i, line in enumerate(lines):
-            if line.startswith(splitcustomerinfo[0]):
-                customer_info = line.split(", ")
-                customer_info[1] = new_email
-                lines[i] = ", ".join(customer_info)
-
-        file = open("customer_list", "w")
-        file.writelines(lines)
         print("Email has been changed successfully.")
         manage_customer()
 
@@ -124,17 +119,8 @@ def edit_customer():
         print("Edit name")
         new_name = input("Enter new name: ")
 
-        file = open("customer_list", "r")
-        lines = file.readlines()
+        edit_customer_list(splitcustomerinfo[0], 2, new_name)
 
-        for i, line in enumerate(lines):
-            if line.startswith(splitcustomerinfo[0]):
-                customer_info = line.split(", ")
-                customer_info[2] = new_name
-                lines[i] = ", ".join(customer_info)
-
-        file = open("customer_list", "w")
-        file.writelines(lines)
         print("Name has been changed successfully.")
         manage_customer()
 
@@ -143,17 +129,8 @@ def edit_customer():
         print("Edit password")
         new_password = validate_and_input("Enter new password: ", 3, "pwd")
 
-        file = open("customer_list", "r")
-        lines = file.readlines()
+        edit_customer_list(splitcustomerinfo[0], 3, new_password)
 
-        for i, line in enumerate(lines):
-            if line.startswith(splitcustomerinfo[0]):
-                customer_info = line.split(", ")
-                customer_info[3] = new_password
-                lines[i] = ", ".join(customer_info)
-
-        file = open("customer_list", "w")
-        file.writelines(lines)
         print("Password has been changed successfully.")
         manage_customer()
 
