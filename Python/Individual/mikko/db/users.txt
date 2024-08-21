@@ -1,0 +1,2 @@
+mikko,mikko@example.com,Meesum Ahmed,administrator
+test,test@example.com,Test User,Manager
