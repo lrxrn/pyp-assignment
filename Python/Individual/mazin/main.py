@@ -4,6 +4,8 @@ import re
 def validate_and_input(prompt, index, type="string"):
     while True:
         inp_value = input(prompt)
+        if inp_value == "c":
+            manage_customer()
         if "," in inp_value:
             if index == 0:
                 print("Username should not contain ,")
@@ -26,7 +28,8 @@ def validate_and_input(prompt, index, type="string"):
                 return inp_value
             else:
                 print(
-                    "Password must be at least 8 characters long and contain at least one letter and one number and should not contain any ,")
+                    "Password must be at least 8 characters long and contain at least one letter and one number and "
+                    "should not contain any commas")
         else:
             if type == "username" or type == "email":
                 for line in customer_file_r:
@@ -45,10 +48,10 @@ def validate_and_input(prompt, index, type="string"):
 
 def add_customer():
     print("-" * 50)
-    new_customer_username = validate_and_input("Enter new customer username: ", 0, "username")
-    new_customer_email = validate_and_input("Enter new customer email: ", 1, "email")
-    new_customer_name = validate_and_input("Enter new customer name: ", 2)
-    new_customer_password = validate_and_input("Enter new customer password: ", 3, "pwd")
+    new_customer_username = validate_and_input("Enter new customer username (type \"c\" to cancel): ", 0, "username")
+    new_customer_email = validate_and_input("Enter new customer email (type \"c\" to cancel): ", 1, "email")
+    new_customer_name = validate_and_input("Enter new customer name (type \"c\" to cancel): ", 2)
+    new_customer_password = validate_and_input("Enter new customer password (type \"c\" to cancel): ", 3, "pwd")
     customer_file = open("customer_list", "a")
     customer_file.write(
         f"\n{new_customer_username.lower()}, {new_customer_email.lower()}, {new_customer_name}, {new_customer_password}, customer")
@@ -82,7 +85,16 @@ def edit_customer():
             users = users.rstrip()
             n = n + 1
             print(f"{n}: {users}")
-    edit_customer_num = int(input(f"Choose a customer to edit from 1 to {n}: ")) - 1
+    while True:
+        edit_customer_check = input(f"Choose a customer to edit from 1 to {n} (type \"c\" to cancel): ")
+        if edit_customer_check.isnumeric():
+            edit_customer_num = int(edit_customer_check) - 1
+            break
+        if edit_customer_check == "c":
+            manage_customer()
+        else:
+            print(f"Invalid input. Please enter a number from 1 to {n} or \"c\" to cancel")
+
     print(f"Edit user: {listofcustimers[edit_customer_num]}")
     splitcustomerinfo = listofcustimers[edit_customer_num].split(", ")
 
@@ -97,7 +109,7 @@ def edit_customer():
     if edit_customer_detail == "1":
         print("-" * 50)
         print("Edit username")
-        new_username = validate_and_input("Enter new username: ", 0, "username")
+        new_username = validate_and_input("Enter new username (type \"c\" to cancel): ", 0, "username")
 
         edit_customer_list(splitcustomerinfo[0], 0, new_username)
 
@@ -107,7 +119,7 @@ def edit_customer():
     elif edit_customer_detail == "2":
         print("-" * 50)
         print("Edit email")
-        new_email = validate_and_input("Enter new email: ", 1, "email")
+        new_email = validate_and_input("Enter new email (type \"c\" to cancel): ", 1, "email")
 
         edit_customer_list(splitcustomerinfo[0], 1, new_email)
 
@@ -117,7 +129,10 @@ def edit_customer():
     elif edit_customer_detail == "3":
         print("-" * 50)
         print("Edit name")
-        new_name = input("Enter new name: ")
+        new_name = input("Enter new name (type \"c\" to cancel): ")
+
+        if new_name == "c":
+            edit_customer()
 
         edit_customer_list(splitcustomerinfo[0], 2, new_name)
 
@@ -127,7 +142,7 @@ def edit_customer():
     elif edit_customer_detail == "4":
         print("-" * 50)
         print("Edit password")
-        new_password = validate_and_input("Enter new password: ", 3, "pwd")
+        new_password = validate_and_input("Enter new password (type \"c\" to cancel): ", 3, "pwd")
 
         edit_customer_list(splitcustomerinfo[0], 3, new_password)
 
