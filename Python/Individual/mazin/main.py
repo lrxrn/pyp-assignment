@@ -254,6 +254,11 @@ def updateprofile():
     print("Update own profile")
 
 
+def logout():
+    print("-" * 50)
+    print("Logout")
+
+
 def start():
     print("-" * 50)
     print("Manager Menu")
@@ -261,6 +266,7 @@ def start():
     print("2: Manage menu categories and pricing")
     print("3: View ingredients list requested by chef")
     print("4: Update own profile")
+    print("5: Logout")
 
     while True:
         option = input("Choose an option from 1 to 4: ")
@@ -273,6 +279,8 @@ def start():
             view_ingredientlist()
         elif option == "4":
             updateprofile()
+        elif option == "5":
+            logout()
         else:
             print("Invalid input. Please type a number from 1 to 4")
             continue
