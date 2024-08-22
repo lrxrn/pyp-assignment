@@ -8,16 +8,16 @@ def validate_and_input(prompt, index, type="string"):
             manage_customer()
         if "," in inp_value:
             if index == 0:
-                print("Username should not contain ,")
+                print("Username should not contain commas")
                 continue
             elif index == 1:
-                print("Email should not contain ,")
+                print("Email should not contain commas")
                 continue
             elif index == 2:
-                print("Name should not contain ,")
+                print("Name should not contain commas")
                 continue
             elif index == 3:
-                print("Password should not contain ,")
+                print("Password should not contain commas")
                 continue
 
         customer_file_r = open("customer_list", "r")
@@ -44,13 +44,15 @@ def validate_and_input(prompt, index, type="string"):
                             print("Invalid email")
                     else:
                         return inp_value
+        if type == "fullname":
+            return inp_value
 
 
 def add_customer():
     print("-" * 50)
     new_customer_username = validate_and_input("Enter new customer username (type \"c\" to cancel): ", 0, "username")
     new_customer_email = validate_and_input("Enter new customer email (type \"c\" to cancel): ", 1, "email")
-    new_customer_name = validate_and_input("Enter new customer name (type \"c\" to cancel): ", 2)
+    new_customer_name = validate_and_input("Enter new customer name (type \"c\" to cancel): ", 2,"fullname")
     new_customer_password = validate_and_input("Enter new customer password (type \"c\" to cancel): ", 3, "pwd")
     customer_file = open("customer_list", "a")
     customer_file.write(
@@ -189,18 +191,24 @@ def manage_customer():
     print("2: Edit Customer")
     print("3: Delete Customer")
     print("4: Go Back")
-    manage_customer_option = input("Choose an option from 1 to 4: ")
 
-    if manage_customer_option == "1":
-        add_customer()
-    elif manage_customer_option == "2":
-        edit_customer()
-    elif manage_customer_option == "3":
-        delete_customer()
-    elif manage_customer_option == "4":
-        start()
-    else:
-        print("Invalid input")
+    while True:
+        manage_customer_option = input("Choose an option from 1 to 4: ")
+        if manage_customer_option == "1":
+            add_customer()
+            break
+        elif manage_customer_option == "2":
+            edit_customer()
+            break
+        elif manage_customer_option == "3":
+            delete_customer()
+            break
+        elif manage_customer_option == "4":
+            start()
+            break
+        else:
+            print("Invalid input. Please type a number from 1 to 4")
+            continue
 
 
 def manage_menuandpricing():
@@ -212,16 +220,22 @@ def manage_menuandpricing():
     print("4: Go Back")
     manage_menuandpricing_option = input("Choose an option from 1 to 4: ")
 
-    if manage_menuandpricing_option == "1":
-        print("Add Menu Item")
-    elif manage_menuandpricing_option == "2":
-        print("Edit Menu Item")
-    elif manage_menuandpricing_option == "3":
-        print("Delete Menu Item")
-    elif manage_menuandpricing_option == "4":
-        start()
-    else:
-        print("Invalid input")
+    while True:
+        if manage_menuandpricing_option == "1":
+            print("Add Menu Item")
+            break
+        elif manage_menuandpricing_option == "2":
+            print("Edit Menu Item")
+            break
+        elif manage_menuandpricing_option == "3":
+            print("Delete Menu Item")
+            break
+        elif manage_menuandpricing_option == "4":
+            start()
+            break
+        else:
+            print("Invalid input. Please type a number from 1 to 4")
+            continue
 
 
 def view_ingredientlist():
@@ -241,18 +255,21 @@ def start():
     print("2: Manage menu categories and pricing")
     print("3: View ingredients list requested by chef")
     print("4: Update own profile")
-    option = input("Choose an option from 1 to 4: ")
 
-    if option == "1":
-        manage_customer()
-    elif option == "2":
-        manage_menuandpricing()
-    elif option == "3":
-        view_ingredientlist()
-    elif option == "4":
-        updateprofile()
-    else:
-        print("Invalid input")
+    while True:
+        option = input("Choose an option from 1 to 4: ")
+        if option == "1":
+            manage_customer()
+            break
+        elif option == "2":
+            manage_menuandpricing()
+        elif option == "3":
+            view_ingredientlist()
+        elif option == "4":
+            updateprofile()
+        else:
+            print("Invalid input. Please type a number from 1 to 4")
+            continue
 
 
 start()
