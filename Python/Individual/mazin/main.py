@@ -32,6 +32,12 @@ def validate_and_input(prompt, index, type="string"):
                     "should not contain any commas")
         else:
             if type == "username" or type == "email":
+                if type == "username":
+                    if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
+                        print("Invalid username. Username should not be in email format")
+                        continue
+                    else:
+                        return inp_value
                 for line in customer_file_r:
                     records.append(line.split(", ")[index])
                 if inp_value in records:
