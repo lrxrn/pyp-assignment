@@ -173,7 +173,9 @@ def delete_customer():
     print("-" * 50)
     while True:
         global user_nm
-        user = input("Enter username to delete: ").lower()
+        user = input("Enter username to delete (type \"c\" to cancel): ").lower()
+        if user == "c":
+            manage_customer()
         customer_file = open("customer_list", "r")
         customer_file = list(customer_file)
         for line in customer_file:
