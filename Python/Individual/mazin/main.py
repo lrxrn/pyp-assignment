@@ -106,6 +106,7 @@ def edit_customer():
             manage_customer()
         else:
             print(f"Invalid input. Please enter a number from 1 to {n} or \"c\" to cancel")
+            continue
 
     print(f"Edit user: {listofcustimers[edit_customer_num]}")
     splitcustomerinfo = listofcustimers[edit_customer_num].split(", ")
@@ -171,16 +172,13 @@ def edit_customer():
 def delete_customer():
     print("-" * 50)
     global user_nm
-    user = input("Enter username to delete: ")
-    user = user.lower()
+    user = input("Enter username to delete: ").lower()
     customer_file = open("customer_list", "r")
     customer_file = list(customer_file)
     for line in customer_file:
-        if user == line.split(", ")[0]:
-            user_nm = line.split(", ")[0]
+        if user in line.split(", ")[0]:
+            user_nm = line
             del customer_file[customer_file.index(line)]
-        else:
-            print("User not found")
 
     with open("customer_list", "w") as f:
         for customer in customer_file:
@@ -269,18 +267,22 @@ def start():
     print("5: Logout")
 
     while True:
-        option = input("Choose an option from 1 to 4: ")
+        option = input("Choose an option from 1 to 5: ")
         if option == "1":
             manage_customer()
             break
         elif option == "2":
             manage_menuandpricing()
+            break
         elif option == "3":
             view_ingredientlist()
+            break
         elif option == "4":
             updateprofile()
+            break
         elif option == "5":
             logout()
+            break
         else:
             print("Invalid input. Please type a number from 1 to 4")
             continue
