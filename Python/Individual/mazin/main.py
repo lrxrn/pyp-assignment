@@ -61,8 +61,7 @@ def add_customer():
     new_customer_name = validate_and_input("Enter new customer name (type \"c\" to cancel): ", 2,"fullname")
     new_customer_password = validate_and_input("Enter new customer password (type \"c\" to cancel): ", 3, "pwd")
     customer_file = open("customer_list", "a")
-    customer_file.write(
-        f"\n{new_customer_username.lower()}, {new_customer_email.lower()}, {new_customer_name}, {new_customer_password}, customer")
+    customer_file.write(f"\n{new_customer_username.lower()}, {new_customer_email.lower()}, {new_customer_name}, {new_customer_password}, customer")
     customer_file.close()
     print("New customer added")
     manage_customer()
@@ -221,6 +220,33 @@ def manage_customer():
             continue
 
 
+def add_menu_item():
+    print("-" * 50)
+    print("Add Menu Item")
+    print("1: Add Main Course")
+    print("2: Add Appetizer")
+    print("3: Add Dessert")
+    print("4: Go Back")
+    add_menu_item_option = input("Choose an option from 1 to 4: ")
+
+    while True:
+        if add_menu_item_option == "1":
+            print("Add Main Course")
+            break
+        elif add_menu_item_option == "2":
+            print("Add Appetizer")
+            break
+        elif add_menu_item_option == "3":
+            print("Add Dessert")
+            break
+        elif add_menu_item_option == "4":
+            manage_menuandpricing()
+            break
+        else:
+            print("Invalid input. Please type a number from 1 to 4")
+            continue
+
+
 def manage_menuandpricing():
     print("-" * 50)
     print("Manage menu categories and pricing")
@@ -232,7 +258,7 @@ def manage_menuandpricing():
 
     while True:
         if manage_menuandpricing_option == "1":
-            print("Add Menu Item")
+            add_menu_item()
             break
         elif manage_menuandpricing_option == "2":
             print("Edit Menu Item")
