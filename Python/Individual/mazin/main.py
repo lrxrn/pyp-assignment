@@ -273,6 +273,32 @@ def edit_menu_item():
             print("Invalid input. Please type a number from 1 to 4")
             continue
 
+def delete_menu_item():
+    print("-" * 50)
+    print("Delete Menu Item")
+    print("1: Delete Main Course")
+    print("2: Delete Appetizer")
+    print("3: Delete Dessert")
+    print("4: Go Back")
+    delete_menu_item_option = input("Choose an option from 1 to 4: ")
+
+    while True:
+        if delete_menu_item_option == "1":
+            print("Delete Main Course")
+            break
+        elif delete_menu_item_option == "2":
+            print("Delete Appetizer")
+            break
+        elif delete_menu_item_option == "3":
+            print("Delete Dessert")
+            break
+        elif delete_menu_item_option == "4":
+            manage_menuandpricing()
+            break
+        else:
+            print("Invalid input. Please type a number from 1 to 4")
+            continue
+
 
 def manage_menuandpricing():
     print("-" * 50)
@@ -291,7 +317,7 @@ def manage_menuandpricing():
             edit_menu_item()
             break
         elif manage_menuandpricing_option == "3":
-            print("Delete Menu Item")
+            delete_menu_item()
             break
         elif manage_menuandpricing_option == "4":
             start()
