@@ -247,6 +247,33 @@ def add_menu_item():
             continue
 
 
+def edit_menu_item():
+    print("-" * 50)
+    print("Edit Menu Item")
+    print("1: Edit Main Course")
+    print("2: Edit Appetizer")
+    print("3: Edit Dessert")
+    print("4: Go Back")
+    edit_menu_item_option = input("Choose an option from 1 to 4: ")
+
+    while True:
+        if edit_menu_item_option == "1":
+            print("Edit Main Course")
+            break
+        elif edit_menu_item_option == "2":
+            print("Edit Appetizer")
+            break
+        elif edit_menu_item_option == "3":
+            print("Edit Dessert")
+            break
+        elif edit_menu_item_option == "4":
+            manage_menuandpricing()
+            break
+        else:
+            print("Invalid input. Please type a number from 1 to 4")
+            continue
+
+
 def manage_menuandpricing():
     print("-" * 50)
     print("Manage menu categories and pricing")
@@ -261,7 +288,7 @@ def manage_menuandpricing():
             add_menu_item()
             break
         elif manage_menuandpricing_option == "2":
-            print("Edit Menu Item")
+            edit_menu_item()
             break
         elif manage_menuandpricing_option == "3":
             print("Delete Menu Item")
