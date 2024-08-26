@@ -273,6 +273,7 @@ def edit_menu_item():
             print("Invalid input. Please type a number from 1 to 4")
             continue
 
+
 def delete_menu_item():
     print("-" * 50)
     print("Delete Menu Item")
