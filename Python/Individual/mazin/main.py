@@ -164,7 +164,7 @@ def edit_customer():
     elif edit_customer_detail == "5":
         manage_customer()
     else:
-        print("Invalid input")
+        print("Invalid input. Please type a number from 1 to 4")
         manage_customer()
 
 
@@ -220,18 +220,29 @@ def manage_customer():
             continue
 
 
-def add_menu_item():
+def add_menu_item(menu_type):
+    print("-" * 50)
+    print(f"Add {menu_type}")
+    menu_item_name = input(f"Enter {menu_type} name: ")
+    menu_item_price = int(input(f"Enter {menu_type} price: "))
+    menu_item_ingredients = input(f"Enter {menu_type} ingredients: ")
+    menu_file = open("menu_list", "a")
+    menu_file.write(f"\n{menu_type}, {menu_item_name}, {menu_item_price}, {menu_item_ingredients}")
+    print(f"{menu_type} added successfully")
+
+
+def add_menu():
     print("-" * 50)
     print("Add Menu Item")
     print("1: Add Main Course")
     print("2: Add Appetizer")
     print("3: Add Dessert")
     print("4: Go Back")
-    add_menu_item_option = input("Choose an option from 1 to 4: ")
 
     while True:
+        add_menu_item_option = input("Choose an option from 1 to 4: ")
         if add_menu_item_option == "1":
-            print("Add Main Course")
+            add_menu_item("Main Course")
             break
         elif add_menu_item_option == "2":
             print("Add Appetizer")
@@ -254,9 +265,9 @@ def edit_menu_item():
     print("2: Edit Appetizer")
     print("3: Edit Dessert")
     print("4: Go Back")
-    edit_menu_item_option = input("Choose an option from 1 to 4: ")
 
     while True:
+        edit_menu_item_option = input("Choose an option from 1 to 4: ")
         if edit_menu_item_option == "1":
             print("Edit Main Course")
             break
@@ -281,9 +292,9 @@ def delete_menu_item():
     print("2: Delete Appetizer")
     print("3: Delete Dessert")
     print("4: Go Back")
-    delete_menu_item_option = input("Choose an option from 1 to 4: ")
 
     while True:
+        delete_menu_item_option = input("Choose an option from 1 to 4: ")
         if delete_menu_item_option == "1":
             print("Delete Main Course")
             break
@@ -308,11 +319,11 @@ def manage_menuandpricing():
     print("2: Edit Menu Item")
     print("3: Delete Menu Item")
     print("4: Go Back")
-    manage_menuandpricing_option = input("Choose an option from 1 to 4: ")
 
     while True:
+        manage_menuandpricing_option = input("Choose an option from 1 to 4: ")
         if manage_menuandpricing_option == "1":
-            add_menu_item()
+            add_menu()
             break
         elif manage_menuandpricing_option == "2":
             edit_menu_item()
