@@ -1,7 +1,7 @@
 import re
 
 
-def validate_and_input(prompt, index, type="string"):
+def validate_and_input_customer(prompt, index, type="string"):
     while True:
         inp_value = input(prompt)
         if inp_value == "c":
@@ -56,10 +56,10 @@ def validate_and_input(prompt, index, type="string"):
 
 def add_customer():
     print("-" * 50)
-    new_customer_username = validate_and_input("Enter new customer username (type \"c\" to cancel): ", 0, "username")
-    new_customer_email = validate_and_input("Enter new customer email (type \"c\" to cancel): ", 1, "email")
-    new_customer_name = validate_and_input("Enter new customer name (type \"c\" to cancel): ", 2,"fullname")
-    new_customer_password = validate_and_input("Enter new customer password (type \"c\" to cancel): ", 3, "pwd")
+    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel): ", 0, "username")
+    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", 1, "email")
+    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", 2, "fullname")
+    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", 3, "pwd")
     customer_file = open("customer_list", "a")
     customer_file.write(f"\n{new_customer_username.lower()}, {new_customer_email.lower()}, {new_customer_name}, {new_customer_password}, customer")
     customer_file.close()
@@ -121,7 +121,7 @@ def edit_customer():
     if edit_customer_detail == "1":
         print("-" * 50)
         print("Edit username")
-        new_username = validate_and_input("Enter new username (type \"c\" to cancel): ", 0, "username")
+        new_username = validate_and_input_customer("Enter new username (type \"c\" to cancel): ", 0, "username")
 
         edit_customer_list(splitcustomerinfo[0], 0, new_username)
 
@@ -131,7 +131,7 @@ def edit_customer():
     elif edit_customer_detail == "2":
         print("-" * 50)
         print("Edit email")
-        new_email = validate_and_input("Enter new email (type \"c\" to cancel): ", 1, "email")
+        new_email = validate_and_input_customer("Enter new email (type \"c\" to cancel): ", 1, "email")
 
         edit_customer_list(splitcustomerinfo[0], 1, new_email)
 
@@ -154,7 +154,7 @@ def edit_customer():
     elif edit_customer_detail == "4":
         print("-" * 50)
         print("Edit password")
-        new_password = validate_and_input("Enter new password (type \"c\" to cancel): ", 3, "pwd")
+        new_password = validate_and_input_customer("Enter new password (type \"c\" to cancel): ", 3, "pwd")
 
         edit_customer_list(splitcustomerinfo[0], 3, new_password)
 
@@ -220,15 +220,38 @@ def manage_customer():
             continue
 
 
+def validate_and_input_menu(prompt, type="string"):
+    while True:
+        inp_value = input(prompt)
+        if inp_value == "c":
+            manage_menuandpricing()
+        if "," in inp_value:
+            if type == "name":
+                print("Name should not contain commas")
+            elif type == "price":
+                print("Price should not contain commas")
+            elif type == "ingredients":
+                print("Ingredients should not contain commas")
+            continue
+        if type == "price":
+            if inp_value.isnumeric():
+                return int(inp_value)
+            else:
+                print("Price should be a number")
+        else:
+            return inp_value
+
+
 def add_menu_item(menu_type):
     print("-" * 50)
     print(f"Add {menu_type}")
-    menu_item_name = input(f"Enter {menu_type} name: ")
-    menu_item_price = int(input(f"Enter {menu_type} price: "))
-    menu_item_ingredients = input(f"Enter {menu_type} ingredients: ")
+    menu_item_name = validate_and_input_menu(f"Enter {menu_type} name (type \"c\" to cancel): ", "name")
+    menu_item_price = validate_and_input_menu(f"Enter {menu_type} price (type \"c\" to cancel): ", "price")
+    menu_item_ingredients = validate_and_input_menu(f"Enter {menu_type} ingredients (type \"c\" to cancel): ", "ingredients")
     menu_file = open("menu_list", "a")
     menu_file.write(f"\n{menu_type}, {menu_item_name}, {menu_item_price}, {menu_item_ingredients}")
     print(f"{menu_type} added successfully")
+    manage_menuandpricing()
 
 
 def add_menu():
@@ -237,20 +260,27 @@ def add_menu():
     print("1: Add Main Course")
     print("2: Add Appetizer")
     print("3: Add Dessert")
-    print("4: Go Back")
+    print("4: Add Beverage")
+    print("5: Go Back")
 
     while True:
-        add_menu_item_option = input("Choose an option from 1 to 4: ")
+        add_menu_item_option = input("Choose an option from 1 to 5 (type \"c\" to cancel): ")
         if add_menu_item_option == "1":
             add_menu_item("Main Course")
             break
         elif add_menu_item_option == "2":
-            print("Add Appetizer")
+            add_menu_item("Appetizer")
             break
         elif add_menu_item_option == "3":
-            print("Add Dessert")
+            add_menu_item("Dessert")
             break
         elif add_menu_item_option == "4":
+            add_menu_item("Beverage")
+            break
+        elif add_menu_item_option == "5":
+            manage_menuandpricing()
+            break
+        elif add_menu_item_option == "c":
             manage_menuandpricing()
             break
         else:
