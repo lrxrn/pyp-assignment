@@ -23,7 +23,7 @@ def validate_and_input_customer(prompt, index, type="string"):
         customer_file_r = open("customer_list", "r")
         customer_file_r = list(customer_file_r)
         records = []
-        if type == "pwd":
+        if type == "Password":
             if re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", inp_value):
                 return inp_value
             else:
@@ -31,8 +31,8 @@ def validate_and_input_customer(prompt, index, type="string"):
                     "Password must be at least 8 characters long and contain at least one letter and one number and "
                     "should not contain any commas")
         else:
-            if type == "username" or type == "email":
-                if type == "username":
+            if type == "Username" or type == "Email":
+                if type == "Username":
                     if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
                         print("Invalid username. Username should not be in email format")
                         continue
@@ -43,23 +43,23 @@ def validate_and_input_customer(prompt, index, type="string"):
                 if inp_value in records:
                     print("Record already exists")
                 else:
-                    if type == "email":
+                    if type == "Email":
                         if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
                             return inp_value
                         else:
                             print("Invalid email")
                     else:
                         return inp_value
-        if type == "fullname":
+        if type == "Name":
             return inp_value
 
 
 def add_customer():
     print("-" * 50)
-    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel): ", 0, "username")
-    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", 1, "email")
-    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", 2, "fullname")
-    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", 3, "pwd")
+    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel): ", 0, "Username")
+    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", 1, "Email")
+    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", 2, "Name")
+    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", 3, "Password")
     customer_file = open("customer_list", "a")
     customer_file.write(f"\n{new_customer_username.lower()}, {new_customer_email.lower()}, {new_customer_name}, {new_customer_password}, customer")
     customer_file.close()
@@ -111,17 +111,13 @@ def edit_customer():
     splitcustomerinfo = listofcustimers[edit_customer_num].split(", ")
 
     print("-" * 50)
-    print("1: Edit username")
-    print("2: Edit email")
-    print("3: Edit name")
-    print("4: Edit password")
-    print("5: Go Back")
+    print("1: Edit username\n2: Edit email\n3: Edit name\n4: Edit password\n5: Go Back")
     edit_customer_detail = input("Choose an option from 1 to 4: ")
 
     if edit_customer_detail == "1":
         print("-" * 50)
         print("Edit username")
-        new_username = validate_and_input_customer("Enter new username (type \"c\" to cancel): ", 0, "username")
+        new_username = validate_and_input_customer("Enter new username (type \"c\" to cancel): ", 0, "Username")
 
         edit_customer_list(splitcustomerinfo[0], 0, new_username)
 
@@ -131,7 +127,7 @@ def edit_customer():
     elif edit_customer_detail == "2":
         print("-" * 50)
         print("Edit email")
-        new_email = validate_and_input_customer("Enter new email (type \"c\" to cancel): ", 1, "email")
+        new_email = validate_and_input_customer("Enter new email (type \"c\" to cancel): ", 1, "Email")
 
         edit_customer_list(splitcustomerinfo[0], 1, new_email)
 
@@ -154,7 +150,7 @@ def edit_customer():
     elif edit_customer_detail == "4":
         print("-" * 50)
         print("Edit password")
-        new_password = validate_and_input_customer("Enter new password (type \"c\" to cancel): ", 3, "pwd")
+        new_password = validate_and_input_customer("Enter new password (type \"c\" to cancel): ", 3, "Password")
 
         edit_customer_list(splitcustomerinfo[0], 3, new_password)
 
@@ -195,11 +191,7 @@ def delete_customer():
 
 def manage_customer():
     print("-" * 50)
-    print("Manage Customer")
-    print("1: Add Customer")
-    print("2: Edit Customer")
-    print("3: Delete Customer")
-    print("4: Go Back")
+    print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: Go Back")
 
     while True:
         manage_customer_option = input("Choose an option from 1 to 4: ")
@@ -256,12 +248,7 @@ def add_menu_item(menu_type):
 
 def add_menu():
     print("-" * 50)
-    print("Add Menu Item")
-    print("1: Add Main Course")
-    print("2: Add Appetizer")
-    print("3: Add Dessert")
-    print("4: Add Beverage")
-    print("5: Go Back")
+    print("Add Menu Item\n1: Add Main Course\n2: Add Appetizer\n3: Add Dessert\n4: Add Beverage\n5: Go Back")
 
     while True:
         add_menu_item_option = input("Choose an option from 1 to 5 (type \"c\" to cancel): ")
@@ -290,11 +277,7 @@ def add_menu():
 
 def edit_menu_item():
     print("-" * 50)
-    print("Edit Menu Item")
-    print("1: Edit Main Course")
-    print("2: Edit Appetizer")
-    print("3: Edit Dessert")
-    print("4: Go Back")
+    print("Edit Menu Item\n1: Edit Main Course\n2: Edit Appetizer\n3: Edit Dessert\n4: Go Back")
 
     while True:
         edit_menu_item_option = input("Choose an option from 1 to 4: ")
@@ -317,11 +300,7 @@ def edit_menu_item():
 
 def delete_menu_item():
     print("-" * 50)
-    print("Delete Menu Item")
-    print("1: Delete Main Course")
-    print("2: Delete Appetizer")
-    print("3: Delete Dessert")
-    print("4: Go Back")
+    print("Delete Menu Item\n1: Delete Main Course\n2: Delete Appetizer\n3: Delete Dessert\n4: Go Back")
 
     while True:
         delete_menu_item_option = input("Choose an option from 1 to 4: ")
@@ -344,11 +323,7 @@ def delete_menu_item():
 
 def manage_menuandpricing():
     print("-" * 50)
-    print("Manage menu categories and pricing")
-    print("1: Add Menu Item")
-    print("2: Edit Menu Item")
-    print("3: Delete Menu Item")
-    print("4: Go Back")
+    print("Manage menu categories and pricing\n1: Add Menu Item\n2: Edit Menu Item\n3: Delete Menu Item\n4: Go Back")
 
     while True:
         manage_menuandpricing_option = input("Choose an option from 1 to 4: ")
@@ -386,12 +361,7 @@ def logout():
 
 def start():
     print("-" * 50)
-    print("Manager Menu")
-    print("1: Manage Customer")
-    print("2: Manage menu categories and pricing")
-    print("3: View ingredients list requested by chef")
-    print("4: Update own profile")
-    print("5: Logout")
+    print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
     while True:
         option = input("Choose an option from 1 to 5: ")
@@ -411,7 +381,7 @@ def start():
             logout()
             break
         else:
-            print("Invalid input. Please type a number from 1 to 4")
+            print("Invalid input. Please type a number from 1 to 5")
             continue
 
 
