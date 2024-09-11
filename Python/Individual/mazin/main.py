@@ -84,6 +84,19 @@ def add_customer():
     with open('users.json', 'w') as file:
         json.dump(data, file, indent=4)
 
+    try:
+        with open('passwords.json', 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
+
+    data[new_customer_username] = {
+        "password": new_customer_password
+    }
+
+    with open('passwords.json', 'w') as file:
+        json.dump(data, file, indent=4)
+
     print("Customer added successfully.")
     manage_customer()
 
