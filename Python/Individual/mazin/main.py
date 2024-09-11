@@ -67,12 +67,12 @@ def add_customer():
     new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", "Password")
 
     try:
-        with open('users.json', 'r') as file:
-            data = json.load(file)
+        with open('users.json', 'r') as addusers:
+            addusers = json.load(addusers)
     except FileNotFoundError:
-        data = {}
+        addusers = {}
 
-    data[new_customer_username] = {
+    addusers[new_customer_username] = {
         "name": new_customer_name,
         "email": new_customer_email,
         "role": "customer",
@@ -81,21 +81,21 @@ def add_customer():
         "Address": new_customer_address
     }
 
-    with open('users.json', 'w') as file:
-        json.dump(data, file, indent=4)
+    with open('users.json', 'w') as addusersfile:
+        json.dump(addusers, addusersfile, indent=4)
 
     try:
-        with open('passwords.json', 'r') as file:
-            data = json.load(file)
+        with open('passwords.json', 'r') as addpasswords:
+            addpasswords = json.load(addpasswords)
     except FileNotFoundError:
-        data = {}
+        addpasswords = {}
 
-    data[new_customer_username] = {
+    addpasswords[new_customer_username] = {
         "password": new_customer_password
     }
 
-    with open('passwords.json', 'w') as file:
-        json.dump(data, file, indent=4)
+    with open('passwords.json', 'w') as addpasswordsfile:
+        json.dump(addpasswords, addpasswordsfile, indent=4)
 
     print("Customer added successfully.")
     manage_customer()
@@ -208,21 +208,31 @@ def delete_customer():
             manage_customer()
 
         try:
-            with open('users.json', 'r') as file:
-                data = json.load(file)
+            with open('users.json', 'r') as deleteusers:
+                deleteusers = json.load(deleteusers)
         except FileNotFoundError:
-            data = {}
+            deleteusers = {}
 
-        if user in data:
-            user_nm = data[user]
-            del data[user]
-            with open('users.json', 'w') as file:
-                json.dump(data, file, indent=4)
-            print(f"Deleted user: {user_nm['name']}")
-            manage_customer()
+        if user in deleteusers:
+            del deleteusers[user]
+            with open('users.json', 'w') as deleteusersfile:
+                json.dump(deleteusers, deleteusersfile, indent=4)
         else:
             print("User not found")
             continue
+
+        try:
+            with open('passwords.json', 'r') as deletepasswords:
+                deletepasswords = json.load(deletepasswords)
+        except FileNotFoundError:
+            deletepasswords = {}
+
+        if user in deletepasswords:
+            del deletepasswords[user]
+            with open('passwords.json', 'w') as deletepaswordsfile:
+                json.dump(deletepasswords, deletepaswordsfile, indent=4)
+            print(f"Deleted user: {user}")
+            manage_customer()
 
 
 

@@ -1,18 +1,10 @@
 {
-    "tt": {
-        "name": "mazin",
-        "email": "qwe@mail.com",
+    "maazin": {
+        "name": "maazin",
+        "email": "maazin@gmail.com",
         "role": "customer",
-        "PhoneNumber": "4567890",
-        "DOB": "12-12-2024",
-        "Address": "sdfghjkl, cfghyuikjn"
-    },
-    "test": {
-        "name": "test",
-        "email": "test@mmmail.com",
-        "role": "customer",
-        "PhoneNumber": "34567890",
-        "DOB": "12-12-2024",
-        "Address": "sdfghjk"
+        "PhoneNumber": "1234567890",
+        "DOB": "12-12-2020",
+        "Address": "daojvodlfpmas"
     }
 }
