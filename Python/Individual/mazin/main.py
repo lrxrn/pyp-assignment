@@ -102,101 +102,111 @@ def add_customer():
 
 
 
-def edit_customer_list(edit, index, new_value):
-    file = open("customer_list", "r")
-    lines = file.readlines()
+def edit_customer_list(edit, new_value, type):
+    if type == "password":
+        try:
+            with open('passwords.json', 'r') as editpasswords:
+                editpasswords = json.load(editpasswords)
+        except FileNotFoundError:
+            editpasswords = {}
 
-    for i, line in enumerate(lines):
-        if line.startswith(edit):
-            customer_info = line.split(", ")
-            customer_info[index] = new_value
-            lines[i] = ", ".join(customer_info)
+        editpasswords[edit][type] = {
+            "password": new_value
+        }
 
-    file = open("customer_list", "w")
-    file.writelines(lines)
+        with open('passwords.json', 'w') as editpasswordsfile:
+            json.dump(editpasswords, editpasswordsfile, indent=4)
+    try:
+        with open('users.json', 'r') as editusers:
+            editusers = json.load(editusers)
+    except FileNotFoundError:
+        editusers = {}
+
+    editusers[edit][type] = new_value
+
+    with open('users.json', 'w') as editusersfile:
+        json.dump(editusers, editusersfile, indent=4)
 
 
 def edit_customer():
+    print("-" * 50)
+    try:
+        with open('users.json', 'r') as editusers:
+            editusers = json.load(editusers)
+    except FileNotFoundError:
+        editusers = {}
+
     listofcustimers = []
-    customer_file = open("customer_list", "r")
-    n = 0
-    for users in customer_file:
-        usersn = users.replace("\n", "")
-        listofcustimers.append(usersn)
-        if "customer" in users:
-            users = users.rstrip()
-            n = n + 1
-            print(f"{n}: {users}")
+    for key, value in editusers.items():
+        listofcustimers.append(f"{key}")
+    n = len(listofcustimers)
+
+    if n == 0:
+        print("No customers found")
+        manage_customer()
+
+    print("Edit Customer")
+    for i in range(n):
+        print(f"{i + 1}: {listofcustimers[i]}")
+
     while True:
-        edit_customer_check = input(f"Choose a customer to edit from 1 to {n} (type \"c\" to cancel): ")
-        if edit_customer_check.isnumeric():
-            if int(edit_customer_check) > n:
-                print(f"Invalid input. Please enter a number from 1 to {n} or \"c\" to cancel")
-                continue
-            else:
-                edit_customer_num = int(edit_customer_check) - 1
-                break
-        if edit_customer_check == "c":
+        edit_customer_option = input("Choose a customer to edit (type \"c\" to cancel): ")
+        if edit_customer_option == "c":
             manage_customer()
+            break
+        if edit_customer_option.isnumeric():
+            edit_customer_option = int(edit_customer_option)
+            if 0 < edit_customer_option <= n:
+                user_nm = listofcustimers[edit_customer_option - 1]
+                break
+            else:
+                print(f"Invalid input. Please type a number from 1 to {n}")
+                continue
         else:
-            print(f"Invalid input. Please enter a number from 1 to {n} or \"c\" to cancel")
+            print(f"Invalid input. Please type a number from 1 to {n}")
             continue
 
-    print(f"Edit user: {listofcustimers[edit_customer_num]}")
-    splitcustomerinfo = listofcustimers[edit_customer_num].split(", ")
+    print(f"Edit Customer: {user_nm}")
+    print("1: Edit Name\n2: Edit Email\n3: Edit Phone Number\n4: Edit Date of Birth\n5: Edit Address\n6: Edit Password\n7: Go Back")
 
-    print("-" * 50)
-    print("1: Edit username\n2: Edit email\n3: Edit name\n4: Edit password\n5: Go Back")
-    edit_customer_detail = input("Choose an option from 1 to 4: ")
-
-    if edit_customer_detail == "1":
-        print("-" * 50)
-        print("Edit username")
-        new_username = validate_and_input_customer("Enter new username (type \"c\" to cancel): ", 0, "Username")
-
-        edit_customer_list(splitcustomerinfo[0], 0, new_username)
-
-        print("Username has been changed successfully.")
-        manage_customer()
-
-    elif edit_customer_detail == "2":
-        print("-" * 50)
-        print("Edit email")
-        new_email = validate_and_input_customer("Enter new email (type \"c\" to cancel): ", 1, "Email")
-
-        edit_customer_list(splitcustomerinfo[0], 1, new_email)
-
-        print("Email has been changed successfully.")
-        manage_customer()
-
-    elif edit_customer_detail == "3":
-        print("-" * 50)
-        print("Edit name")
-        new_name = input("Enter new name (type \"c\" to cancel): ")
-
-        if new_name == "c":
-            edit_customer()
-
-        edit_customer_list(splitcustomerinfo[0], 2, new_name)
-
-        print("Name has been changed successfully.")
-        manage_customer()
-
-    elif edit_customer_detail == "4":
-        print("-" * 50)
-        print("Edit password")
-        new_password = validate_and_input_customer("Enter new password (type \"c\" to cancel): ", 3, "Password")
-
-        edit_customer_list(splitcustomerinfo[0], 3, new_password)
-
-        print("Password has been changed successfully.")
-        manage_customer()
-
-    elif edit_customer_detail == "5":
-        manage_customer()
-    else:
-        print("Invalid input. Please type a number from 1 to 4")
-        manage_customer()
+    while True:
+        editcustomerinfo = input("Choose an option from 1 to 7: ")
+        if editcustomerinfo == "1":
+            new_name = input("Enter new name: ")
+            edit_customer_list(user_nm, new_name, "name")
+            manage_customer()
+            break
+        elif editcustomerinfo == "2":
+            new_email = input("Enter new email: ")
+            edit_customer_list(user_nm, new_email, "email")
+            manage_customer()
+            break
+        elif editcustomerinfo == "3":
+            new_phonenumber = input("Enter new phone number: ")
+            edit_customer_list(user_nm, new_phonenumber, "PhoneNumber")
+            manage_customer()
+            break
+        elif editcustomerinfo == "4":
+            new_dob = input("Enter new date of birth: ")
+            edit_customer_list(user_nm, new_dob, "DOB")
+            manage_customer()
+            break
+        elif editcustomerinfo == "5":
+            new_address = input("Enter new address: ")
+            edit_customer_list(user_nm, new_address, "Address")
+            manage_customer()
+            break
+        elif editcustomerinfo == "6":
+            new_password = input("Enter new password: ")
+            edit_customer_list(user_nm, new_password, "password")
+            manage_customer()
+            break
+        elif editcustomerinfo == "7":
+            manage_customer()
+            break
+        else:
+            print("Invalid input. Please type a number from 1 to 7")
+            continue
 
 
 def delete_customer():
