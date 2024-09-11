@@ -1,13 +1,11 @@
 import os
 import tabulate
-from Modules.db import Database
+from Modules.db import db_getKey, db_setKey, db_deleteKey, db_getAllKeys
 from Modules.functions import wait_for_enter, inp
 
 #print(os.path.dirname(os.path.abspath(__file__)))
 
-# Create a new test database
-userDB = Database("users", { "debug": True })
-
+# Create a new database
 
 while True:
   print("\n")
@@ -17,14 +15,14 @@ while True:
     case "1":
       print("ADD NEW USER")
       username = input("Enter username: ")
-      if(userDB.get(username)):
+      if(db_getKey("users", username)):
         print("User already exists")
         wait_for_enter()
         continue
         
       email = input("Enter email: ")
-      userDB.set(username, {"email": email})
-      if(userDB.get(username)):
+      db_setKey("users", username, {"email": email})
+      if(db_getKey("users", username)):
         print("User added successfully!")
       else:
         print("Error adding user!")
@@ -35,11 +33,11 @@ while True:
       match chTyp:
         case "C":
           print("Choose user from list")
-          userList = userDB.Allkeys()
+          userList = db_getAllKeys("users")
           tableHeaders = ["No.", "Username"]
           tableData = []
           for i in range(len(userList)):
-            tableData.append([i+1, userDB.Allkeys()[i]])
+            tableData.append([i+1, userList[i]])
           table = tabulate.tabulate(tableData, headers=tableHeaders, tablefmt="grid")
           print(table)
           chUser = inp("Enter user number: ", "int")
@@ -52,7 +50,7 @@ while True:
             
         case "U":
           usernametoEdit = input("Enter username: ")
-          if(userDB.get(usernametoEdit)):
+          if(db_getKey("users", usernametoEdit)):
             print(f"Editing user: {usernametoEdit}")
           else:
             print("User not found!")
@@ -66,18 +64,19 @@ while True:
     case "3":
       print("DELETE USER")
       username = input("Enter username: ")
-      if(userDB.get(username)):
-        userDB.delete(username)
+      if(db_getKey("users", username)):
+        db_deleteKey("users", username)
         print("User deleted successfully!")
       else:
         print("User does not exist!")
     case "4":
       print("SHOW USERS")
+      userList = db_getAllKeys("users")
       # Make table using tabulate
       tableHeaders = ["No.", "Username"]
       tableData = []
-      for i in range(len(userDB.Allkeys())):
-        tableData.append([i+1, userDB.Allkeys()[i]])
+      for i in range(len(userList)):
+        tableData.append([i+1, userList[i]])
       table = tabulate.tabulate(tableData, headers=tableHeaders, tablefmt="grid")
       print(table)
       wait_for_enter()
