@@ -1,70 +1,92 @@
 import re
+import datetime
+import json
 
 
-def validate_and_input_customer(prompt, index, type="string"):
+def validate_and_input_customer(prompt, type="string"):
     while True:
         inp_value = input(prompt)
         if inp_value == "c":
             manage_customer()
-        if "," in inp_value:
-            if index == 0:
-                print("Username should not contain commas")
-                continue
-            elif index == 1:
-                print("Email should not contain commas")
-                continue
-            elif index == 2:
-                print("Name should not contain commas")
-                continue
-            elif index == 3:
-                print("Password should not contain commas")
-                continue
 
-        customer_file_r = open("customer_list", "r")
-        customer_file_r = list(customer_file_r)
-        records = []
+        try:
+            with open('users.json', 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = {}
+
         if type == "Password":
             if re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", inp_value):
+                print("Password must be at least 8 characters long and contain at least one letter and one number")
+            else:
+                return inp_value
+
+        if type == "Username":
+            if inp_value in data:
+                print("Username already exists")
+                continue
+            if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
+                print("Invalid username. Username should not be in email format")
+                continue
+            else:
+                return inp_value
+
+        if type == "Email":
+            email_exists = False
+            for entry in data.values():
+                if entry.get("email") == inp_value:
+                    email_exists = True
+                    break
+            if email_exists:
+                print("Email already exists.")
+                continue
+            if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
                 return inp_value
             else:
-                print(
-                    "Password must be at least 8 characters long and contain at least one letter and one number and "
-                    "should not contain any commas")
-        else:
-            if type == "Username" or type == "Email":
-                if type == "Username":
-                    if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
-                        print("Invalid username. Username should not be in email format")
-                        continue
-                    else:
-                        return inp_value
-                for line in customer_file_r:
-                    records.append(line.split(", ")[index])
-                if inp_value in records:
-                    print("Record already exists")
-                else:
-                    if type == "Email":
-                        if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
-                            return inp_value
-                        else:
-                            print("Invalid email")
-                    else:
-                        return inp_value
+                print("Invalid email")
+                continue
+
         if type == "Name":
             return inp_value
+        if type == "dob":
+            try:
+                datetime.datetime.strptime(inp_value, "%d-%m-%Y")
+                return inp_value
+            except ValueError:
+                print("Incorrect date format, should be DD-MM-YYYY")
 
 
 def add_customer():
     print("-" * 50)
-    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel): ", 0, "Username")
-    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", 1, "Email")
-    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", 2, "Name")
-    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", 3, "Password")
-    customer_file = open("customer_list", "a")
-    customer_file.write(f"\n{new_customer_username.lower()}, {new_customer_email.lower()}, {new_customer_name}, {new_customer_password}, customer")
-    customer_file.close()
-    print("New customer added")
+    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel): ", "Username")
+    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
+    new_customer_name = input("Enter new customer name (type \"c\" to cancel): ")
+    new_customer_phonenumber = input("Enter new customer phone number (type \"c\" to cancel): ")
+    new_customer_dob = validate_and_input_customer("Enter new customer date of birth (type \"c\" to cancel): ", "dob")
+    new_customer_address = input("Enter new customer address (type \"c\" to cancel): ")
+    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", "Password")
+
+    try:
+        with open('users.json', 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
+
+    data[new_customer_username] = {
+        "name": new_customer_name,
+        "email": new_customer_email,
+        "role": "customer",
+        "PhoneNumber": new_customer_phonenumber,
+        "DOB": new_customer_dob,
+        "Address": new_customer_address
+    }
+
+    with open('users.json', 'w') as file:
+        json.dump(data, file, indent=4)
+
+    print("Customer added successfully.")
     manage_customer()
+
 
 
 def edit_customer_list(edit, index, new_value):
@@ -171,22 +193,24 @@ def delete_customer():
         user = input("Enter username to delete (type \"c\" to cancel): ").lower()
         if user == "c":
             manage_customer()
-        customer_file = open("customer_list", "r")
-        customer_file = list(customer_file)
-        for line in customer_file:
-            if user == line.split(", ")[0]:
-                user_nm = line
-                del customer_file[customer_file.index(line)]
-
-        with open("customer_list", "w") as f:
-            for customer in customer_file:
-                f.write(f"{customer}")
 
         try:
-            print(f"Deleted user: {user_nm.split(', ')[0]}")
+            with open('users.json', 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = {}
+
+        if user in data:
+            user_nm = data[user]
+            del data[user]
+            with open('users.json', 'w') as file:
+                json.dump(data, file, indent=4)
+            print(f"Deleted user: {user_nm['name']}")
             manage_customer()
-        except NameError:
+        else:
             print("User not found")
+            continue
+
 
 
 def manage_customer():
@@ -217,14 +241,7 @@ def validate_and_input_menu(prompt, type="string"):
         inp_value = input(prompt)
         if inp_value == "c":
             manage_menuandpricing()
-        if "," in inp_value:
-            if type == "name":
-                print("Name should not contain commas")
-            elif type == "price":
-                print("Price should not contain commas")
-            elif type == "ingredients":
-                print("Ingredients should not contain commas")
-            continue
+
         if type == "price":
             if inp_value.isnumeric():
                 return int(inp_value)
