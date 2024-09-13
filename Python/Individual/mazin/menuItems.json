@@ -1,0 +1,23 @@
+[
+    {
+        "MenuItmID": "BG-01",
+        "Name": "Chicken Burger",
+        "CuisineType": "American",
+        "Price": 10,
+        "Category": "Food"
+    },
+    {
+        "MenuItmID": "BG-02",
+        "Name": "Beef Burger",
+        "CuisineType": "American",
+        "Price": 12,
+        "Category": " Food"
+    },
+    {
+        "MenuItmID": "BG-03",
+        "Name": "Fish Burger",
+        "CuisineType": "American",
+        "Price": "8",
+        "Category": "Food"
+    }
+]
