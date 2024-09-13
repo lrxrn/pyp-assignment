@@ -17,9 +17,9 @@ def validate_and_input_customer(prompt, type="string"):
 
         if type == "Password":
             if re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", inp_value):
-                print("Password must be at least 8 characters long and contain at least one letter and one number")
-            else:
                 return inp_value
+            else:
+                print("Password must be at least 8 characters long and contain at least one letter and one number")
 
         if type == "Username":
             if inp_value in data:
@@ -50,7 +50,7 @@ def validate_and_input_customer(prompt, type="string"):
             return inp_value
         if type == "dob":
             try:
-                datetime.datetime.strptime(inp_value, "%d-%m-%Y")
+                datetime.datetime.strptime(inp_value, "%d/%m/%Y")
                 return inp_value
             except ValueError:
                 print("Incorrect date format, should be DD-MM-YYYY")
@@ -172,32 +172,41 @@ def edit_customer():
     while True:
         editcustomerinfo = input("Choose an option from 1 to 7: ")
         if editcustomerinfo == "1":
+            print(f"Edit Name\nCurrent name: {editusers[user_nm]["name"]}")
             new_name = input("Enter new name: ")
             edit_customer_list(user_nm, new_name, "name")
             manage_customer()
             break
         elif editcustomerinfo == "2":
+            print(f"Edit Email\nCurrent email: {editusers[user_nm]["email"]}")
             new_email = input("Enter new email: ")
             edit_customer_list(user_nm, new_email, "email")
             manage_customer()
             break
         elif editcustomerinfo == "3":
+            print(f"Edit Phone Number\nCurrent phone number: {editusers[user_nm]["PhoneNumber"]}")
             new_phonenumber = input("Enter new phone number: ")
             edit_customer_list(user_nm, new_phonenumber, "PhoneNumber")
             manage_customer()
             break
         elif editcustomerinfo == "4":
+            print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
             new_dob = input("Enter new date of birth: ")
             edit_customer_list(user_nm, new_dob, "DOB")
             manage_customer()
             break
         elif editcustomerinfo == "5":
+            print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
             new_address = input("Enter new address: ")
             edit_customer_list(user_nm, new_address, "Address")
             manage_customer()
             break
         elif editcustomerinfo == "6":
-            new_password = input("Enter new password: ")
+            new_password = validate_and_input_customer("Enter new password: ", "Password")
+            confirm_password = input("Confirm new password: ")
+            if new_password != confirm_password:
+                print("Passwords do not match")
+                continue
             edit_customer_list(user_nm, new_password, "password")
             manage_customer()
             break

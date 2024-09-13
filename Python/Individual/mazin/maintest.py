@@ -1,18 +1,20 @@
-while True:
-    global user_nm
-    user = input("Enter username to delete: ").lower()
-    customer_file = open("customer_list", "r")
-    customer_file = list(customer_file)
-    for line in customer_file:
-        if user == line.split(", ")[0]:
-            user_nm = line
-            del customer_file[customer_file.index(line)]
+import json
 
-    with open("customer_list", "w") as f:
-        for customer in customer_file:
-            f.write(f"{customer}")
+print("-" * 50)
+new_customer_username = input("Enter new customer username (type \"c\" to cancel): ")
+new_customer_password = input("Enter new customer password (type \"c\" to cancel): ")
 
-    try:
-        print(f"Deleted user: {user_nm.split(', ')[0]}")
-    except NameError:
-        print("User not found")
+try:
+    with open('passwords.json', 'r') as file:
+        data = json.load(file)
+except FileNotFoundError:
+    data = {}
+
+data[new_customer_username] = {
+    "password": new_customer_password
+}
+
+with open('passwords.json', 'w') as file:
+    json.dump(data, file, indent=4)
+
+print("Customer added successfully.")
