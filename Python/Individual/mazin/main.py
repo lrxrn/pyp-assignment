@@ -338,6 +338,7 @@ def add_menu():
         json.dump(file, file2, indent=4)
 
     print("Menu item added successfully")
+    manage_menuandpricing()
 
 
 def edit_menu_item():
@@ -365,25 +366,7 @@ def edit_menu_item():
 
 def delete_menu_item():
     print("-" * 50)
-    print("Delete Menu Item\n1: Delete Main Course\n2: Delete Appetizer\n3: Delete Dessert\n4: Go Back")
-
-    while True:
-        delete_menu_item_option = input("Choose an option from 1 to 4: ")
-        if delete_menu_item_option == "1":
-            print("Delete Main Course")
-            break
-        elif delete_menu_item_option == "2":
-            print("Delete Appetizer")
-            break
-        elif delete_menu_item_option == "3":
-            print("Delete Dessert")
-            break
-        elif delete_menu_item_option == "4":
-            manage_menuandpricing()
-            break
-        else:
-            print("Invalid input. Please type a number from 1 to 4")
-            continue
+    print("Delete Menu Item")
 
 
 def manage_menuandpricing():
