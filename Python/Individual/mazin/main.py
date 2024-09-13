@@ -221,7 +221,6 @@ def edit_customer():
 def delete_customer():
     print("-" * 50)
     while True:
-        global user_nm
         user = input("Enter username to delete (type \"c\" to cancel): ").lower()
         if user == "c":
             manage_customer()
