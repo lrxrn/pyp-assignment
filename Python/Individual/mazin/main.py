@@ -278,60 +278,66 @@ def manage_customer():
             continue
 
 
-def validate_and_input_menu(prompt, type="string"):
-    while True:
-        inp_value = input(prompt)
-        if inp_value == "c":
-            manage_menuandpricing()
+# def validate_and_input_menu(prompt, type="string"):
+#     while True:
+#         inp_value = input(prompt)
+#         if inp_value == "c":
+#             manage_menuandpricing()
+#
+#         if type == "price":
+#             if inp_value.isnumeric():
+#                 return int(inp_value)
+#             else:
+#                 print("Price should be a number")
+#         else:
+#             return inp_value
+#
+#
+# def add_menu_item(menu_type):
+#     print("-" * 50)
+#     print(f"Add {menu_type}")
+#     menu_item_name = validate_and_input_menu(f"Enter {menu_type} name (type \"c\" to cancel): ", "name")
+#     menu_item_price = validate_and_input_menu(f"Enter {menu_type} price (type \"c\" to cancel): ", "price")
+#     menu_item_ingredients = validate_and_input_menu(f"Enter {menu_type} ingredients (type \"c\" to cancel): ", "ingredients")
+#     menu_file = open("menu_list", "a")
+#     menu_file.write(f"\n{menu_type}, {menu_item_name}, {menu_item_price}, {menu_item_ingredients}")
+#     print(f"{menu_type} added successfully")
+#     manage_menuandpricing()
 
-        if type == "price":
-            if inp_value.isnumeric():
-                return int(inp_value)
-            else:
-                print("Price should be a number")
-        else:
-            return inp_value
 
-
-def add_menu_item(menu_type):
-    print("-" * 50)
-    print(f"Add {menu_type}")
-    menu_item_name = validate_and_input_menu(f"Enter {menu_type} name (type \"c\" to cancel): ", "name")
-    menu_item_price = validate_and_input_menu(f"Enter {menu_type} price (type \"c\" to cancel): ", "price")
-    menu_item_ingredients = validate_and_input_menu(f"Enter {menu_type} ingredients (type \"c\" to cancel): ", "ingredients")
-    menu_file = open("menu_list", "a")
-    menu_file.write(f"\n{menu_type}, {menu_item_name}, {menu_item_price}, {menu_item_ingredients}")
-    print(f"{menu_type} added successfully")
-    manage_menuandpricing()
+def get_next_id(filename, prefix):
+    if not filename:
+        return f"{prefix}01"
+    ids = [int(item["MenuItmID"].split('-')[1]) for item in filename]
+    next_id_num = max(ids) + 1
+    return f"{prefix}{next_id_num:02d}"
 
 
 def add_menu():
-    print("-" * 50)
-    print("Add Menu Item\n1: Add Main Course\n2: Add Appetizer\n3: Add Dessert\n4: Add Beverage\n5: Go Back")
+    try:
+        with open("menuItems.json", 'r') as file:
+            file = json.load(file)
+    except FileNotFoundError:
+        file = []
 
-    while True:
-        add_menu_item_option = input("Choose an option from 1 to 5 (type \"c\" to cancel): ")
-        if add_menu_item_option == "1":
-            add_menu_item("Main Course")
-            break
-        elif add_menu_item_option == "2":
-            add_menu_item("Appetizer")
-            break
-        elif add_menu_item_option == "3":
-            add_menu_item("Dessert")
-            break
-        elif add_menu_item_option == "4":
-            add_menu_item("Beverage")
-            break
-        elif add_menu_item_option == "5":
-            manage_menuandpricing()
-            break
-        elif add_menu_item_option == "c":
-            manage_menuandpricing()
-            break
-        else:
-            print("Invalid input. Please type a number from 1 to 4")
-            continue
+    new_menu_name = input("Enter the name of the new menu item: ")
+    new_cuisine_type = input("Enter the cuisine type of the new menu item: ")
+    new_price = input("Enter the price of the new menu item: ")
+    new_category = input("Enter the category of the new menu item: ")
+
+    new_item = {
+        "MenuItmID": get_next_id(file, "BG-"),
+        "Name": new_menu_name,
+        "CuisineType": new_cuisine_type,
+        "Price": new_price,
+        "Category": new_category
+    }
+    file.append(new_item)
+
+    with open("menuItems.json", 'w') as file2:
+        json.dump(file, file2, indent=4)
+
+    print("Menu item added successfully")
 
 
 def edit_menu_item():
