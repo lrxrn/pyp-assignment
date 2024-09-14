@@ -277,33 +277,6 @@ def manage_customer():
             continue
 
 
-# def validate_and_input_menu(prompt, type="string"):
-#     while True:
-#         inp_value = input(prompt)
-#         if inp_value == "c":
-#             manage_menuandpricing()
-#
-#         if type == "price":
-#             if inp_value.isnumeric():
-#                 return int(inp_value)
-#             else:
-#                 print("Price should be a number")
-#         else:
-#             return inp_value
-#
-#
-# def add_menu_item(menu_type):
-#     print("-" * 50)
-#     print(f"Add {menu_type}")
-#     menu_item_name = validate_and_input_menu(f"Enter {menu_type} name (type \"c\" to cancel): ", "name")
-#     menu_item_price = validate_and_input_menu(f"Enter {menu_type} price (type \"c\" to cancel): ", "price")
-#     menu_item_ingredients = validate_and_input_menu(f"Enter {menu_type} ingredients (type \"c\" to cancel): ", "ingredients")
-#     menu_file = open("menu_list", "a")
-#     menu_file.write(f"\n{menu_type}, {menu_item_name}, {menu_item_price}, {menu_item_ingredients}")
-#     print(f"{menu_type} added successfully")
-#     manage_menuandpricing()
-
-
 def get_next_id(filename, prefix):
     if not filename:
         return f"{prefix}01"
