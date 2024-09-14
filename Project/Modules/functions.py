@@ -1,6 +1,7 @@
 import os
 import re
 import time
+from tabulate import tabulate
 
 
 # Clear console function to de-clutter the console
@@ -15,6 +16,14 @@ def wait_for_enter(msg="Press Enter to proceed...", clear=False):
     input(msg)
     if clear:
         clear_console()
+        
+# Function that takes in Menu Item Name and Category and generates a unique ID
+def generate_id(name, category):
+    return f"{name[:3].upper()}{category[:3].upper()}{int(time.time())}"
+        
+# Function to display a table
+def display_table(headers, data):
+    print(tabulate(data, headers=headers, tablefmt="grid"))
 
 def inp(msg="Input your value: ", type="str"):
     match type:

@@ -1,7 +1,11 @@
 import json
 import os
+import configparser
+projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+config = configparser.ConfigParser()
+config.read(f"{projectRoot}/config.ini")
 
-dataDir = "data"
+dataDir = config['Database']['data_directory']
 
 # Internal load and save functions
 def _db_loadDB(DBName):

@@ -4,6 +4,10 @@ from Modules.db import db_getKey, db_setKey, db_deleteKey, db_getAllKeys
 from Modules.functions import wait_for_enter, inp
 
 #print(os.path.dirname(os.path.abspath(__file__)))
+users_list = db_getAllKeys('users') # ‘users’ is the database/file name
+print('List of all users:')
+for user in users_list:
+	print(user)
 
 # Create a new database
 
