@@ -316,6 +316,60 @@ def add_menu():
 def edit_menu_item():
     print("-" * 50)
     print("Edit Menu Item")
+    try:
+        with open('menuItems.json', 'r') as editmenu:
+            editmenu = json.load(editmenu)
+    except FileNotFoundError:
+        editmenu = []
+
+    for i in range(len(editmenu)):
+        print(f"{editmenu[i]['MenuItmID']} - {editmenu[i]['Name']}")
+
+    while True:
+        edit_menu_option = input("Enter menu item ID to edit: ").upper()
+        updated_menu = [item for item in editmenu if item['MenuItmID'] == edit_menu_option]
+
+        if len(updated_menu) == 0:
+            print(f"Item with MenuItmID '{edit_menu_option}' not found.")
+            continue
+        else:
+            print(f"Editing Menu Item: {edit_menu_option}")
+            print(f"1: Edit Name\n2: Edit Cuisine Type\n3: Edit Price\n4: Edit Category\n5: Go Back")
+            while True:
+                editmenuitem = input("Choose an option from 1 to 5: ")
+                if editmenuitem == "1":
+                    print(f"Edit Name\nCurrent name: {updated_menu[0]['Name']}")
+                    new_name = input("Enter new name: ")
+                    updated_menu[0]['Name'] = new_name
+                    with open('menuItems.json', 'w') as file:
+                        json.dump(editmenu, file, indent=4)
+                    print("Name updated successfully.")
+                    manage_menuandpricing()
+                    break
+                elif editmenuitem == "2":
+                    print(f"Edit Cuisine Type\nCurrent cuisine type: {updated_menu[0]['CuisineType']}")
+                    new_cuisine_type = input("Enter new cuisine type: ")
+                    updated_menu[0]['CuisineType'] = new_cuisine_type
+                    with open('menuItems.json', 'w') as file:
+                        json.dump(editmenu, file, indent=4)
+                    print("Cuisine type updated successfully.")
+                    manage_menuandpricing()
+                    break
+                elif editmenuitem == "3":
+                    print(f"Edit Price\nCurrent price: {updated_menu[0]['Price']}")
+                    new_price = input("Enter new price: ")
+                    updated_menu[0]['Price'] = new_price
+                    with open('menuItems.json', 'w') as file:
+                        json.dump(editmenu, file, indent=4)
+                    print("Price updated successfully.")
+                    manage_menuandpricing()
+                    break
+                elif editmenuitem == "4":
+                    print(f"Edit Category\nCurrent category: {updated_menu[0]['Category']}")
+                    new_category = input("Enter new category: ")
+                    updated_menu[0]['Category'] = new_category
+                    with open('menuItems.json', 'w') as file:
+                        json.dump(editmenu, file, indent=4)
 
 
 def delete_menu_item():

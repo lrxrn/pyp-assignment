@@ -17,7 +17,7 @@
         "MenuItmID": "BG-03",
         "Name": "Fish Burger",
         "CuisineType": "American",
-        "Price": "8",
+        "Price": 8,
         "Category": "Food"
     }
 ]
