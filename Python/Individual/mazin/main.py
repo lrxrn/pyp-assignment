@@ -373,11 +373,10 @@ def delete_menu_item():
         deletemenu = []
 
     for i in range(len(deletemenu)):
-        print(f"{i + 1}: {deletemenu[i]['MenuItmID']} - {deletemenu[i]['Name']}")
+        print(f"{deletemenu[i]['MenuItmID']} - {deletemenu[i]['Name']}")
 
     while True:
-        menu = input("Enter menu item to delete: ")
-
+        menu = input("Enter menu item ID to delete: ").upper()
         updated_menu = [item for item in deletemenu if item['MenuItmID'] != menu]
 
         if len(updated_menu) == len(deletemenu):
@@ -386,7 +385,8 @@ def delete_menu_item():
         else:
             with open('menuItems.json', 'w') as file:
                 json.dump(updated_menu, file, indent=4)
-            print(f"Menu item '{menu}' deleted.")
+            item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
+            print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
             manage_menuandpricing()
 
 
