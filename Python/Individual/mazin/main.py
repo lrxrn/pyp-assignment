@@ -366,6 +366,28 @@ def edit_menu_item():
 def delete_menu_item():
     print("-" * 50)
     print("Delete Menu Item")
+    try:
+        with open('menuItems.json', 'r') as deletemenu:
+            deletemenu = json.load(deletemenu)
+    except FileNotFoundError:
+        deletemenu = []
+
+    for i in range(len(deletemenu)):
+        print(f"{i + 1}: {deletemenu[i]['MenuItmID']} - {deletemenu[i]['Name']}")
+
+    while True:
+        menu = input("Enter menu item to delete: ")
+
+        updated_menu = [item for item in deletemenu if item['MenuItmID'] != menu]
+
+        if len(updated_menu) == len(deletemenu):
+            print(f"Item with MenuItmID '{menu}' not found.")
+            continue
+        else:
+            with open('menuItems.json', 'w') as file:
+                json.dump(updated_menu, file, indent=4)
+            print(f"Menu item '{menu}' deleted.")
+            manage_menuandpricing()
 
 
 def manage_menuandpricing():
