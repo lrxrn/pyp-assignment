@@ -34,8 +34,8 @@ def db_getKey(DBName, key):
     data = _db_loadDB(DBName)
     return data.get(key)
 
-## Set a value to a key within the database
-def db_setKey(DBName, key, value):
+## Update a value in a key within the database
+def db_updateKey(DBName, key, value):
     data = _db_loadDB(DBName)
     if key in data:
         data[key] = value
