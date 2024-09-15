@@ -50,6 +50,15 @@ def inp(msg="Input your value: ", type="str"):
                     break
                 else:
                     print("Invalid email! Please try again.")
+            return value
+        case "password":
+            while True:
+                value = input(msg)
+                if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', value):
+                    break
+                else:
+                    print("Password does not meet requirements. Please try again.")
+            return value
         case _:
             while True:
                 value = input(msg)
