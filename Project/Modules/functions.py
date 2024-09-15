@@ -1,7 +1,7 @@
 import os
 import re
 import time
-from tabulate import tabulate
+import tabulate
 
 
 # Clear console function to de-clutter the console
@@ -23,7 +23,7 @@ def generate_id(name, category):
         
 # Function to display a table
 def display_table(headers, data):
-    print(tabulate(data, headers=headers, tablefmt="grid"))
+    print(tabulate.tabulate(data, headers=headers, tablefmt="grid"))
 
 def inp(msg="Input your value: ", type="str"):
     match type:

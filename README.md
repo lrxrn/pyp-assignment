@@ -40,7 +40,7 @@ Parameters:
     key (str): The key to get the value from.
 
 Returns:
-    str: The value of the key.
+    str: The value of the key
 ```
 
 * **db_setKey(DBName, key, value)** - Set a key with a value in the database.
