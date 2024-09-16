@@ -2,7 +2,7 @@
     "user_1": {
         "name": "Mazin",
         "email": "maazin.ahmed@example.com",
-        "role": "customer",
+        "role": "administrator",
         "PhoneNumber": "9876543210",
         "DOB": "10/05/1990",
         "Address": "123 Elm Street, Springfield, IL"
@@ -10,7 +10,7 @@
     "user_2": {
         "name": "Ibaan",
         "email": "ibaan@example.com",
-        "role": "customer",
+        "role": "manager",
         "PhoneNumber": "1234509876",
         "DOB": "22/07/1995",
         "Address": "789 Maple Avenue, Phoenix, AZ"
@@ -26,7 +26,7 @@
     "user_4": {
         "name": "Rohan Verma",
         "email": "rohan.verma@example.com",
-        "role": "customer",
+        "role": "chef",
         "PhoneNumber": "8901234567",
         "DOB": "12/03/1992",
         "Address": "321 Pine Street, Denver, CO"
