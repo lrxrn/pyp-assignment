@@ -18,7 +18,7 @@ from Roles.customer import start as customer_menu
 def logout():
     print("Logout. Redirecting to login page.")
     clear_console(2)
-    start()
+    main_start()
 
 def update_profile(username):
     while True:
@@ -104,23 +104,41 @@ def main_menu(username, role):
 def register():
     print("Register as a new user.")
     inp_username = inp("Enter username: ").strip().lower()
+    inp_password = inp("Enter password: ", "password")
     inp_name = input("Enter your name: ").strip()
     inp_email = inp("Enter email: ", "email")
-    inp_password = inp("Enter password: ", "password")
+    inp_phone = inp("Enter phone number: ", "int")
+    inp_dob = inp("Enter date of birth (YYYY-MM-DD): ")
+    inp_address = input("Enter address: ").strip()
+    inp_confirm_password = inp("Confirm password: ", "password")
+    if inp_password != inp_confirm_password:
+        print("Passwords do not match. Please try again.")
+        wait_for_enter("Press Enter to try again.", True)
+        register()
+        return
     user_data = {
         "name": inp_name,
         "email": inp_email,
-        "role": "customer"
+        "role": "customer",
+        "PhoneNumber": inp_phone,
+        "DOB": inp_dob,
+        "Address": inp_address
     }
     password_data = {
         "password": inp_password,
         "attempts": 0
     }
-    db_addKey("users", inp_username, user_data)
-    db_addKey("passwords", inp_username, password_data)
-    print("Registration successful.")
-    wait_for_enter("Press Enter to go back to the login screen.", True)
-    login()
+    if db_getKey("users", inp_username):
+        print("Username already exists.")
+        wait_for_enter("Press Enter to try again.", True)
+        register()
+        return
+    else:
+        db_addKey("users", inp_username, user_data)
+        db_addKey("passwords", inp_username, password_data)
+        print("Registration successful.")
+        wait_for_enter("Press Enter to go back to the main menu.", True)
+        start_main()
 
 def login():
     while True:
@@ -137,7 +155,7 @@ def login():
             if user_password_data['attempts'] >= 3:
                     print("You have exceeded the maximum number of login attempts. Please try again later.")
                     wait_for_enter("Press Enter to go back to the login screen.", True)
-                    start()
+                    main_start()
                     break
             else:
                 inp_password = input("Enter password: ").strip()
@@ -157,13 +175,25 @@ def login():
             print("Username not found.")
             wait_for_enter("Press Enter to try again.", True)
 
-def start():
+def main_start():
     clear_console()
     print("Welcome to the Restaurant Management System.")
-    login()
+    print("1. Login \n2. Register \n3. Exit")
+    ch = inp("Enter your choice: ", "int", [1, 2, 3])
+    match ch:
+        case 1:
+            login()
+        case 2:
+            register()
+        case 3:
+            print("Exiting...")
+            exit()
+        case _:
+            print("Invalid choice. Please try again.")
+            clear_console(5)
+            main_start()
 
-if __name__ == "__main__":
-    try:
-        start()
-    except KeyboardInterrupt:
-        print("\nProgram interrupted. Exiting...")
+try:
+    main_start()
+except KeyboardInterrupt:
+    print("\nProgram interrupted. Exiting...")
