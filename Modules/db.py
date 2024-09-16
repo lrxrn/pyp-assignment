@@ -34,11 +34,23 @@ def db_getKey(DBName, key):
     data = _db_loadDB(DBName)
     return data.get(key)
 
-## Set a value to a key within the database
-def db_setKey(DBName, key, value):
+## Update a value in a key within the database
+def db_updateKey(DBName, key, value):
     data = _db_loadDB(DBName)
-    data[key] = value
-    _db_saveDB(DBName, data)
+    if key in data:
+        data[key] = value
+        _db_saveDB(DBName, data)
+    else:
+        print("Key does not exist in the database. Use db_addKey() to add a new key.")
+    
+## Add a value to a key within the database
+def db_addKey(DBName, key, value):
+    data = _db_loadDB(DBName)
+    if key not in data:
+        data[key] = value
+        _db_saveDB(DBName, data)
+    else:
+        print("Key already exists in the database. Use db_setKey() to update the value.")
     
 ## Delete a key from the database
 def db_deleteKey(DBName, key):

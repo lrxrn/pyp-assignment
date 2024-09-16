@@ -17,16 +17,32 @@ Project is created with:
 
 ## File structure
 ```ascii
-Project/
-├─ Modules/
-│  ├─ db.py
-│  ├─ functions.py
-├─ Roles/
-│  ├─ admin.py
-│  ├─ manager.py
-│  ├─ chef.py
-│  ├─ customer.py
-main.py
+.
+├── Data
+│   ├── menuItems.json
+│   ├── passwords.json
+│   └── users.json
+├── Individual
+│   ├── mazin
+│   │   ├── main.py
+│   │   ├── test.py
+│   │   └── testmenu.py
+│   └── mikko
+│       └── main.py
+├── Modules
+│   ├── db.py
+│   └── functions.py
+├── README.md
+├── Roles
+│   └── manager.py
+├── config.ini
+├── file_strcuture.txt
+├── main.py
+├── requirements.txt
+├── test.py
+└── test_manager.py
+
+7 directories, 17 files
 ```
 
 ## Database
