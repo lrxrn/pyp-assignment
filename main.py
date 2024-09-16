@@ -138,7 +138,7 @@ def register():
         db_addKey("passwords", inp_username, password_data)
         print("Registration successful.")
         wait_for_enter("Press Enter to go back to the main menu.", True)
-        start_main()
+        main_start()
 
 def login():
     while True:
