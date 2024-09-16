@@ -1,7 +1,16 @@
 import re
 import datetime
 import json
-from Modules.db import db_getKey, db_setKey, db_deleteKey, db_getAllKeys
+from Modules.db import db_getKey, db_updateKey, db_addKey, db_deleteKey, db_getAllKeys, db_getAllValues
+
+
+def loaddatabase(database):
+    try:
+        with open(database, 'r') as file:
+            file = json.load(file)
+    except FileNotFoundError:
+        file = []
+    return file
 
 
 def validate_and_input_customer(prompt, type="string"):
@@ -17,10 +26,11 @@ def validate_and_input_customer(prompt, type="string"):
             data = {}
 
         if type == "Password":
-            if re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", inp_value):
+            if re.match(r"[A-Za-z0-9@#$%^&+=]{8,}", inp_value):
                 return inp_value
             else:
                 print("Password must be at least 8 characters long and contain at least one letter and one number")
+                continue
 
         if type == "Username":
             if inp_value in data:
@@ -59,7 +69,7 @@ def validate_and_input_customer(prompt, type="string"):
 
 def add_customer():
     print("-" * 50)
-    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel): ", "Username")
+    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel)\n NOTE: Username cannot be changed once created: ", "Username")
     new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
     new_customer_name = input("Enter new customer name (type \"c\" to cancel): ")
     new_customer_phonenumber = input("Enter new customer phone number (type \"c\" to cancel): ")
@@ -117,6 +127,7 @@ def edit_customer_list(edit, new_value, type):
 
         with open('passwords.json', 'w') as editpasswordsfile:
             json.dump(editpasswords, editpasswordsfile, indent=4)
+
     try:
         with open('users.json', 'r') as editusers:
             editusers = json.load(editusers)
@@ -127,6 +138,8 @@ def edit_customer_list(edit, new_value, type):
 
     with open('users.json', 'w') as editusersfile:
         json.dump(editusers, editusersfile, indent=4)
+
+    manage_customer()
 
 
 def edit_customer():
@@ -176,31 +189,26 @@ def edit_customer():
             print(f"Edit Name\nCurrent name: {editusers[user_nm]["name"]}")
             new_name = input("Enter new name: ")
             edit_customer_list(user_nm, new_name, "name")
-            manage_customer()
             break
         elif editcustomerinfo == "2":
             print(f"Edit Email\nCurrent email: {editusers[user_nm]["email"]}")
             new_email = input("Enter new email: ")
             edit_customer_list(user_nm, new_email, "email")
-            manage_customer()
             break
         elif editcustomerinfo == "3":
             print(f"Edit Phone Number\nCurrent phone number: {editusers[user_nm]["PhoneNumber"]}")
             new_phonenumber = input("Enter new phone number: ")
             edit_customer_list(user_nm, new_phonenumber, "PhoneNumber")
-            manage_customer()
             break
         elif editcustomerinfo == "4":
             print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
             new_dob = input("Enter new date of birth: ")
             edit_customer_list(user_nm, new_dob, "DOB")
-            manage_customer()
             break
         elif editcustomerinfo == "5":
             print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
             new_address = input("Enter new address: ")
             edit_customer_list(user_nm, new_address, "Address")
-            manage_customer()
             break
         elif editcustomerinfo == "6":
             new_password = validate_and_input_customer("Enter new password: ", "Password")
@@ -209,7 +217,6 @@ def edit_customer():
                 print("Passwords do not match")
                 continue
             edit_customer_list(user_nm, new_password, "password")
-            manage_customer()
             break
         elif editcustomerinfo == "7":
             manage_customer()
@@ -295,7 +302,13 @@ def add_menu():
 
     new_menu_name = input("Enter the name of the new menu item: ")
     new_cuisine_type = input("Enter the cuisine type of the new menu item: ")
-    new_price = input("Enter the price of the new menu item: ")
+    while True:
+        try:
+            new_price = int(input("Enter the price of the new menu item: "))
+            break
+        except ValueError:
+            print("Invalid input. Please enter a number")
+            continue
     new_category = input("Enter the category of the new menu item: ")
 
     new_item = {
