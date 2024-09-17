@@ -383,6 +383,40 @@ def manage_menuandpricing():
 def view_ingredientlist():
     print("-" * 50)
     print("View ingredients list requested by chef")
+    ingredients = loaddatabase("ingredients", "read")
+    print("Ingredients list requested by chef")
+    pendingrequest = []
+    for item in ingredients:
+        if item['RequestStatus'] == "Pending":
+            print(f"{item['RequestID']} - {item['Ingredient']['name']} - {item['Ingredient']['quantity']}{item['Ingredient']['unit']} - {item['RequestStatus']}")
+            pendingrequest.append(item['RequestID'])
+    while True:
+        option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
+        if option == "C":
+            start()
+            break
+        else:
+            if option not in pendingrequest:
+                print(f"Request ID '{option}' not found.")
+                continue
+            ingredient = next((item for item in ingredients if item['RequestID'] == option), None)
+            if ingredient:
+                print(f"Request ID: {ingredient['RequestID']}\nIngredient: {ingredient['Ingredient']['name']}\nQuantity: {ingredient['Ingredient']['quantity']}{ingredient['Ingredient']['unit']}\nRequest Status: {ingredient['RequestStatus']}")
+                status = input("Enter the status of the request (Approved/Rejected): ").capitalize()
+                if status == "Approved" or status == "Rejected":
+                    ingredient['RequestStatus'] = status
+                    loaddatabase("ingredients", "write", ingredients)
+                    print(f"Request ID: {ingredient['RequestID']} - {ingredient['RequestStatus']}")
+                    start()
+                    break
+                else:
+                    print("Invalid input. Please type either 'Approved' or 'Rejected'")
+                    continue
+            else:
+                print(f"Request ID '{option}' not found.")
+                continue
+
+
 
 
 def updateprofile():
