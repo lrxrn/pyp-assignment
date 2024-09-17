@@ -406,7 +406,15 @@ def view_ingredientlist():
                 if status == "Approved" or status == "Rejected":
                     ingredient['RequestStatus'] = status
                     loaddatabase("ingredients", "write", ingredients)
-                    print(f"Request ID: {ingredient['RequestID']} - {ingredient['RequestStatus']}")
+                    ingredient['ReviewedBy'] = {
+                        "User": "Mazin",
+                        "Status": status,
+                        "Date": datetime.datetime.now().strftime("%Y-%m-%d"),
+                        "Time": datetime.datetime.now().strftime("%H:%M")
+                    }
+
+                    loaddatabase("ingredients", "write", ingredients)
+                    print(f"Request ID: {ingredient['RequestID']} - {ingredient['RequestStatus']} - Reviewed by {ingredient['ReviewedBy']['User']} on {ingredient['ReviewedBy']['Date']} at {ingredient['ReviewedBy']['Time']}")
                     start()
                     break
                 else:
@@ -415,8 +423,6 @@ def view_ingredientlist():
             else:
                 print(f"Request ID '{option}' not found.")
                 continue
-
-
 
 
 def updateprofile():
