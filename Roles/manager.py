@@ -1,7 +1,7 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table
+from Modules.functions import display_table #test
 
 
 def loaddatabase(database, type, data="none"):
