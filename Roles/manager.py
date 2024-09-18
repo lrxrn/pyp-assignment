@@ -1,7 +1,7 @@
 import re
 import datetime
 import json
-from Modules.db import db_getKey, db_updateKey, db_addKey, db_deleteKey, db_getAllKeys, db_getAllValues
+from Modules.functions import display_table
 
 
 def loaddatabase(database, type, data="none"):
@@ -139,8 +139,7 @@ def edit_customer():
         manage_customer()
 
     print("Edit Customer")
-    for i in range(n):
-        print(f"{i + 1}: {listofcustimers[i]}")
+    display_table(["No.", "Username"], [(i + 1, listofcustimers[i]) for i in range(n)])
 
     while True:
         edit_customer_option = input("Choose a customer to edit (type \"c\" to cancel): ")
@@ -459,3 +458,6 @@ def start():
         else:
             print("Invalid input. Please type a number from 1 to 5")
             continue
+
+
+start()
