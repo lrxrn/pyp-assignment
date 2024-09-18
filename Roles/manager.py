@@ -458,3 +458,6 @@ def start():
         else:
             print("Invalid input. Please type a number from 1 to 5")
             continue
+
+
+start()
