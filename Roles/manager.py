@@ -1,7 +1,23 @@
 import re
 import datetime
 import json
-from Modules.db import db_getKey, db_setKey, db_deleteKey, db_getAllKeys
+from Modules.db import db_getKey, db_updateKey, db_addKey, db_deleteKey, db_getAllKeys, db_getAllValues
+
+
+def loaddatabase(database, type, data="none"):
+    if type == "read":
+        try:
+            with open(f"{database}.json", 'r') as file:
+                file = json.load(file)
+        except FileNotFoundError:
+            if database == "users" or database == "passwords":
+                file = {}
+            else:
+                file = []
+        return file
+    if type == "write":
+        with open(f"{database}.json", 'w') as file:
+            json.dump(data, file, indent=4)
 
 
 def validate_and_input_customer(prompt, type="string"):
@@ -10,17 +26,14 @@ def validate_and_input_customer(prompt, type="string"):
         if inp_value == "c":
             manage_customer()
 
-        try:
-            with open('users.json', 'r') as file:
-                data = json.load(file)
-        except FileNotFoundError:
-            data = {}
+        data = loaddatabase("users", "read")
 
         if type == "Password":
-            if re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", inp_value):
+            if re.match(r"[A-Za-z0-9@#$%^&+=]{8,}", inp_value):
                 return inp_value
             else:
                 print("Password must be at least 8 characters long and contain at least one letter and one number")
+                continue
 
         if type == "Username":
             if inp_value in data:
@@ -59,7 +72,7 @@ def validate_and_input_customer(prompt, type="string"):
 
 def add_customer():
     print("-" * 50)
-    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel): ", "Username")
+    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel)\n NOTE: Username cannot be changed once created: ", "Username")
     new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
     new_customer_name = input("Enter new customer name (type \"c\" to cancel): ")
     new_customer_phonenumber = input("Enter new customer phone number (type \"c\" to cancel): ")
@@ -67,11 +80,7 @@ def add_customer():
     new_customer_address = input("Enter new customer address (type \"c\" to cancel): ")
     new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", "Password")
 
-    try:
-        with open('users.json', 'r') as addusers:
-            addusers = json.load(addusers)
-    except FileNotFoundError:
-        addusers = {}
+    addusers = loaddatabase("users", "read")
 
     addusers[new_customer_username] = {
         "name": new_customer_name,
@@ -82,21 +91,15 @@ def add_customer():
         "Address": new_customer_address
     }
 
-    with open('users.json', 'w') as addusersfile:
-        json.dump(addusers, addusersfile, indent=4)
+    loaddatabase("users", "write", addusers)
 
-    try:
-        with open('passwords.json', 'r') as addpasswords:
-            addpasswords = json.load(addpasswords)
-    except FileNotFoundError:
-        addpasswords = {}
+    addpasswords = loaddatabase("passwords", "read")
 
     addpasswords[new_customer_username] = {
         "password": new_customer_password
     }
 
-    with open('passwords.json', 'w') as addpasswordsfile:
-        json.dump(addpasswords, addpasswordsfile, indent=4)
+    loaddatabase("passwords", "write", addpasswords)
 
     print("Customer added successfully.")
     manage_customer()
@@ -105,37 +108,26 @@ def add_customer():
 
 def edit_customer_list(edit, new_value, type):
     if type == "password":
-        try:
-            with open('passwords.json', 'r') as editpasswords:
-                editpasswords = json.load(editpasswords)
-        except FileNotFoundError:
-            editpasswords = {}
+        editpasswords = loaddatabase("passwords", "read")
 
         editpasswords[edit][type] = {
             "password": new_value
         }
 
-        with open('passwords.json', 'w') as editpasswordsfile:
-            json.dump(editpasswords, editpasswordsfile, indent=4)
-    try:
-        with open('users.json', 'r') as editusers:
-            editusers = json.load(editusers)
-    except FileNotFoundError:
-        editusers = {}
+        loaddatabase("passwords", "write", editpasswords)
+
+    editusers = loaddatabase("users", "read")
 
     editusers[edit][type] = new_value
 
-    with open('users.json', 'w') as editusersfile:
-        json.dump(editusers, editusersfile, indent=4)
+    loaddatabase("users", "write", editusers)
+
+    manage_customer()
 
 
 def edit_customer():
     print("-" * 50)
-    try:
-        with open('users.json', 'r') as editusers:
-            editusers = json.load(editusers)
-    except FileNotFoundError:
-        editusers = {}
+    editusers = loaddatabase("users", "read")
 
     listofcustimers = []
     for key, value in editusers.items():
@@ -176,31 +168,26 @@ def edit_customer():
             print(f"Edit Name\nCurrent name: {editusers[user_nm]["name"]}")
             new_name = input("Enter new name: ")
             edit_customer_list(user_nm, new_name, "name")
-            manage_customer()
             break
         elif editcustomerinfo == "2":
             print(f"Edit Email\nCurrent email: {editusers[user_nm]["email"]}")
             new_email = input("Enter new email: ")
             edit_customer_list(user_nm, new_email, "email")
-            manage_customer()
             break
         elif editcustomerinfo == "3":
             print(f"Edit Phone Number\nCurrent phone number: {editusers[user_nm]["PhoneNumber"]}")
             new_phonenumber = input("Enter new phone number: ")
             edit_customer_list(user_nm, new_phonenumber, "PhoneNumber")
-            manage_customer()
             break
         elif editcustomerinfo == "4":
             print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
             new_dob = input("Enter new date of birth: ")
             edit_customer_list(user_nm, new_dob, "DOB")
-            manage_customer()
             break
         elif editcustomerinfo == "5":
             print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
             new_address = input("Enter new address: ")
             edit_customer_list(user_nm, new_address, "Address")
-            manage_customer()
             break
         elif editcustomerinfo == "6":
             new_password = validate_and_input_customer("Enter new password: ", "Password")
@@ -209,7 +196,6 @@ def edit_customer():
                 print("Passwords do not match")
                 continue
             edit_customer_list(user_nm, new_password, "password")
-            manage_customer()
             break
         elif editcustomerinfo == "7":
             manage_customer()
@@ -226,30 +212,20 @@ def delete_customer():
         if user == "c":
             manage_customer()
 
-        try:
-            with open('users.json', 'r') as deleteusers:
-                deleteusers = json.load(deleteusers)
-        except FileNotFoundError:
-            deleteusers = {}
+        deleteusers = loaddatabase("users", "read")
 
         if user in deleteusers:
             del deleteusers[user]
-            with open('users.json', 'w') as deleteusersfile:
-                json.dump(deleteusers, deleteusersfile, indent=4)
+            loaddatabase("users", "write", deleteusers)
         else:
             print("User not found")
             continue
 
-        try:
-            with open('passwords.json', 'r') as deletepasswords:
-                deletepasswords = json.load(deletepasswords)
-        except FileNotFoundError:
-            deletepasswords = {}
+        deletepasswords = loaddatabase("passwords", "read")
 
         if user in deletepasswords:
             del deletepasswords[user]
-            with open('passwords.json', 'w') as deletepaswordsfile:
-                json.dump(deletepasswords, deletepaswordsfile, indent=4)
+            loaddatabase("passwords", "write", deletepasswords)
             print(f"Deleted user: {user}")
             manage_customer()
 
@@ -287,15 +263,17 @@ def get_next_id(filename, prefix):
 
 
 def add_menu():
-    try:
-        with open("menuItems.json", 'r') as file:
-            file = json.load(file)
-    except FileNotFoundError:
-        file = []
+    file = loaddatabase("menuItems", "read")
 
     new_menu_name = input("Enter the name of the new menu item: ")
     new_cuisine_type = input("Enter the cuisine type of the new menu item: ")
-    new_price = input("Enter the price of the new menu item: ")
+    while True:
+        try:
+            new_price = int(input("Enter the price of the new menu item: "))
+            break
+        except ValueError:
+            print("Invalid input. Please enter a number")
+            continue
     new_category = input("Enter the category of the new menu item: ")
 
     new_item = {
@@ -307,27 +285,32 @@ def add_menu():
     }
     file.append(new_item)
 
-    with open("menuItems.json", 'w') as file2:
-        json.dump(file, file2, indent=4)
+    loaddatabase("menuItems", "write", file)
 
     print("Menu item added successfully")
+    manage_menuandpricing()
+
+
+def edit_menu_list(type):
+    print(f"Edit {type}\nCurrent {type.lower()}: {updated_menu[0][type]}")
+    new_value = input(f"Enter new {type.lower()}: ")
+    updated_menu[0][type] = new_value
+    loaddatabase("menuItems", "write", updated_menu)
+    print(f"{type} updated successfully.")
     manage_menuandpricing()
 
 
 def edit_menu_item():
     print("-" * 50)
     print("Edit Menu Item")
-    try:
-        with open('menuItems.json', 'r') as editmenu:
-            editmenu = json.load(editmenu)
-    except FileNotFoundError:
-        editmenu = []
+    editmenu = loaddatabase("menuItems", "read")
 
     for i in range(len(editmenu)):
         print(f"{editmenu[i]['MenuItmID']} - {editmenu[i]['Name']}")
 
     while True:
         edit_menu_option = input("Enter menu item ID to edit: ").upper()
+        global updated_menu
         updated_menu = [item for item in editmenu if item['MenuItmID'] == edit_menu_option]
 
         if len(updated_menu) == 0:
@@ -339,48 +322,23 @@ def edit_menu_item():
             while True:
                 editmenuitem = input("Choose an option from 1 to 5: ")
                 if editmenuitem == "1":
-                    print(f"Edit Name\nCurrent name: {updated_menu[0]['Name']}")
-                    new_name = input("Enter new name: ")
-                    updated_menu[0]['Name'] = new_name
-                    with open('menuItems.json', 'w') as file:
-                        json.dump(editmenu, file, indent=4)
-                    print("Name updated successfully.")
-                    manage_menuandpricing()
+                    edit_menu_list("Name")
                     break
                 elif editmenuitem == "2":
-                    print(f"Edit Cuisine Type\nCurrent cuisine type: {updated_menu[0]['CuisineType']}")
-                    new_cuisine_type = input("Enter new cuisine type: ")
-                    updated_menu[0]['CuisineType'] = new_cuisine_type
-                    with open('menuItems.json', 'w') as file:
-                        json.dump(editmenu, file, indent=4)
-                    print("Cuisine type updated successfully.")
-                    manage_menuandpricing()
+                    edit_menu_list("CuisineType")
                     break
                 elif editmenuitem == "3":
-                    print(f"Edit Price\nCurrent price: {updated_menu[0]['Price']}")
-                    new_price = input("Enter new price: ")
-                    updated_menu[0]['Price'] = new_price
-                    with open('menuItems.json', 'w') as file:
-                        json.dump(editmenu, file, indent=4)
-                    print("Price updated successfully.")
-                    manage_menuandpricing()
+                    edit_menu_list("Price")
                     break
                 elif editmenuitem == "4":
-                    print(f"Edit Category\nCurrent category: {updated_menu[0]['Category']}")
-                    new_category = input("Enter new category: ")
-                    updated_menu[0]['Category'] = new_category
-                    with open('menuItems.json', 'w') as file:
-                        json.dump(editmenu, file, indent=4)
+                    edit_menu_list("Category")
+                    break
 
 
 def delete_menu_item():
     print("-" * 50)
     print("Delete Menu Item")
-    try:
-        with open('menuItems.json', 'r') as deletemenu:
-            deletemenu = json.load(deletemenu)
-    except FileNotFoundError:
-        deletemenu = []
+    deletemenu = loaddatabase("menuItems", "read")
 
     for i in range(len(deletemenu)):
         print(f"{deletemenu[i]['MenuItmID']} - {deletemenu[i]['Name']}")
@@ -393,8 +351,7 @@ def delete_menu_item():
             print(f"Item with MenuItmID '{menu}' not found.")
             continue
         else:
-            with open('menuItems.json', 'w') as file:
-                json.dump(updated_menu, file, indent=4)
+            loaddatabase("menuItems", "write", updated_menu)
             item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
             print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
             manage_menuandpricing()
@@ -426,6 +383,46 @@ def manage_menuandpricing():
 def view_ingredientlist():
     print("-" * 50)
     print("View ingredients list requested by chef")
+    ingredients = loaddatabase("ingredients", "read")
+    print("Ingredients list requested by chef")
+    pendingrequest = []
+    for item in ingredients:
+        if item['RequestStatus'] == "Pending":
+            print(f"{item['RequestID']} - {item['Ingredient']['name']} - {item['Ingredient']['quantity']}{item['Ingredient']['unit']} - {item['RequestStatus']}")
+            pendingrequest.append(item['RequestID'])
+    while True:
+        option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
+        if option == "C":
+            start()
+            break
+        else:
+            if option not in pendingrequest:
+                print(f"Request ID '{option}' not found.")
+                continue
+            ingredient = next((item for item in ingredients if item['RequestID'] == option), None)
+            if ingredient:
+                print(f"Request ID: {ingredient['RequestID']}\nIngredient: {ingredient['Ingredient']['name']}\nQuantity: {ingredient['Ingredient']['quantity']}{ingredient['Ingredient']['unit']}\nRequest Status: {ingredient['RequestStatus']}")
+                status = input("Enter the status of the request (Approved/Rejected): ").capitalize()
+                if status == "Approved" or status == "Rejected":
+                    ingredient['RequestStatus'] = status
+                    loaddatabase("ingredients", "write", ingredients)
+                    ingredient['ReviewedBy'] = {
+                        "User": "Mazin",
+                        "Status": status,
+                        "Date": datetime.datetime.now().strftime("%Y-%m-%d"),
+                        "Time": datetime.datetime.now().strftime("%H:%M")
+                    }
+
+                    loaddatabase("ingredients", "write", ingredients)
+                    print(f"Request ID: {ingredient['RequestID']} - {ingredient['RequestStatus']} - Reviewed by {ingredient['ReviewedBy']['User']} on {ingredient['ReviewedBy']['Date']} at {ingredient['ReviewedBy']['Time']}")
+                    start()
+                    break
+                else:
+                    print("Invalid input. Please type either 'Approved' or 'Rejected'")
+                    continue
+            else:
+                print(f"Request ID '{option}' not found.")
+                continue
 
 
 def updateprofile():
