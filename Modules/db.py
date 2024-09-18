@@ -42,6 +42,10 @@ def db_updateKey(DBName, key, value):
         _db_saveDB(DBName, data)
     else:
         print("Key does not exist in the database. Use db_addKey() to add a new key.")
+        
+# Deprecated function; included for backwards compatibility
+def db_setKey(DBName, key, value):
+    db_updateKey(DBName, key, value)
     
 ## Add a value to a key within the database
 def db_addKey(DBName, key, value):
