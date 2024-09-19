@@ -1,7 +1,7 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table
+from Modules.functions import display_table, inp
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey
 from main import logout, update_profile
 
@@ -95,27 +95,19 @@ def get_next_id(filename, prefix):
 def manage_customer(cur_usr):
     print("-" * 50)
     print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: View Customer List\n5: Go Back")
-
-    while True:
-        manage_customer_option = input("Choose an option from 1 to 5: ")
-        if manage_customer_option == "1":
+    
+    option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+    match option:
+        case 1:
             add_customer(cur_usr)
-            break
-        elif manage_customer_option == "2":
+        case 2:
             edit_customer(cur_usr)
-            break
-        elif manage_customer_option == "3":
+        case 3:
             delete_customer(cur_usr)
-            break
-        elif manage_customer_option == "4":
+        case 4:
             view_customer_list(cur_usr)
-            break
-        elif manage_customer_option == "5":
+        case 5:
             start(cur_usr)
-            break
-        else:
-            print("Invalid input. Please type a number from 1 to 4")
-            continue
 
 
 # 1.1 Function to add customer
