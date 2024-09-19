@@ -9,7 +9,12 @@ def clear_console(wait_time=None):
     # Wait for specifc time before clearing the console
     if wait_time:
         time.sleep(wait_time)
-    os.system('clear' if os.name == 'posix' else 'cls')
+    
+    # Clear the console
+    if os.name == "posix":
+        os.system("clear")
+    else:
+        os.system("cls")
 
 # Function to wait for user to press Enter
 def wait_for_enter(msg="Press Enter to proceed...", clear=False):
@@ -25,57 +30,76 @@ def generate_id(name, category):
 def display_table(headers, data):
     print(tabulate.tabulate(data, headers=headers, tablefmt="grid"))
 
-def inp(msg="Input your value: ", type="str", valid_values=None):
+def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, invalidInpMsg=None, cancelAllowed=False, cancelFunc=None):
+    if cancelAllowed:
+        if cancelFunc is None:
+            cancelFunc = lambda: None
+        valid_values = valid_values + ["c"]
+        msg = f"{msg} (Type 'c' to cancel): "
+    
     def is_valid(value):
-        return valid_values is None or value in valid_values
+        if valid_values is None:
+            return True
+        if reverse:
+            return value not in valid_values
+        else:
+            return value in valid_values
+        
+    def output_invalid_msg():
+        if invalidInpMsg:
+            print(invalidInpMsg)
+        else:
+            print(f"Invalid input! Expected one of {valid_values}. Please try again.")
 
+    user_input = input(msg)
+    if cancelAllowed and user_input.lower() == 'c':
+        cancelFunc()
+        return None
+    
     match type:
         case "int":
             while True:
                 try:
-                    value = int(input(msg))
+                    value = int(user_input)
                     if is_valid(value):
                         break
                     else:
-                        print(f"Invalid input! Expected one of {valid_values}. Please try again.")
+                        output_invalid_msg()
                 except ValueError:
-                    print("Invalid input! Expected an integer. Please try again.")
+                    print("Invalid input type! Expected an integer. Please try again.")
             return value
         case "float":
             while True:
                 try:
-                    value = float(input(msg))
+                    value = float(user_input)
                     if is_valid(value):
                         break
                     else:
-                        print(f"Invalid input! Expected one of {valid_values}. Please try again.")
+                        output_invalid_msg()
                 except ValueError:
-                    print("Invalid input! Expected a float. Please try again.")
+                    print("Invalid input type! Expected a float. Please try again.")
             return value
         case "email":
             while True:
-                value = input(msg)
-                if re.match(r"[^@]+@[^@]+\.[^@]+", value):
-                    if is_valid(value):
+                if re.match(r"[^@]+@[^@]+\.[^@]+", user_input):
+                    if is_valid(user_input):
                         break
                     else:
-                        print(f"Invalid email! Expected one of {valid_values}. Please try again.")
+                        output_invalid_msg()
                 else:
-                    print(f"Invalid email! Please try again.")
-            return value
+                    print(f"Invalid email format! Please try again.")
+            return user_input
         case "password":
             while True:
-                value = input(msg)
-                if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', value):
+                if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', user_input):
                     break
                 else:
-                    print(f"Password does not meet requirements. Please try again.")
-            return value
+                    print(f"Password does not meet requirements. It must be at least 8 characters long and include uppercase letters, lowercase letters, digits, and special characters (@#$%^&+=). Please try again.")
+            return user_input
         case _:
             while True:
-                value = input(msg)
-                if is_valid(value):
+                if is_valid(user_input):
                     break
                 else:
-                    print(f"Invalid input! Expected one of {valid_values}. Please try again.")
-            return value
+                    output_invalid_msg()
+            return user_input
