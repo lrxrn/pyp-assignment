@@ -510,7 +510,7 @@ def view_ingredientlist(cur_usr):
 
 # 0 Start function
 def start(cur_usr):
-    print(f"Welcome to restaurant management system, {cur_usr} [Manager]")
+    print(f"Welcome back Manager {cur_usr}")
     print("-" * 50)
     print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
