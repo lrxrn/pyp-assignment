@@ -20,7 +20,7 @@ def logout():
     clear_console(2)
     main_start()
 
-def update_profile(username):
+def update_profile(username, return_func):
     while True:
         print("-"*35)
         print("Update Profile")
@@ -55,6 +55,7 @@ def update_profile(username):
             print("Invalid choice. Please try again.")
             clear_console(5)
             continue
+        return_func(username)
         
 def main_menu(username, role):
     match role:
