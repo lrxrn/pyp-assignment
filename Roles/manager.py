@@ -37,7 +37,7 @@ def validate_and_input_customer(prompt, type="string"):
 
         if type == "Username":
             if inp_value in data:
-                print("Username already exists")
+                print("Username already exists. Please choose a different username.")
                 continue
             if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
                 print("Invalid username. Username should not be in email format")
@@ -62,6 +62,7 @@ def validate_and_input_customer(prompt, type="string"):
 
         if type == "Name":
             return inp_value
+
         if type == "dob":
             try:
                 datetime.datetime.strptime(inp_value, "%d/%m/%Y")
@@ -69,15 +70,18 @@ def validate_and_input_customer(prompt, type="string"):
             except ValueError:
                 print("Incorrect date format, should be DD-MM-YYYY")
 
+        if type == "string":
+            return inp_value
+
 
 def add_customer():
     print("-" * 50)
-    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel)\n NOTE: Username cannot be changed once created: ", "Username")
+    new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ", "Username")
     new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
-    new_customer_name = input("Enter new customer name (type \"c\" to cancel): ")
-    new_customer_phonenumber = input("Enter new customer phone number (type \"c\" to cancel): ")
+    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", "Name")
+    new_customer_phonenumber = validate_and_input_customer("Enter new customer phone number (type \"c\" to cancel): ")
     new_customer_dob = validate_and_input_customer("Enter new customer date of birth (type \"c\" to cancel): ", "dob")
-    new_customer_address = input("Enter new customer address (type \"c\" to cancel): ")
+    new_customer_address = validate_and_input_customer("Enter new customer address (type \"c\" to cancel): ")
     new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ", "Password")
 
     addusers = loaddatabase("users", "read")
