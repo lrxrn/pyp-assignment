@@ -256,13 +256,17 @@ def delete_customer():
             manage_customer()
 
 
+def view_customer_list():
+    print("-" * 50)
+    print("View Customer List")
+
 
 def manage_customer():
     print("-" * 50)
-    print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: Go Back")
+    print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: View Customer List\n5: Go Back")
 
     while True:
-        manage_customer_option = input("Choose an option from 1 to 4: ")
+        manage_customer_option = input("Choose an option from 1 to 5: ")
         if manage_customer_option == "1":
             add_customer()
             break
@@ -273,6 +277,9 @@ def manage_customer():
             delete_customer()
             break
         elif manage_customer_option == "4":
+            view_customer_list()
+            break
+        elif manage_customer_option == "5":
             start()
             break
         else:
