@@ -421,20 +421,18 @@ def edit_menu_item(cur_usr):
         else:
             print(f"Editing Menu Item: {edit_menu_option}")
             print(f"1: Edit Name\n2: Edit Cuisine Type\n3: Edit Price\n4: Edit Category\n5: Go Back")
-            while True:
-                editmenuitem = input("Choose an option from 1 to 5: ")
-                if editmenuitem == "1":
+            option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+            match option:
+                case 1:
                     edit_menu_list(cur_usr, "Name")
-                    break
-                elif editmenuitem == "2":
+                case 2:
                     edit_menu_list(cur_usr, "CuisineType")
-                    break
-                elif editmenuitem == "3":
+                case 3:
                     edit_menu_list(cur_usr, "Price")
-                    break
-                elif editmenuitem == "4":
+                case 4:
                     edit_menu_list(cur_usr, "Category")
-                    break
+                case 5:
+                    manage_menuandpricing(cur_usr)
 
 
 # 2.3 Function to delete menu item
