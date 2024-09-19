@@ -145,38 +145,46 @@ def edit_customer_list(prompt, edit, type):
         manage_customer()
 
 
-def edit_customer():
+def edit_customer(username=""):
     print("-" * 50)
     editusers = loaddatabase("users", "read")
 
-    listofcustimers = []
-    for key, value in editusers.items():
-        listofcustimers.append(f"{key}")
-    n = len(listofcustimers)
+    if username:
+        user_nm = username
+    else:
+        listofcustimers = []
+        for key, value in editusers.items():
+            if value["role"] == "customer":
+                listofcustimers.append(f"{key}")
+        n = len(listofcustimers)
 
-    if n == 0:
-        print("No customers found")
-        manage_customer()
+        if n == 0:
+            print("No customers found")
+            manage_customer()
 
-    print("Edit Customer")
-    display_table(["No.", "Username"], [(i + 1, listofcustimers[i]) for i in range(n)])
+        print("Edit Customer")
+        display_table(["No.", "Username"], [(i + 1, listofcustimers[i]) for i in range(n)])
+
 
     while True:
-        edit_customer_option = input("Choose a customer to edit (type \"c\" to cancel): ")
-        if edit_customer_option == "c":
-            manage_customer()
-            break
-        if edit_customer_option.isnumeric():
-            edit_customer_option = int(edit_customer_option)
-            if 0 < edit_customer_option <= n:
-                user_nm = listofcustimers[edit_customer_option - 1]
+        if not username:
+            edit_customer_option = input("Choose a customer to edit (type \"c\" to cancel): ")
+            if edit_customer_option == "c":
+                manage_customer()
                 break
+            if edit_customer_option.isnumeric():
+                edit_customer_option = int(edit_customer_option)
+                if 0 < edit_customer_option <= n:
+                    user_nm = listofcustimers[edit_customer_option - 1]
+                    break
+                else:
+                    print(f"Invalid input. Please type a number from 1 to {n}")
+                    continue
             else:
                 print(f"Invalid input. Please type a number from 1 to {n}")
                 continue
         else:
-            print(f"Invalid input. Please type a number from 1 to {n}")
-            continue
+            break
 
     print(f"Edit Customer: {user_nm}")
     print("1: Edit Name\n2: Edit Email\n3: Edit Phone Number\n4: Edit Date of Birth\n5: Edit Address\n6: Edit Password\n7: Go Back")
@@ -266,15 +274,27 @@ def view_customer_list():
         if value["role"] == "customer":
             value["username"] = key
             customers.append(value)
-        print(customers)
 
     if len(customers) == 0:
         print("No customers found")
         manage_customer()
 
-    display_table(["Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
-    input("Press any key to go back: ")
-    manage_customer()
+    display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i+1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
+    while True:
+        option = input("Enter the customer number to edit (press any other key to go back): ")
+
+        if option.isnumeric():
+            option = int(option)
+            if 0 < option <= len(customers):
+                edit_customer(customers[option - 1]["username"])
+                break
+            else:
+                print(f"Invalid input. Please type a number from 1 to {len(customers)}")
+                continue
+        else:
+            manage_customer()
+            break
+
 
 
 def manage_customer():
