@@ -110,7 +110,8 @@ def add_customer():
 
 
 
-def edit_customer_list(edit, new_value, type):
+def edit_customer_list(prompt, edit, type):
+    new_value = input(prompt)
     if type == "password":
         editpasswords = loaddatabase("passwords", "read")
 
@@ -169,28 +170,23 @@ def edit_customer():
         editcustomerinfo = input("Choose an option from 1 to 7: ")
         if editcustomerinfo == "1":
             print(f"Edit Name\nCurrent name: {editusers[user_nm]["name"]}")
-            new_name = input("Enter new name: ")
-            edit_customer_list(user_nm, new_name, "name")
+            edit_customer_list("Enter new name: ",user_nm, "name")
             break
         elif editcustomerinfo == "2":
             print(f"Edit Email\nCurrent email: {editusers[user_nm]["email"]}")
-            new_email = input("Enter new email: ")
-            edit_customer_list(user_nm, new_email, "email")
+            edit_customer_list("Enter new email: ", user_nm, "email")
             break
         elif editcustomerinfo == "3":
             print(f"Edit Phone Number\nCurrent phone number: {editusers[user_nm]["PhoneNumber"]}")
-            new_phonenumber = input("Enter new phone number: ")
-            edit_customer_list(user_nm, new_phonenumber, "PhoneNumber")
+            edit_customer_list("Enter new phone number: ", user_nm, "PhoneNumber")
             break
         elif editcustomerinfo == "4":
             print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
-            new_dob = input("Enter new date of birth: ")
-            edit_customer_list(user_nm, new_dob, "DOB")
+            edit_customer_list("Enter new date of birth: ", user_nm, "DOB")
             break
         elif editcustomerinfo == "5":
             print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
-            new_address = input("Enter new address: ")
-            edit_customer_list(user_nm, new_address, "Address")
+            edit_customer_list("Enter new address: ", user_nm, "Address")
             break
         elif editcustomerinfo == "6":
             new_password = validate_and_input_customer("Enter new password: ", "Password")
