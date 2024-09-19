@@ -153,10 +153,10 @@ def login():
             user_password_data = dict(db_getKey("passwords", inp_username))
             # check if the attempts is greater than or equal to 3, dont let user login if so
             if user_password_data['attempts'] >= 3:
-                    print("You have exceeded the maximum number of login attempts. Please try again later.")
-                    wait_for_enter("Press Enter to go back to the login screen.", True)
-                    main_start()
-                    break
+                print("You have exceeded the maximum number of login attempts. Please try again later.")
+                wait_for_enter("Press Enter to go back to the login screen.", True)
+                main_start()
+                break
             else:
                 inp_password = input("Enter password: ").strip()
                 if inp_password == user_password_data['password']:
