@@ -280,8 +280,9 @@ def view_customer_list():
         manage_customer()
 
     display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i+1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
+
     while True:
-        option = input("Enter the customer number to edit (press any other key to go back): ")
+        option = input("Enter the customer number to edit (press enter to go back): ")
 
         if option.isnumeric():
             option = int(option)
