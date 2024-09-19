@@ -217,7 +217,7 @@ def delete_customer():
     print("-" * 50)
     print("Delete Customer")
 
-    customers=[]
+    customers = []
     users = loaddatabase("users", "read")
     for key, value in users.items():
         if value["role"] == "customer":
