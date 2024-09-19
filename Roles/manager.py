@@ -3,7 +3,14 @@ import datetime
 import json
 from Modules.functions import display_table, inp
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey
-from main import logout, update_profile
+
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)
+    
+def update_profile(cur_usr, return_func):
+    from main import update_profile as update_profile_main
+    update_profile_main(cur_usr, return_func)
 
 # 0 Function to load database
 def loaddatabase(database, type, data="none"):
