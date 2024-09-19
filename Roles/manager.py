@@ -30,7 +30,12 @@ def validate_and_input_customer(prompt, type="string"):
 
         if type == "Password":
             if re.match(r"[A-Za-z0-9@#$%^&+=]{8,}", inp_value):
-                return inp_value
+                confirm_password = input("Confirm password: ")
+                if inp_value != confirm_password:
+                    print("Passwords do not match")
+                    continue
+                else:
+                    return inp_value
             else:
                 print("Password must be at least 8 characters long and contain at least one letter and one number")
                 continue
@@ -210,6 +215,8 @@ def edit_customer():
 
 def delete_customer():
     print("-" * 50)
+    print("Delete Customer")
+    display_table(["Username", "Name", "Email"], [(key, value["name"], value["email"]) for key, value in loaddatabase("users", "read").items()])
     while True:
         user = input("Enter username to delete (type \"c\" to cancel): ").lower()
         if user == "c":
