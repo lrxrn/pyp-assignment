@@ -111,23 +111,32 @@ def add_customer():
 
 
 def edit_customer_list(prompt, edit, type):
-    new_value = input(prompt)
     if type == "password":
+        while True:
+            new_password = validate_and_input_customer("Enter new password: ", "Password")
+            confirm_password = input("Confirm new password: ")
+            if new_password != confirm_password:
+                print("Passwords do not match")
+                continue
+            else:
+                break
+
         editpasswords = loaddatabase("passwords", "read")
 
-        editpasswords[edit][type] = {
-            "password": new_value
-        }
+        editpasswords[edit]["password"] = new_password
 
         loaddatabase("passwords", "write", editpasswords)
 
-    editusers = loaddatabase("users", "read")
+        manage_customer()
+    else:
+        new_value = input(prompt)
+        editusers = loaddatabase("users", "read")
 
-    editusers[edit][type] = new_value
+        editusers[edit][type] = new_value
 
-    loaddatabase("users", "write", editusers)
+        loaddatabase("users", "write", editusers)
 
-    manage_customer()
+        manage_customer()
 
 
 def edit_customer():
@@ -189,11 +198,6 @@ def edit_customer():
             edit_customer_list("Enter new address: ", user_nm, "Address")
             break
         elif editcustomerinfo == "6":
-            new_password = validate_and_input_customer("Enter new password: ", "Password")
-            confirm_password = input("Confirm new password: ")
-            if new_password != confirm_password:
-                print("Passwords do not match")
-                continue
             edit_customer_list("Enter new password: ", user_nm, "password")
             break
         elif editcustomerinfo == "7":
