@@ -234,6 +234,10 @@ def delete_customer():
         if user == "c":
             manage_customer()
 
+        if user not in customers:
+            print("User not found. Please enter a valid username.")
+            continue
+
         deleteusers = loaddatabase("users", "read")
 
         if user in deleteusers:
