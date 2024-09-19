@@ -50,47 +50,61 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
             print(invalidInpMsg)
         else:
             print(f"Invalid input! Expected one of {valid_values}. Please try again.")
-
-    user_input = input(msg)
-    if cancelAllowed and user_input.lower() == 'c':
-        cancelFunc()
-        return None
     
     match type:
         case "int":
             while True:
                 try:
+                    user_input = input(msg)
+                    if cancelAllowed and user_input.lower() == 'c':
+                        cancelFunc()
+                        return None
                     value = int(user_input)
                     if is_valid(value):
                         break
                     else:
                         output_invalid_msg()
+                        continue
                 except ValueError:
                     print("Invalid input type! Expected an integer. Please try again.")
             return value
         case "float":
             while True:
                 try:
+                    user_input = input(msg)
+                    if cancelAllowed and user_input.lower() == 'c':
+                        cancelFunc()
+                        return None
                     value = float(user_input)
                     if is_valid(value):
                         break
                     else:
                         output_invalid_msg()
+                        continue
                 except ValueError:
                     print("Invalid input type! Expected a float. Please try again.")
             return value
         case "email":
             while True:
+                user_input = input(msg)
+                if cancelAllowed and user_input.lower() == 'c':
+                    cancelFunc()
+                    return None
                 if re.match(r"[^@]+@[^@]+\.[^@]+", user_input):
                     if is_valid(user_input):
                         break
                     else:
                         output_invalid_msg()
+                        continue
                 else:
                     print(f"Invalid email format! Please try again.")
             return user_input
         case "password":
             while True:
+                user_input = input(msg)
+                if cancelAllowed and user_input.lower() == 'c':
+                    cancelFunc()
+                    return None
                 if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', user_input):
                     break
                 else:
@@ -98,8 +112,13 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
             return user_input
         case _:
             while True:
+                user_input = input(msg)
+                if cancelAllowed and user_input.lower() == 'c':
+                    cancelFunc()
+                    return None
                 if is_valid(user_input):
                     break
                 else:
                     output_invalid_msg()
+                    continue
             return user_input
