@@ -216,7 +216,19 @@ def edit_customer():
 def delete_customer():
     print("-" * 50)
     print("Delete Customer")
-    display_table(["Username", "Name", "Email"], [(key, value["name"], value["email"]) for key, value in loaddatabase("users", "read").items()])
+
+    customers=[]
+    users = loaddatabase("users", "read")
+    for key, value in users.items():
+        if value["role"] == "customer":
+            customers.append(key)
+
+    if len(customers) == 0:
+        print("No customers found")
+        manage_customer()
+
+    display_table(["No.", "Username"], [(i + 1, customers[i]) for i in range(len(customers))])
+
     while True:
         user = input("Enter username to delete (type \"c\" to cancel): ").lower()
         if user == "c":
