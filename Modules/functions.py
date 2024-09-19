@@ -30,9 +30,14 @@ def generate_id(name, category):
 def display_table(headers, data):
     print(tabulate.tabulate(data, headers=headers, tablefmt="grid"))
 
-def inp(msg="Input your value: ", type="str", valid_values=None):
+def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False):
     def is_valid(value):
-        return valid_values is None or value in valid_values
+        if valid_values is None:
+            return True
+        if reverse:
+            return value not in valid_values
+        else:
+            return value in valid_values
 
     match type:
         case "int":
