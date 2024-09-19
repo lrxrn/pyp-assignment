@@ -198,36 +198,27 @@ def edit_customer(cur_usr, username=""):
     print("1: Edit Name\n2: Edit Email\n3: Edit Phone Number\n4: Edit Date of Birth\n5: Edit Address\n6: Edit Password\n7: Go Back")
 
     while True:
-        editcustomerinfo = input("Choose an option from 1 to 7: ")
-        if editcustomerinfo == "1":
-            print(f"Edit Name\nCurrent name: {editusers[user_nm]["name"]}")
-            edit_customer_list(cur_usr, "Enter new name: ",user_nm, "name")
-            break
-        elif editcustomerinfo == "2":
-            print(f"Edit Email\nCurrent email: {editusers[user_nm]["email"]}")
-            edit_customer_list(cur_usr, "Enter new email: ", user_nm, "email")
-            break
-        elif editcustomerinfo == "3":
-            print(f"Edit Phone Number\nCurrent phone number: {editusers[user_nm]["PhoneNumber"]}")
-            edit_customer_list(cur_usr, "Enter new phone number: ", user_nm, "PhoneNumber")
-            break
-        elif editcustomerinfo == "4":
-            print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
-            edit_customer_list(cur_usr, "Enter new date of birth: ", user_nm, "DOB")
-            break
-        elif editcustomerinfo == "5":
-            print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
-            edit_customer_list(cur_usr, "Enter new address: ", user_nm, "Address")
-            break
-        elif editcustomerinfo == "6":
-            edit_customer_list(cur_usr, "Enter new password: ", user_nm, "password")
-            break
-        elif editcustomerinfo == "7":
-            manage_customer(cur_usr)
-            break
-        else:
-            print("Invalid input. Please type a number from 1 to 7")
-            continue
+        option = inp("Choose an option from 1 to 7: ", "int", [1, 2, 3, 4, 5, 6, 7])
+        match option:
+            case 1:
+                print(f"Edit Name\nCurrent name: {editusers[user_nm]["name"]}")
+                edit_customer_list(cur_usr, "Enter new name: ",user_nm, "name")
+            case 2:
+                print(f"Edit Email\nCurrent email: {editusers[user_nm]["email"]}")
+                edit_customer_list(cur_usr, "Enter new email: ", user_nm, "email")
+            case 3:
+                print(f"Edit Phone Number\nCurrent phone number: {editusers[user_nm]["PhoneNumber"]}")
+                edit_customer_list(cur_usr, "Enter new phone number: ", user_nm, "PhoneNumber")
+            case 4:
+                print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
+                edit_customer_list(cur_usr, "Enter new date of birth: ", user_nm, "DOB")
+            case 5:
+                print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
+                edit_customer_list(cur_usr, "Enter new address: ", user_nm, "Address")
+            case 6:
+                edit_customer_list(cur_usr, "Enter new password: ", user_nm, "password")
+            case 7:
+                manage_customer(cur_usr)
 
 
 # 1.2.1 Function to edit customer list
