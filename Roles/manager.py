@@ -450,7 +450,7 @@ def manage_menuandpricing():
             continue
 
 
-def view_ingredientlist():
+def view_ingredientlist(username):
     print("-" * 50)
     print("View ingredients list requested by chef")
     ingredients = loaddatabase("ingredients", "read")
@@ -477,7 +477,7 @@ def view_ingredientlist():
                     ingredient['RequestStatus'] = status
                     loaddatabase("ingredients", "write", ingredients)
                     ingredient['ReviewedBy'] = {
-                        "User": "Mazin",
+                        "User": username,
                         "Status": status,
                         "Date": datetime.datetime.now().strftime("%Y-%m-%d"),
                         "Time": datetime.datetime.now().strftime("%H:%M")
@@ -506,7 +506,7 @@ def logout():
     print("Logout")
 
 
-def start():
+def start(username):
     print("-" * 50)
     print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
@@ -519,7 +519,7 @@ def start():
             manage_menuandpricing()
             break
         elif option == "3":
-            view_ingredientlist()
+            view_ingredientlist(username)
             break
         elif option == "4":
             updateprofile()
@@ -530,6 +530,3 @@ def start():
         else:
             print("Invalid input. Please type a number from 1 to 5")
             continue
-
-
-start()
