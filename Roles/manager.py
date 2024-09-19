@@ -174,7 +174,6 @@ def edit_customer(cur_usr, username=""):
         print("Edit Customer")
         display_table(["No.", "Username"], [(i + 1, listofcustimers[i]) for i in range(n)])
 
-
     while True:
         if not username:
             edit_customer_option = input("Choose a customer to edit (type \"c\" to cancel): ")
@@ -513,23 +512,15 @@ def start(cur_usr):
     print("-" * 50)
     print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
-    while True:
-        option = input("Choose an option from 1 to 5: ")
-        if option == "1":
+    option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+    match option:
+        case 1:
             manage_customer(cur_usr)
-            break
-        elif option == "2":
+        case 2:
             manage_menuandpricing(cur_usr)
-            break
-        elif option == "3":
+        case 3:
             view_ingredientlist(cur_usr)
-            break
-        elif option == "4":
+        case 4:
             update_profile(cur_usr, start)
-            break
-        elif option == "5":
+        case 5:
             logout(cur_usr)
-            break
-        else:
-            print("Invalid input. Please type a number from 1 to 5")
-            continue
