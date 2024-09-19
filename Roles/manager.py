@@ -342,23 +342,16 @@ def manage_menuandpricing(cur_usr):
     print("-" * 50)
     print("Manage menu categories and pricing\n1: Add Menu Item\n2: Edit Menu Item\n3: Delete Menu Item\n4: Go Back")
 
-    while True:
-        manage_menuandpricing_option = input("Choose an option from 1 to 4: ")
-        if manage_menuandpricing_option == "1":
+    option = inp("Choose an option from 1 to 4: ", "int", [1, 2, 3, 4])
+    match option:
+        case 1:
             add_menu(cur_usr)
-            break
-        elif manage_menuandpricing_option == "2":
+        case 2:
             edit_menu_item(cur_usr)
-            break
-        elif manage_menuandpricing_option == "3":
+        case 3:
             delete_menu_item(cur_usr)
-            break
-        elif manage_menuandpricing_option == "4":
+        case 4:
             start(cur_usr)
-            break
-        else:
-            print("Invalid input. Please type a number from 1 to 4")
-            continue
 
 
 # 2.1 Function to add menu item
