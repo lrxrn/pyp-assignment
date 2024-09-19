@@ -18,7 +18,7 @@ def _db_loadDB(DBName):
     
 def _db_saveDB(DBName, data):
     with open(f"{dataDir}/{DBName}.json", 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=4)
         
 def _db_createDB(DBName):
     if not os.path.exists(dataDir):
