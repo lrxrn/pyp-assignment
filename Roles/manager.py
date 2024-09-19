@@ -1,10 +1,11 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table, clear_console
-from Modules.db import *
+from Modules.functions import display_table, inp
+from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey
+from main import logout, update_profile
 
-
+# 0 Function to load database
 def loaddatabase(database, type, data="none"):
     if type == "read":
         try:
@@ -21,6 +22,7 @@ def loaddatabase(database, type, data="none"):
             json.dump(data, file, indent=4)
 
 
+# 0 Function to validate and input customer information
 def validate_and_input_customer(prompt, type="string"):
     while True:
         inp_value = input(prompt)
@@ -80,7 +82,36 @@ def validate_and_input_customer(prompt, type="string"):
             return inp_value
 
 
-def add_customer():
+# 0 Function to get next ID
+def get_next_id(filename, prefix):
+    if not filename:
+        return f"{prefix}01"
+    ids = [int(item["MenuItmID"].split('-')[1]) for item in filename]
+    next_id_num = max(ids) + 1
+    return f"{prefix}{next_id_num:02d}"
+
+
+# 1 Function to manage customer
+def manage_customer(cur_usr):
+    print("-" * 50)
+    print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: View Customer List\n5: Go Back")
+    
+    option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+    match option:
+        case 1:
+            add_customer(cur_usr)
+        case 2:
+            edit_customer(cur_usr)
+        case 3:
+            delete_customer(cur_usr)
+        case 4:
+            view_customer_list(cur_usr)
+        case 5:
+            start(cur_usr)
+
+
+# 1.1 Function to add customer
+def add_customer(cur_usr):
     print("-" * 50)
     new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ", "Username")
     new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
@@ -112,40 +143,11 @@ def add_customer():
     loaddatabase("passwords", "write", addpasswords)
 
     print("Customer added successfully.")
-    manage_customer()
+    manage_customer(cur_usr)
 
 
-
-def edit_customer_list(prompt, edit, type):
-    if type == "password":
-        while True:
-            new_password = validate_and_input_customer("Enter new password: ", "Password")
-            confirm_password = input("Confirm new password: ")
-            if new_password != confirm_password:
-                print("Passwords do not match")
-                continue
-            else:
-                break
-
-        editpasswords = loaddatabase("passwords", "read")
-
-        editpasswords[edit]["password"] = new_password
-
-        loaddatabase("passwords", "write", editpasswords)
-
-        manage_customer()
-    else:
-        new_value = input(prompt)
-        editusers = loaddatabase("users", "read")
-
-        editusers[edit][type] = new_value
-
-        loaddatabase("users", "write", editusers)
-
-        manage_customer()
-
-
-def edit_customer(username=""):
+# 1.2 Function to edit customer
+def edit_customer(cur_usr, username=""):
     print("-" * 50)
     editusers = loaddatabase("users", "read")
 
@@ -160,7 +162,7 @@ def edit_customer(username=""):
 
         if n == 0:
             print("No customers found")
-            manage_customer()
+            manage_customer(cur_usr)
 
         print("Edit Customer")
         display_table(["No.", "Username"], [(i + 1, listofcustimers[i]) for i in range(n)])
@@ -170,7 +172,7 @@ def edit_customer(username=""):
         if not username:
             edit_customer_option = input("Choose a customer to edit (type \"c\" to cancel): ")
             if edit_customer_option == "c":
-                manage_customer()
+                manage_customer(cur_usr)
                 break
             if edit_customer_option.isnumeric():
                 edit_customer_option = int(edit_customer_option)
@@ -193,36 +195,67 @@ def edit_customer(username=""):
         editcustomerinfo = input("Choose an option from 1 to 7: ")
         if editcustomerinfo == "1":
             print(f"Edit Name\nCurrent name: {editusers[user_nm]["name"]}")
-            edit_customer_list("Enter new name: ",user_nm, "name")
+            edit_customer_list(cur_usr, "Enter new name: ",user_nm, "name")
             break
         elif editcustomerinfo == "2":
             print(f"Edit Email\nCurrent email: {editusers[user_nm]["email"]}")
-            edit_customer_list("Enter new email: ", user_nm, "email")
+            edit_customer_list(cur_usr, "Enter new email: ", user_nm, "email")
             break
         elif editcustomerinfo == "3":
             print(f"Edit Phone Number\nCurrent phone number: {editusers[user_nm]["PhoneNumber"]}")
-            edit_customer_list("Enter new phone number: ", user_nm, "PhoneNumber")
+            edit_customer_list(cur_usr, "Enter new phone number: ", user_nm, "PhoneNumber")
             break
         elif editcustomerinfo == "4":
             print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
-            edit_customer_list("Enter new date of birth: ", user_nm, "DOB")
+            edit_customer_list(cur_usr, "Enter new date of birth: ", user_nm, "DOB")
             break
         elif editcustomerinfo == "5":
             print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
-            edit_customer_list("Enter new address: ", user_nm, "Address")
+            edit_customer_list(cur_usr, "Enter new address: ", user_nm, "Address")
             break
         elif editcustomerinfo == "6":
-            edit_customer_list("Enter new password: ", user_nm, "password")
+            edit_customer_list(cur_usr, "Enter new password: ", user_nm, "password")
             break
         elif editcustomerinfo == "7":
-            manage_customer()
+            manage_customer(cur_usr)
             break
         else:
             print("Invalid input. Please type a number from 1 to 7")
             continue
 
 
-def delete_customer():
+# 1.2.1 Function to edit customer list
+def edit_customer_list(cur_usr, prompt, edit, type):
+    if type == "password":
+        while True:
+            new_password = validate_and_input_customer("Enter new password: ", "Password")
+            confirm_password = input("Confirm new password: ")
+            if new_password != confirm_password:
+                print("Passwords do not match")
+                continue
+            else:
+                break
+
+        editpasswords = loaddatabase("passwords", "read")
+
+        editpasswords[edit]["password"] = new_password
+
+        loaddatabase("passwords", "write", editpasswords)
+
+        manage_customer(cur_usr)
+    else:
+        new_value = input(prompt)
+        editusers = loaddatabase("users", "read")
+
+        editusers[edit][type] = new_value
+
+        loaddatabase("users", "write", editusers)
+
+        manage_customer(cur_usr)
+
+
+# 1.3 Function to delete customer
+def delete_customer(cur_usr):
     print("-" * 50)
     print("Delete Customer")
 
@@ -234,14 +267,14 @@ def delete_customer():
 
     if len(customers) == 0:
         print("No customers found")
-        manage_customer()
+        manage_customer(cur_usr)
 
     display_table(["No.", "Username"], [(i + 1, customers[i]) for i in range(len(customers))])
 
     while True:
         user = input("Enter username to delete (type \"c\" to cancel): ").lower()
         if user == "c":
-            manage_customer()
+            manage_customer(cur_usr)
 
         if user not in customers:
             print("User not found. Please enter a valid username.")
@@ -262,10 +295,11 @@ def delete_customer():
             del deletepasswords[user]
             loaddatabase("passwords", "write", deletepasswords)
             print(f"Deleted user: {user}")
-            manage_customer()
+            manage_customer(cur_usr)
 
 
-def view_customer_list():
+# 1.4 Function to view customer list
+def view_customer_list(cur_usr):
     print("-" * 50)
     print("View Customer List")
     users = loaddatabase("users", "read")
@@ -277,7 +311,7 @@ def view_customer_list():
 
     if len(customers) == 0:
         print("No customers found")
-        manage_customer()
+        manage_customer(cur_usr)
 
     display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i+1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
 
@@ -287,52 +321,42 @@ def view_customer_list():
         if option.isnumeric():
             option = int(option)
             if 0 < option <= len(customers):
-                edit_customer(customers[option - 1]["username"])
+                edit_customer(cur_usr, customers[option - 1]["username"])
                 break
             else:
                 print(f"Invalid input. Please type a number from 1 to {len(customers)}")
                 continue
         else:
-            manage_customer()
+            manage_customer(cur_usr)
             break
 
 
-
-def manage_customer():
+# 2 Function to manage menu and pricing
+def manage_menuandpricing(cur_usr):
     print("-" * 50)
-    print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: View Customer List\n5: Go Back")
+    print("Manage menu categories and pricing\n1: Add Menu Item\n2: Edit Menu Item\n3: Delete Menu Item\n4: Go Back")
 
     while True:
-        manage_customer_option = input("Choose an option from 1 to 5: ")
-        if manage_customer_option == "1":
-            add_customer()
+        manage_menuandpricing_option = input("Choose an option from 1 to 4: ")
+        if manage_menuandpricing_option == "1":
+            add_menu(cur_usr)
             break
-        elif manage_customer_option == "2":
-            edit_customer()
+        elif manage_menuandpricing_option == "2":
+            edit_menu_item(cur_usr)
             break
-        elif manage_customer_option == "3":
-            delete_customer()
+        elif manage_menuandpricing_option == "3":
+            delete_menu_item(cur_usr)
             break
-        elif manage_customer_option == "4":
-            view_customer_list()
-            break
-        elif manage_customer_option == "5":
-            start()
+        elif manage_menuandpricing_option == "4":
+            start(cur_usr)
             break
         else:
             print("Invalid input. Please type a number from 1 to 4")
             continue
 
 
-def get_next_id(filename, prefix):
-    if not filename:
-        return f"{prefix}01"
-    ids = [int(item["MenuItmID"].split('-')[1]) for item in filename]
-    next_id_num = max(ids) + 1
-    return f"{prefix}{next_id_num:02d}"
-
-
-def add_menu():
+# 2.1 Function to add menu item
+def add_menu(cur_usr):
     file = loaddatabase("menuItems", "read")
 
     new_menu_name = input("Enter the name of the new menu item: ")
@@ -358,19 +382,21 @@ def add_menu():
     loaddatabase("menuItems", "write", file)
 
     print("Menu item added successfully")
-    manage_menuandpricing()
+    manage_menuandpricing(cur_usr)
 
 
-def edit_menu_list(type):
+# 2.2.1 Function to edit menu list
+def edit_menu_list(cur_usr, type):
     print(f"Edit {type}\nCurrent {type.lower()}: {updated_menu[0][type]}")
     new_value = input(f"Enter new {type.lower()}: ")
     updated_menu[0][type] = new_value
     loaddatabase("menuItems", "write", updated_menu)
     print(f"{type} updated successfully.")
-    manage_menuandpricing()
+    manage_menuandpricing(cur_usr)
 
 
-def edit_menu_item():
+# 2.2 Function to edit menu item
+def edit_menu_item(cur_usr):
     print("-" * 50)
     print("Edit Menu Item")
     editmenu = loaddatabase("menuItems", "read")
@@ -392,20 +418,21 @@ def edit_menu_item():
             while True:
                 editmenuitem = input("Choose an option from 1 to 5: ")
                 if editmenuitem == "1":
-                    edit_menu_list("Name")
+                    edit_menu_list(cur_usr, "Name")
                     break
                 elif editmenuitem == "2":
-                    edit_menu_list("CuisineType")
+                    edit_menu_list(cur_usr, "CuisineType")
                     break
                 elif editmenuitem == "3":
-                    edit_menu_list("Price")
+                    edit_menu_list(cur_usr, "Price")
                     break
                 elif editmenuitem == "4":
-                    edit_menu_list("Category")
+                    edit_menu_list(cur_usr, "Category")
                     break
 
 
-def delete_menu_item():
+# 2.3 Function to delete menu item
+def delete_menu_item(cur_usr):
     print("-" * 50)
     print("Delete Menu Item")
     deletemenu = loaddatabase("menuItems", "read")
@@ -424,33 +451,11 @@ def delete_menu_item():
             loaddatabase("menuItems", "write", updated_menu)
             item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
             print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
-            manage_menuandpricing()
+            manage_menuandpricing(cur_usr)
 
 
-def manage_menuandpricing():
-    print("-" * 50)
-    print("Manage menu categories and pricing\n1: Add Menu Item\n2: Edit Menu Item\n3: Delete Menu Item\n4: Go Back")
-
-    while True:
-        manage_menuandpricing_option = input("Choose an option from 1 to 4: ")
-        if manage_menuandpricing_option == "1":
-            add_menu()
-            break
-        elif manage_menuandpricing_option == "2":
-            edit_menu_item()
-            break
-        elif manage_menuandpricing_option == "3":
-            delete_menu_item()
-            break
-        elif manage_menuandpricing_option == "4":
-            start()
-            break
-        else:
-            print("Invalid input. Please type a number from 1 to 4")
-            continue
-
-
-def view_ingredientlist(username):
+# 3 Function to view ingredients list requested by chef
+def view_ingredientlist(cur_usr):
     print("-" * 50)
     print("View ingredients list requested by chef")
     ingredients = loaddatabase("ingredients", "read")
@@ -463,7 +468,7 @@ def view_ingredientlist(username):
     while True:
         option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
         if option == "C":
-            start()
+            start(cur_usr)
             break
         else:
             if option not in pendingrequest:
@@ -477,7 +482,7 @@ def view_ingredientlist(username):
                     ingredient['RequestStatus'] = status
                     loaddatabase("ingredients", "write", ingredients)
                     ingredient['ReviewedBy'] = {
-                        "User": username,
+                        "User": cur_usr,
                         "Status": status,
                         "Date": datetime.datetime.now().strftime("%Y-%m-%d"),
                         "Time": datetime.datetime.now().strftime("%H:%M")
@@ -495,38 +500,29 @@ def view_ingredientlist(username):
                 continue
 
 
-def updateprofile():
-    print("-" * 50)
-    print("Update own profile")
-
-
-def logout():
-    clear_console()
-    print("-" * 50)
-    print("Logout")
-
-
-def start(username):
+# 0 Start function
+def start(cur_usr):
+    print(f"Welcome back Manager {cur_usr}")
     print("-" * 50)
     print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
     while True:
         option = input("Choose an option from 1 to 5: ")
         if option == "1":
-            manage_customer()
+            manage_customer(cur_usr)
             break
         elif option == "2":
-            manage_menuandpricing()
+            manage_menuandpricing(cur_usr)
             break
         elif option == "3":
-            view_ingredientlist(username)
+            view_ingredientlist(cur_usr)
             break
         elif option == "4":
-            updateprofile()
+            update_profile(cur_usr, start)
             break
         elif option == "5":
-            logout()
-            exit()
+            logout(cur_usr)
+            break
         else:
             print("Invalid input. Please type a number from 1 to 5")
             continue
