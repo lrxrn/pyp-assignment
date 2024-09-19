@@ -1,7 +1,8 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table
+from Modules.functions import display_table, clear_console
+from Modules.db import *
 
 
 def loaddatabase(database, type, data="none"):
@@ -259,6 +260,19 @@ def delete_customer():
 def view_customer_list():
     print("-" * 50)
     print("View Customer List")
+    users = loaddatabase("users", "read")
+    customers = []
+    for key, value in users.items():
+        if value["role"] == "customer":
+            customers.append(value)
+
+    if len(customers) == 0:
+        print("No customers found")
+        manage_customer()
+
+    display_table(["Name", "Email", "Phone Number", "Date of Birth", "Address"], [(customer["name"], customer["email"], customer["PhoneNumber"], customer["DOB"], customer["Address"]) for customer in customers])
+    input("Press any key to go back: ")
+    manage_customer()
 
 
 def manage_customer():
@@ -464,6 +478,7 @@ def updateprofile():
 
 
 def logout():
+    clear_console()
     print("-" * 50)
     print("Logout")
 
