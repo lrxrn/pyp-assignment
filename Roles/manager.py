@@ -74,7 +74,7 @@ def validate_and_input_customer(prompt, type="string"):
                 datetime.datetime.strptime(inp_value, "%d/%m/%Y")
                 return inp_value
             except ValueError:
-                print("Incorrect date format, should be DD-MM-YYYY")
+                print("Incorrect date format, should be DD/MM/YYYY")
 
         if type == "string":
             return inp_value
