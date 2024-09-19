@@ -194,7 +194,7 @@ def edit_customer():
             if new_password != confirm_password:
                 print("Passwords do not match")
                 continue
-            edit_customer_list(user_nm, new_password, "password")
+            edit_customer_list("Enter new password: ", user_nm, "password")
             break
         elif editcustomerinfo == "7":
             manage_customer()
