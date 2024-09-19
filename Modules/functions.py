@@ -87,14 +87,14 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                     else:
                         output_invalid_msg()
                 else:
-                    print(f"Invalid email type! Please try again.")
+                    print(f"Invalid email format! Please try again.")
             return user_input
         case "password":
             while True:
                 if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', user_input):
                     break
                 else:
-                    print(f"Password does not meet requirements. Please try again.")
+                    print(f"Password does not meet requirements. It must be at least 8 characters long and include uppercase letters, lowercase letters, digits, and special characters (@#$%^&+=). Please try again.")
             return user_input
         case _:
             while True:
