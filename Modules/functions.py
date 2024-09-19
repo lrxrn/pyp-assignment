@@ -9,7 +9,12 @@ def clear_console(wait_time=None):
     # Wait for specifc time before clearing the console
     if wait_time:
         time.sleep(wait_time)
-    os.system('clear' if os.name == 'posix' else 'cls')
+    
+    # Clear the console
+    if os.name == "posix":
+        os.system("clear")
+    else:
+        os.system("cls")
 
 # Function to wait for user to press Enter
 def wait_for_enter(msg="Press Enter to proceed...", clear=False):
