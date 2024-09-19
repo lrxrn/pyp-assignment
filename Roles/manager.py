@@ -264,13 +264,15 @@ def view_customer_list():
     customers = []
     for key, value in users.items():
         if value["role"] == "customer":
+            value["username"] = key
             customers.append(value)
+        print(customers)
 
     if len(customers) == 0:
         print("No customers found")
         manage_customer()
 
-    display_table(["Name", "Email", "Phone Number", "Date of Birth", "Address"], [(customer["name"], customer["email"], customer["PhoneNumber"], customer["DOB"], customer["Address"]) for customer in customers])
+    display_table(["Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
     input("Press any key to go back: ")
     manage_customer()
 
@@ -507,3 +509,6 @@ def start():
         else:
             print("Invalid input. Please type a number from 1 to 5")
             continue
+
+
+start()
