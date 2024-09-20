@@ -298,7 +298,10 @@ def delete_customer(cur_usr, username=""):
             del deletepasswords[user]
             loaddatabase("passwords", "write", deletepasswords)
             print(f"Deleted user: {user}")
-            manage_customer(cur_usr)
+            if username:
+                view_customer_list(cur_usr)
+            else:
+                manage_customer(cur_usr)
 
 
 # 1.4 Function to view customer list
