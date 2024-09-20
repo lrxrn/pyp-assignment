@@ -487,8 +487,7 @@ def view_ingredientlist(cur_usr):
     pendingrequest = []
     for item in ingredients:
         if item['RequestStatus'] == "Pending":
-            print(f"{item['RequestID']} - {item['Ingredient']['name']} - {item['Ingredient']['quantity']}{item['Ingredient']['unit']} - {item['RequestStatus']}")
-            pendingrequest.append(item['RequestID'])
+            display_table(["Request ID", "Ingredient", "Quantity", "Request Status"], [(item['RequestID'], item['Ingredient']['name'], f"{item['Ingredient']['quantity']}{item['Ingredient']['unit']}", item['RequestStatus'])])
     while True:
         option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
         if option == "C":
@@ -503,7 +502,7 @@ def view_ingredientlist(cur_usr):
                 print(f"Request ID: {ingredient['RequestID']}\nIngredient: {ingredient['Ingredient']['name']}\nQuantity: {ingredient['Ingredient']['quantity']}{ingredient['Ingredient']['unit']}\nRequest Status: {ingredient['RequestStatus']}")
                 status = input("Enter the status of the request (Approved/Rejected): ").capitalize()
                 if status == "Approved" or status == "Rejected":
-                    ingredient['RequestStatus'] = status
+                    ingredient['RequestStatus'] = "Completed"
                     loaddatabase("ingredients", "write", ingredients)
                     ingredient['ReviewedBy'] = {
                         "User": cur_usr,
@@ -514,7 +513,7 @@ def view_ingredientlist(cur_usr):
 
                     loaddatabase("ingredients", "write", ingredients)
                     print(f"Request ID: {ingredient['RequestID']} - {ingredient['RequestStatus']} - Reviewed by {ingredient['ReviewedBy']['User']} on {ingredient['ReviewedBy']['Date']} at {ingredient['ReviewedBy']['Time']}")
-                    start()
+                    start(cur_usr)
                     break
                 else:
                     print("Invalid input. Please type either 'Approved' or 'Rejected'")
