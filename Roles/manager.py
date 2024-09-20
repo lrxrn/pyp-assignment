@@ -1,7 +1,7 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table, inp
+from Modules.functions import display_table, inp, clear_console
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey
 
 def logout(cur_usr):
@@ -100,6 +100,7 @@ def get_next_id(filename, prefix):
 
 # 1 Function to manage customer
 def manage_customer(cur_usr):
+    clear_console()
     print("-" * 50)
     print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: View Customer List\n5: Go Back")
     
