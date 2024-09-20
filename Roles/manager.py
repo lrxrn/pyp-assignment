@@ -101,7 +101,6 @@ def get_next_id(filename, prefix):
 # 1 Function to manage customer
 def manage_customer(cur_usr):
     clear_console()
-    print("-" * 50)
     print("Manage Customer\n1: Add Customer\n2: Edit Customer\n3: Delete Customer\n4: View Customer List\n5: Go Back")
     
     option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
@@ -120,7 +119,6 @@ def manage_customer(cur_usr):
 
 # 1.1 Function to add customer
 def add_customer(cur_usr):
-    print("-" * 50)
     new_customer_username = validate_and_input_customer("Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ", "Username")
     new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
     new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", "Name")
@@ -156,7 +154,6 @@ def add_customer(cur_usr):
 
 # 1.2 Function to edit customer
 def edit_customer(cur_usr, username=""):
-    print("-" * 50)
     editusers = loaddatabase("users", "read")
 
     if username:
@@ -258,7 +255,6 @@ def edit_customer_list(cur_usr, prompt, edit, type):
 
 # 1.3 Function to delete customer
 def delete_customer(cur_usr, username=""):
-    print("-" * 50)
     print("Delete Customer")
 
     customers = []
@@ -307,7 +303,6 @@ def delete_customer(cur_usr, username=""):
 
 # 1.4 Function to view customer list
 def view_customer_list(cur_usr):
-    print("-" * 50)
     print("View Customer List")
     users = loaddatabase("users", "read")
     customers = []
@@ -355,7 +350,6 @@ def view_customer_list(cur_usr):
 
 # 2 Function to manage menu and pricing
 def manage_menuandpricing(cur_usr):
-    print("-" * 50)
     print("Manage menu categories and pricing\n1: Add Menu Item\n2: Edit Menu Item\n3: Delete Menu Item\n4: View Menu\n5: Go Back")
 
     option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
@@ -414,7 +408,6 @@ def edit_menu_list(cur_usr, type):
 
 # 2.2 Function to edit menu item
 def edit_menu_item(cur_usr):
-    print("-" * 50)
     print("Edit Menu Item")
     editmenu = loaddatabase("menuItems", "read")
 
@@ -448,7 +441,6 @@ def edit_menu_item(cur_usr):
 
 # 2.3 Function to delete menu item
 def delete_menu_item(cur_usr):
-    print("-" * 50)
     print("Delete Menu Item")
     deletemenu = loaddatabase("menuItems", "read")
 
@@ -470,7 +462,6 @@ def delete_menu_item(cur_usr):
 
 
 def view_menu(cur_usr):
-    print("-" * 50)
     print("View Menu")
     menu = loaddatabase("menuItems", "read")
     display_table(["Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [(item["MenuItmID"], item["Name"], item["CuisineType"], item["Price"], item["Category"]) for item in menu])
@@ -480,7 +471,6 @@ def view_menu(cur_usr):
 
 # 3 Function to view ingredients list requested by chef
 def view_ingredientlist(cur_usr):
-    print("-" * 50)
     print("View ingredients list requested by chef")
     ingredients = loaddatabase("ingredients", "read")
     print("Ingredients list requested by chef")
@@ -526,7 +516,6 @@ def view_ingredientlist(cur_usr):
 # 0 Start function
 def start(cur_usr):
     print(f"Welcome back Manager {cur_usr}")
-    print("-" * 50)
     print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
     option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
