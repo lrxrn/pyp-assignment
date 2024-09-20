@@ -218,7 +218,11 @@ def edit_customer(cur_usr, username=""):
             case 6:
                 edit_customer_list(cur_usr, "Enter new password: ", user_nm, "password")
             case 7:
-                manage_customer(cur_usr)
+                if username:
+                    view_customer_list(cur_usr)
+                else:
+                    manage_customer(cur_usr)
+
 
 
 # 1.2.1 Function to edit customer list
