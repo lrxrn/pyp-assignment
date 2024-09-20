@@ -355,9 +355,9 @@ def view_customer_list(cur_usr):
 # 2 Function to manage menu and pricing
 def manage_menuandpricing(cur_usr):
     print("-" * 50)
-    print("Manage menu categories and pricing\n1: Add Menu Item\n2: Edit Menu Item\n3: Delete Menu Item\n4: Go Back")
+    print("Manage menu categories and pricing\n1: Add Menu Item\n2: Edit Menu Item\n3: Delete Menu Item\n4: View Menu\n5: Go Back")
 
-    option = inp("Choose an option from 1 to 4: ", "int", [1, 2, 3, 4])
+    option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
     match option:
         case 1:
             add_menu(cur_usr)
@@ -366,6 +366,8 @@ def manage_menuandpricing(cur_usr):
         case 3:
             delete_menu_item(cur_usr)
         case 4:
+            view_menu(cur_usr)
+        case 5:
             start(cur_usr)
 
 
@@ -464,6 +466,15 @@ def delete_menu_item(cur_usr):
             item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
             print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
             manage_menuandpricing(cur_usr)
+
+
+def view_menu(cur_usr):
+    print("-" * 50)
+    print("View Menu")
+    menu = loaddatabase("menuItems", "read")
+    display_table(["Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [(item["MenuItmID"], item["Name"], item["CuisineType"], item["Price"], item["Category"]) for item in menu])
+    input("Press Enter to go back to the main menu")
+    start(cur_usr)
 
 
 # 3 Function to view ingredients list requested by chef
