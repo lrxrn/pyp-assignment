@@ -256,7 +256,7 @@ def edit_customer_list(cur_usr, prompt, edit, type):
 
 
 # 1.3 Function to delete customer
-def delete_customer(cur_usr):
+def delete_customer(cur_usr, username=""):
     print("-" * 50)
     print("Delete Customer")
 
@@ -270,17 +270,19 @@ def delete_customer(cur_usr):
         print("No customers found")
         manage_customer(cur_usr)
 
-    display_table(["No.", "Username"], [(i + 1, customers[i]) for i in range(len(customers))])
+    if not username:
+        display_table(["No.", "Username"], [(i + 1, customers[i]) for i in range(len(customers))])
 
     while True:
-        user = input("Enter username to delete (type \"c\" to cancel): ").lower()
-        if user == "c":
-            manage_customer(cur_usr)
+        if not username:
+            user = input("Enter username to delete (type \"c\" to cancel): ").lower()
+            if user == "c":
+                manage_customer(cur_usr)
+            if user not in customers:
+                print("User not found. Please enter a valid username.")
+                continue
 
-        if user not in customers:
-            print("User not found. Please enter a valid username.")
-            continue
-
+        user = username if username else user
         deleteusers = loaddatabase("users", "read")
 
         if user in deleteusers:
@@ -317,16 +319,31 @@ def view_customer_list(cur_usr):
     display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i+1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
 
     while True:
-        option = input("Enter the customer number to edit (press enter to go back): ")
+        option = input("Enter the customer number to edit or delete (type \"c\" to cancel): ")
 
         if option.isnumeric():
-            option = int(option)
-            if 0 < option <= len(customers):
-                edit_customer(cur_usr, customers[option - 1]["username"])
-                break
-            else:
-                print(f"Invalid input. Please type a number from 1 to {len(customers)}")
-                continue
+            option2 = input("Do you want to edit or delete the customer? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
+
+            if option2 == "e":
+                option = int(option)
+                if 0 < option <= len(customers):
+                    edit_customer(cur_usr, customers[option - 1]["username"])
+                    break
+                else:
+                    print(f"Invalid input. Please type a number from 1 to {len(customers)}")
+                    continue
+            elif option2 == "d":
+                if option.isnumeric():
+                    option = int(option)
+                    if 0 < option <= len(customers):
+                        delete_customer(cur_usr, customers[option - 1]["username"])
+                        break
+                    else:
+                        print(f"Invalid input. Please type a number from 1 to {len(customers)}")
+                        continue
+                else:
+                    manage_customer(cur_usr)
+                    break
         else:
             manage_customer(cur_usr)
             break
