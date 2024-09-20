@@ -515,7 +515,6 @@ def view_ingredientlist(cur_usr):
 
 # 0 Start function
 def start(cur_usr):
-    print(f"Welcome back Manager {cur_usr}")
     print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
     option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
