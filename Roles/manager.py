@@ -461,6 +461,7 @@ def delete_menu_item(cur_usr):
             manage_menuandpricing(cur_usr)
 
 
+# 2.4 Function to view menu
 def view_menu(cur_usr):
     print("View Menu")
     menu = loaddatabase("menuItems", "read")
