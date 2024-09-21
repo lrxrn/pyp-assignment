@@ -466,9 +466,28 @@ def delete_menu_item(cur_usr):
 def view_menu(cur_usr):
     print("View Menu")
     menu = loaddatabase("menuItems", "read")
-    display_table(["Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [(item["MenuItmID"], item["Name"], item["CuisineType"], item["Price"], item["Category"]) for item in menu])
-    input("Press Enter to go back to the main menu")
-    start(cur_usr)
+    display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"] , [(i+1, menu[i]["MenuItmID"], menu[i]["Name"], menu[i]["CuisineType"], menu[i]["Price"], menu[i]["Category"]) for i in range(len(menu))])
+
+    while True:
+        option = input("Enter the menu number to edit or delete (type \"c\" to cancel): ")
+
+        if option.isnumeric():
+            if 0 < int(option) <= len(menu):
+                option2 = input("Do you want to edit or delete the menu item? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
+
+                if option2 == "e":
+                    edit_menu_item(cur_usr)
+                    break
+                elif option2 == "d":
+                    delete_menu_item(cur_usr)
+                    break
+                else:
+                    manage_menuandpricing(cur_usr)
+                    break
+            else:
+                print(f"Invalid input. Please type a number from 1 to {len(menu)}")
+                continue
+
 
 
 # 3 Function to view ingredients list requested by chef
