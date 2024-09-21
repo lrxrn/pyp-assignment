@@ -29,6 +29,24 @@ def generate_id(name, category):
 # Function to display a table
 def display_table(headers, data):
     print(tabulate.tabulate(data, headers=headers, tablefmt="grid"))
+    
+# Function to display messages in color
+def printD(msg, color="white", bold=False):
+    colors = {
+        "red": "\033[91m",
+        "green": "\033[92m",
+        "yellow": "\033[93m",
+        "blue": "\033[94m",
+        "magenta": "\033[95m",
+        "cyan": "\033[96m",
+        "white": "\033[97m",
+        "bold": "\033[1m",
+        "end": "\033[0m"
+    }
+    if bold:
+        print(f"{colors['bold']}{colors[color]}{msg}{colors['end']}")
+    else:
+        print(f"{colors[color]}{msg}{colors['end']}")
 
 def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, invalidInpMsg=None, cancelAllowed=False, cancelFunc=None):
     if cancelAllowed:
@@ -49,7 +67,7 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
         if invalidInpMsg:
             print(invalidInpMsg)
         else:
-            print(f"Invalid input! Expected one of {valid_values}. Please try again.")
+            printD(f"Invalid input! Expected one of {valid_values}. Please try again.", "yellow")
     
     match type:
         case "int":
@@ -66,7 +84,7 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                         output_invalid_msg()
                         continue
                 except ValueError:
-                    print("Invalid input type! Expected an integer. Please try again.")
+                    printD("Invalid input type! Expected an integer. Please try again.", "yellow")
             return value
         case "float":
             while True:
@@ -82,7 +100,7 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                         output_invalid_msg()
                         continue
                 except ValueError:
-                    print("Invalid input type! Expected a float. Please try again.")
+                    printD("Invalid input type! Expected a float. Please try again.", "yellow")
             return value
         case "email":
             while True:
@@ -97,7 +115,7 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                         output_invalid_msg()
                         continue
                 else:
-                    print(f"Invalid email format! Please try again.")
+                    printD(f"Invalid email format! Please try again.", "yellow")
             return user_input
         case "password":
             while True:
@@ -108,7 +126,7 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                 if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', user_input):
                     break
                 else:
-                    print(f"Password does not meet requirements. It must be at least 8 characters long and include uppercase letters, lowercase letters, digits, and special characters (@#$%^&+=). Please try again.")
+                    printD(f"Password does not meet requirements. It must be at least 8 characters long and include uppercase letters, lowercase letters, digits, and special characters (@#$%^&+=). \nPlease try again.", "yellow")
             return user_input
         case "phone":
             while True:
@@ -119,7 +137,7 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                 if re.fullmatch(r'\+?\d{10,12}', user_input):
                     break
                 else:
-                    print(f"Invalid phone number format! Please try again.")
+                    printD(f"Invalid phone number format! (e.g. +1234567890) Please try again.", "yellow")
             return user_input
         case "date":
             while True:
@@ -130,7 +148,7 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                 if re.fullmatch(r'\d{4}-\d{2}-\d{2}', user_input):
                     break
                 else:
-                    print(f"Invalid date format! Please try again.")
+                    printD(f"Invalid date format! (e.g. 2021-01-01) Please try again.", "yellow")
             return user_input
         case _:
             while True:
