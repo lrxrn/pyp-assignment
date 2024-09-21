@@ -1,0 +1,24 @@
+{
+  "OrderID": "ORD-001",
+  "OrderStatus": "Delivered",
+  "OrderDetails": {
+    "MenuItems": [
+      {
+        "MenuItmID": "BG-01",
+        "Quantity": 2
+      },
+      {
+        "MenuItmID": "DR-01",
+        "Quantity": 1
+      },
+      {
+        "MenuItmID": "DS-01",
+        "Quantity": 1
+      }
+    ],
+    "TotalAmount": 32,
+    "OrderDate": "2023-06-01",
+    "OrderTime": "12:30",
+    "DeliveryAddress": "123 Maple Street, Phoenix, AZ"
+  }
+}
