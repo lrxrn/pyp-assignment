@@ -198,15 +198,15 @@ def reset_password(usr=None):
             
 def register():
     clear_console()
-    print("Register as a new user.")
+    print("Registration")
     print("-"*35)
-    inp_name = input("Enter your name: ").strip()
-    inp_email = inp("Enter email: ", "email")
-    inp_phone = inp("Enter phone number: ", "int")
-    inp_dob = inp("Enter date of birth (YYYY-MM-DD): ")
-    inp_address = input("Enter address: ").strip()
+    inp_name = input("What is your name? ").strip()
+    inp_email = inp("What is your email address? ", "email")
+    inp_phone = inp("What is your phone number? (International format): ", "phone")
+    inp_dob = inp("Enter your Date of Birth (YYYY-MM-DD): ", "date")
+    inp_address = input("Enter your address: ").strip()
     while True:
-        inp_username = input("Enter username: ").strip().lower()
+        inp_username = input("Enter a username (Note: Username is not changeable): ").strip().lower()
         if re.search(r"\W", inp_username):
             print("Username should not contain any special characters.")
             continue
