@@ -103,6 +103,7 @@ def main_menu(username, role):
             logout()
             
 def reset_password():
+    clear_console()
     print("Reset Password")
     username = inp("Enter username: ").strip().lower()
     if not db_getKey("users", username):
@@ -122,6 +123,12 @@ def reset_password():
                 if user_input == email:
                     print("Identity verified.")
                     new_password = inp("Enter new password: ", "password")
+                    new_password_confirm = inp("Confirm new password: ", "password")
+                    if new_password != new_password_confirm:
+                        print("Passwords do not match. Please try again.")
+                        wait_for_enter("Press Enter to go back to the main screen.", True)
+                        main_start()
+                        return
                     password_data = {
                         "password": new_password,
                         "attempts": 0
@@ -131,7 +138,7 @@ def reset_password():
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_start()
                 else:
-                    print("Invalid email address.")
+                    print("Email is not the valid email on file.")
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_menu()
             case 2:
@@ -141,6 +148,12 @@ def reset_password():
                 if user_input == phone:
                     print("Identity verified.")
                     new_password = inp("Enter new password: ", "password")
+                    new_password_confirm = inp("Confirm new password: ", "password")
+                    if new_password != new_password_confirm:
+                        print("Passwords do not match. Please try again.")
+                        wait_for_enter("Press Enter to go back to the main screen.", True)
+                        main_start()
+                        return
                     password_data = {
                         "password": new_password,
                         "attempts": 0
@@ -150,7 +163,7 @@ def reset_password():
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_start()
                 else:
-                    print("Invalid phone number.")
+                    print("Phone number is not the valid number on file.")
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_menu()
             case 3:
@@ -169,8 +182,8 @@ def register():
     inp_confirm_password = inp("Confirm password: ", "password")
     if inp_password != inp_confirm_password:
         print("Passwords do not match. Please try again.")
-        wait_for_enter("Press Enter to try again.", True)
-        register()
+        wait_for_enter("Press Enter to go back to the main screen.", True)
+        main_start()
         return
     user_data = {
         "name": inp_name,
@@ -186,14 +199,14 @@ def register():
     }
     if db_getKey("users", inp_username):
         print("Username already exists.")
-        wait_for_enter("Press Enter to try again.", True)
-        register()
+        wait_for_enter("Press Enter to go back to the main screen.", True)
+        main_start()
         return
     else:
         db_addKey("users", inp_username, user_data)
         db_addKey("passwords", inp_username, password_data)
         print("Registration successful.")
-        wait_for_enter("Press Enter to go back to the main menu.", True)
+        wait_for_enter("Press Enter to go back to the main screen.", True)
         main_start()
 
 def login():
@@ -226,7 +239,16 @@ def login():
                     print("Invalid password.")
                     user_password_data['attempts'] += 1
                     db_updateKey("passwords", inp_username, user_password_data)
-                    wait_for_enter("Press Enter to try again.", True)
+                    print(f"Login attempts remaining: {3 - user_password_data['attempts']}")
+                    print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
+                    ch = inp("Enter your choice: ", "int", [1, 2, 3])
+                    match ch:
+                        case 1:
+                            reset_password()
+                        case 2:
+                            login()
+                        case 3:
+                            main_start()
         else:
             print("Username not found.")
             wait_for_enter("Press Enter to try again.", True)
