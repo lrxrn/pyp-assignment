@@ -102,6 +102,61 @@ def main_menu(username, role):
             print("Invalid role. Please contact the administrator.")
             logout()
             
+def reset_password():
+    print("Reset Password")
+    username = inp("Enter username: ").strip().lower()
+    if not db_getKey("users", username):
+        print("Username not found.")
+        wait_for_enter("Press Enter to go back to the main screen.", True)
+        main_start()
+        return
+    else:
+        print(f"Hi, {username}. \nBefore resetting your password, we need to verify your identity.")
+        print("1. Email Verification \n2. Phone Verification \n3. Cancel")
+        ch = inp("Enter your choice: ", "int", [1, 2, 3])
+        match ch:
+            case 1:
+                email = db_getKey("users", username)["email"]
+                print("Please enter your email address to verify your identity.")
+                user_input = inp("Enter your email: ", "email")
+                if user_input == email:
+                    print("Identity verified.")
+                    new_password = inp("Enter new password: ", "password")
+                    password_data = {
+                        "password": new_password,
+                        "attempts": 0
+                    }
+                    db_updateKey("passwords", username, password_data)
+                    print("Password reset successful.")
+                    wait_for_enter("Press Enter to go back to the main screen.", True)
+                    main_start()
+                else:
+                    print("Invalid email address.")
+                    wait_for_enter("Press Enter to go back to the main screen.", True)
+                    main_menu()
+            case 2:
+                phone = db_getKey("users", username)["PhoneNumber"]
+                print("Please enter your phone number to verify your identity.")
+                user_input = inp("Enter your phone number: ", "int")
+                if user_input == phone:
+                    print("Identity verified.")
+                    new_password = inp("Enter new password: ", "password")
+                    password_data = {
+                        "password": new_password,
+                        "attempts": 0
+                    }
+                    db_updateKey("passwords", username, password_data)
+                    print("Password reset successful.")
+                    wait_for_enter("Press Enter to go back to the main screen.", True)
+                    main_start()
+                else:
+                    print("Invalid phone number.")
+                    wait_for_enter("Press Enter to go back to the main screen.", True)
+                    main_menu()
+            case 3:
+                print("Cancelling...")
+                main_start()
+            
 def register():
     print("Register as a new user.")
     inp_username = inp("Enter username: ").strip().lower()
