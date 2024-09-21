@@ -478,8 +478,10 @@ def view_ingredientlist(cur_usr):
     pendingrequest = []
     for item in ingredients:
         if item['RequestStatus'] == "Pending":
-            display_table(["Request ID", "Ingredient", "Quantity", "Request Status"], [(item['RequestID'], item['Ingredient']['name'], f"{item['Ingredient']['quantity']}{item['Ingredient']['unit']}", item['RequestStatus'])])
             pendingrequest.append(item['RequestID'])
+
+    display_table(["Request ID", "Ingredient", "Quantity", "Request Status"], [(item['RequestID'], item['Ingredient']['name'], f"{item['Ingredient']['quantity']}{item['Ingredient']['unit']}", item['RequestStatus']) for item in ingredients if item['RequestStatus'] == "Pending"])
+
     while True:
         option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
         if option == "C":
