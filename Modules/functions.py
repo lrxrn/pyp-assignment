@@ -2,6 +2,7 @@ import os
 import re
 import time
 import tabulate
+import datetime
 
 
 # Clear console function to de-clutter the console
@@ -48,7 +49,19 @@ def printD(msg, color="white", bold=False):
     else:
         print(f"{colors[color]}{msg}{colors['end']}")
 
-def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, invalidInpMsg=None, cancelAllowed=False, cancelFunc=None):
+"""
+Function to take user input with validation
+    msg: The message to display to the user
+    type: The type of input to expect (int, float, email, password, phone, date, str)
+    valid_values: A list of valid values for the input
+    reverse: If True, the input must not be in the valid_values list
+    invalidInpMsg: A custom message to display when the input is invalid
+    cancelAllowed: If True, the user can cancel the input by typing 'c'
+    cancelFunc: A function to run when the user cancels the input
+
+Returns: the user input or None if the user cancels the input
+"""
+def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None, reverse=False, invalidInpMsg: str=None, cancelAllowed=False, cancelFunc: function=None):
     if cancelAllowed:
         if cancelFunc is None:
             cancelFunc = lambda: None
@@ -145,10 +158,16 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                 if cancelAllowed and user_input.lower() == 'c':
                     cancelFunc()
                     return None
-                if re.fullmatch(r'\d{4}-\d{2}-\d{2}', user_input):
-                    break
+                # check if it is format of dd-mmm-yyyy
+                if re.fullmatch(r'\d{2}-[a-zA-Z]{3}-\d{4}', user_input):
+                    try:
+                        date = datetime.datetime.strptime(user_input, "%d-%b-%Y")
+                        break
+                    except ValueError:
+                        printD("Invalid date! Please try again.", "yellow")
+                        continue
                 else:
-                    printD(f"Invalid date format! (e.g. 2021-01-01) Please try again.", "yellow")
+                    printD("Invalid date format! Please try again.", "yellow")
             return user_input
         case _:
             while True:
