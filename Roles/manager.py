@@ -321,28 +321,29 @@ def view_customer_list(cur_usr):
         option = input("Enter the customer number to edit or delete (type \"c\" to cancel): ")
 
         if option.isnumeric():
-            option2 = input("Do you want to edit or delete the customer? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
+            if 0 < int(option) <= len(customers):
+                option2 = input("Do you want to edit or delete the customer? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
 
-            if option2 == "e":
-                option = int(option)
-                if 0 < option <= len(customers):
-                    edit_customer(cur_usr, customers[option - 1]["username"])
-                    break
-                else:
-                    print(f"Invalid input. Please type a number from 1 to {len(customers)}")
-                    continue
-            elif option2 == "d":
-                if option.isnumeric():
+                if option2 == "e":
                     option = int(option)
                     if 0 < option <= len(customers):
-                        delete_customer(cur_usr, customers[option - 1]["username"])
+                        edit_customer(cur_usr, customers[option - 1]["username"])
                         break
                     else:
                         print(f"Invalid input. Please type a number from 1 to {len(customers)}")
                         continue
-                else:
-                    manage_customer(cur_usr)
-                    break
+                elif option2 == "d":
+                    if option.isnumeric():
+                        option = int(option)
+                        if 0 < option <= len(customers):
+                            delete_customer(cur_usr, customers[option - 1]["username"])
+                            break
+                        else:
+                            print(f"Invalid input. Please type a number from 1 to {len(customers)}")
+                            continue
+                    else:
+                        manage_customer(cur_usr)
+                        break
         else:
             manage_customer(cur_usr)
             break
