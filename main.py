@@ -60,17 +60,27 @@ def update_profile(username, return_func):
             continue
         return_func(username)
         
-def main_menu(username, role):
+def main_menu(username, role:str):
     clear_console()
+    role = role.strip().lower()
     match role:
         case "customer":
-            clear_console(2)
-            customer_menu(username)
+            print("You are a Customer. Choose an option:")
+            print("1. Continue as Customer")
+            print("2. Logout")
+            ch = inp("Enter your choice: ", "int", [1, 2])
+            match ch:
+                case 1:
+                    clear_console(2)
+                    customer_menu(username)
+                case _:
+                    logout(username)
         case "chef":
             print("You are a Chef. Choose an option:")
             print("1. Continue as Chef")
             print("2. Continue as a Customer")
-            ch = inp("Enter your choice: ", "int", [1, 2])
+            print("3. Logout")
+            ch = inp("Enter your choice: ", "int", [1, 2, 3])
             match ch:
                 case 1:
                     clear_console(2)
@@ -78,11 +88,14 @@ def main_menu(username, role):
                 case 2:
                     clear_console(2)
                     customer_menu(username)
+                case _:
+                    logout(username)
         case "manager":
             print("You are a Manager. Choose an option:")
             print("1. Continue as Manager")
             print("2. Continue as a Customer")
-            ch = inp("Enter your choice: ", "int", [1, 2])
+            print("3. Logout")
+            ch = inp("Enter your choice: ", "int", [1, 2, 3])
             match ch:
                 case 1:
                     clear_console(2)
@@ -90,11 +103,14 @@ def main_menu(username, role):
                 case 2:
                     clear_console(2)
                     customer_menu(username)
+                case _:
+                    logout(username)
         case "administrator":
             print("You are an Adminstrator. Choose an option:")
             print("1. Continue as Admin")
             print("2. Continue as a Customer")
-            ch = inp("Enter your choice: ", "int", [1, 2])
+            print("3. Logout")
+            ch = inp("Enter your choice: ", "int", [1, 2, 3])
             match ch:
                 case 1:
                     clear_console(2)
@@ -102,6 +118,8 @@ def main_menu(username, role):
                 case 2:
                     clear_console(2)
                     customer_menu(username)
+                case _:
+                    logout(username)
         case _:
             print("Invalid role. Please contact the administrator.")
             logout()
