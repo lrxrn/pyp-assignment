@@ -23,42 +23,78 @@ def logout(usr=None):
     clear_console(2)
     main_start()
 
-def update_profile(username, return_func):
-    while True:
-        print("-"*35)
-        print("Update Profile")
-        print("-"*35)
-        print("1. Update Name")
-        print("2. Update Email")
-        print("3. Update Role")
-        print("4. Update Password")
-        print("5. Back")
-        print("-"*35)
-        try:
-            update_choice = int(input("Enter your choice: "))
-            if update_choice == 1:
-                new_name = get_user_input("Enter your new name: ")
-                update_user(user=username, email=usrEmailDB[username], name=new_name, role=rolesDB[username])
-            elif update_choice == 2:
-                new_email = get_user_input("Enter your new email: ", "email")
-                update_user(email=new_email)
-            elif update_choice == 3:
-                new_role = get_user_input("Enter your new role: ", "role", valid_roles)
-                update_user(role=new_role)
-            elif update_choice == 4:
-                new_password = get_user_input("Enter your new password: ", "password")
-                update_user(password=new_password)
-            elif update_choice == 5:
-                break
+def update_profile(username, admin_username=None):
+    clear_console()
+    printD("Update Profile", "cyan")
+    print("-"*35)
+    user_data = db_getKey("users", username)
+    print(f"Name: {user_data['name']}")
+    print(f"Email: {user_data['email']}")
+    print(f"Phone Number: {user_data['PhoneNumber']}")
+    print(f"Date of Birth: {user_data['DOB']}")
+    print(f"Address: {user_data['Address']}")
+    global admin_privileges
+    admin_privileges = False
+    if admin_username:
+        admin_user_data = db_getKey("users", admin_username)
+        if admin_user_data:
+            admin_privileges = admin_user_data['role'] == "administrator"
+    else:
+        admin_privileges = False
+    if admin_privileges:
+        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Role \n6. Go Back to Main Menu")
+        ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
+    else:
+        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Go Back to Main Menu")
+        ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
+
+    match ch:
+        case 1:
+            new_name = input("Enter new name: ").strip()
+            user_data['name'] = new_name
+            db_updateKey("users", username, user_data)
+            printD("Name updated successfully.", "green")
+            wait_for_enter("Press Enter to go back to the main menu.", True)
+            main_menu(username, user_data['role'])
+        case 2:
+            new_email = inp("Enter new email: ", "email")
+            user_data['email'] = new_email
+            db_updateKey("users", username, user_data)
+            printD("Email updated successfully.", "green")
+            wait_for_enter("Press Enter to go back to the main menu.", True)
+            main_menu(username, user_data['role'])
+        case 3:
+            new_phone = inp("Enter new phone number: ", "phone")
+            user_data['PhoneNumber'] = new_phone
+            db_updateKey("users", username, user_data)
+            printD("Phone number updated successfully.", "green")
+            wait_for_enter("Press Enter to go back to the main menu.", True)
+            main_menu(username, user_data['role'])
+        case 4:
+            new_address = input("Enter new address: ").strip()
+            user_data['Address'] = new_address
+            db_updateKey("users", username, user_data)
+            printD("Address updated successfully.", "green")
+            wait_for_enter("Press Enter to go back to the main menu.", True)
+            main_menu(username, user_data['role'])
+        case 5:
+            if admin_privileges:
+                print("1. Customer \n2. Chef \n3. Manager \n4. Administrator")
+                new_role = inp("Enter new role: ", "int", [1, 2, 3, 4])
+                roles = ["customer", "chef", "manager", "administrator"]
+                user_data['role'] = roles[new_role - 1]
+                db_updateKey("users", username, user_data)
+                printD("Role updated successfully.", "green")
+                wait_for_enter("Press Enter to go back to the main menu.", True)
+                main_menu(username, user_data['role'])
             else:
-                print("Invalid choice. Please try again.")
-                clear_console(5)
-                continue
-        except ValueError:
-            print("Invalid choice. Please try again.")
-            clear_console(5)
-            continue
-        return_func(username)
+                printD("Invalid choice. Please try again.", "yellow")
+                wait_for_enter("Press Enter to go back to the main menu.", True)
+                main_menu(username, user_data['role'])
+        case _:
+            wait_for_enter("Press Enter to go back to the main menu.", True)
+            main_menu(username, user_data['role'])
+            
         
 def main_menu(username, role:str):
     role = role.strip().lower()
