@@ -110,6 +110,28 @@ def inp(msg="Input your value: ", type="str", valid_values=None, reverse=False, 
                 else:
                     print(f"Password does not meet requirements. It must be at least 8 characters long and include uppercase letters, lowercase letters, digits, and special characters (@#$%^&+=). Please try again.")
             return user_input
+        case "phone":
+            while True:
+                user_input = input(msg)
+                if cancelAllowed and user_input.lower() == 'c':
+                    cancelFunc()
+                    return None
+                if re.fullmatch(r'\+?\d{10,12}', user_input):
+                    break
+                else:
+                    print(f"Invalid phone number format! Please try again.")
+            return user_input
+        case "date":
+            while True:
+                user_input = input(msg)
+                if cancelAllowed and user_input.lower() == 'c':
+                    cancelFunc()
+                    return None
+                if re.fullmatch(r'\d{4}-\d{2}-\d{2}', user_input):
+                    break
+                else:
+                    print(f"Invalid date format! Please try again.")
+            return user_input
         case _:
             while True:
                 user_input = input(msg)
