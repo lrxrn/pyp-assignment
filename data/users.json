@@ -82,7 +82,10 @@
     "mikko": {
         "name": "Meesum Ahmed",
         "email": "mikkoahmd@gmail.com",
-        "role": "customer"
+        "role": "customer",
+        "PhoneNumber": "7890123456",
+        "DOB": "11/12/1993",
+        "Address": "852 Pine Crest Road, Los Angeles, CA"
     },
     "q": {
         "name": "q",
