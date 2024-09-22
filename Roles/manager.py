@@ -483,8 +483,9 @@ def delete_menu_item(cur_usr, menu=""):
     deletemenu = loaddatabase("menuItems", "read")
 
     if not menu:
-        for i in range(len(deletemenu)):
-            print(f"{deletemenu[i]['MenuItmID']} - {deletemenu[i]['Name']}")
+        display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [
+            (i + 1, deletemenu[i]["MenuItmID"], deletemenu[i]["Name"], deletemenu[i]["CuisineType"],
+             deletemenu[i]["Price"], deletemenu[i]["Category"]) for i in range(len(deletemenu))])
 
     while True:
         if not menu:
