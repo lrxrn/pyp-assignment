@@ -61,7 +61,7 @@ Function to take user input with validation
 
 Returns: the user input or None if the user cancels the input
 """
-def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None, reverse=False, invalidInpMsg: str=None, cancelAllowed=False, cancelFunc: function=None):
+def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None, reverse=False, invalidInpMsg: str=None, cancelAllowed=False, cancelFunc=None):
     if cancelAllowed:
         if cancelFunc is None:
             cancelFunc = lambda: None
