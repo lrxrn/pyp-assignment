@@ -478,7 +478,7 @@ def edit_menu_item(cur_usr, menuitem=""):
 
 
 # 2.3 Function to delete menu item
-def delete_menu_item(cur_usr, menu=""):
+def delete_menu_item(cur_usr, goback="", menu=""):
     print("Delete Menu Item")
     deletemenu = loaddatabase("menuItems", "read")
 
@@ -495,15 +495,16 @@ def delete_menu_item(cur_usr, menu=""):
 
         if len(updated_menu) == len(deletemenu):
             print(f"Item with MenuItmID '{menu}' not found.")
+            menu = ""
             continue
         else:
             loaddatabase("menuItems", "write", updated_menu)
             item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
             print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
-            if not menu:
-                manage_menuandpricing(cur_usr)
-            else:
+            if goback == "view":
                 view_menu(cur_usr)
+            else:
+                manage_menuandpricing(cur_usr)
 
 
 # 2.4 Function to view menu
@@ -526,7 +527,7 @@ def view_menu(cur_usr):
                     edit_menu_item(cur_usr, menu[int(option) - 1]["MenuItmID"])
                     break
                 elif option2 == "d":
-                    delete_menu_item(cur_usr, menu[int(option) - 1]["MenuItmID"])
+                    delete_menu_item(cur_usr, "view", menu[int(option) - 1]["MenuItmID"])
                     break
                 else:
                     manage_menuandpricing(cur_usr)
