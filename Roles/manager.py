@@ -441,12 +441,13 @@ def edit_menu_list(cur_usr, type, goback="", menuitem=""):
 
 
 # 2.2 Function to edit menu item
-def edit_menu_item(cur_usr, goback="", menuitem=""):
+def edit_menu_item(cur_usr, menuitem=""):
     print("Edit Menu Item")
     editmenu = loaddatabase("menuItems", "read")
 
     if menuitem:
         edit_menu_option = menuitem
+        goback = "view"
     else:
         for i in range(len(editmenu)):
             print(f"{editmenu[i]['MenuItmID']} - {editmenu[i]['Name']}")
@@ -477,15 +478,18 @@ def edit_menu_item(cur_usr, goback="", menuitem=""):
 
 
 # 2.3 Function to delete menu item
-def delete_menu_item(cur_usr):
+def delete_menu_item(cur_usr, menu=""):
     print("Delete Menu Item")
     deletemenu = loaddatabase("menuItems", "read")
 
-    for i in range(len(deletemenu)):
-        print(f"{deletemenu[i]['MenuItmID']} - {deletemenu[i]['Name']}")
+    if not menu:
+        for i in range(len(deletemenu)):
+            print(f"{deletemenu[i]['MenuItmID']} - {deletemenu[i]['Name']}")
 
     while True:
-        menu = input("Enter menu item ID to delete: ").upper()
+        if not menu:
+            menu = input("Enter menu item ID to delete: ").upper()
+
         updated_menu = [item for item in deletemenu if item['MenuItmID'] != menu]
 
         if len(updated_menu) == len(deletemenu):
@@ -495,7 +499,10 @@ def delete_menu_item(cur_usr):
             loaddatabase("menuItems", "write", updated_menu)
             item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
             print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
-            manage_menuandpricing(cur_usr)
+            if not menu:
+                manage_menuandpricing(cur_usr)
+            else:
+                view_menu(cur_usr)
 
 
 # 2.4 Function to view menu
@@ -515,10 +522,10 @@ def view_menu(cur_usr):
                     "Do you want to edit or delete the menu item? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
 
                 if option2 == "e":
-                    edit_menu_item(cur_usr, "view", menu[int(option) - 1]["MenuItmID"])
+                    edit_menu_item(cur_usr, menu[int(option) - 1]["MenuItmID"])
                     break
                 elif option2 == "d":
-                    delete_menu_item(cur_usr)
+                    delete_menu_item(cur_usr, menu[int(option) - 1]["MenuItmID"])
                     break
                 else:
                     manage_menuandpricing(cur_usr)
