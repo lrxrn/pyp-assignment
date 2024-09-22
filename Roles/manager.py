@@ -420,20 +420,28 @@ def add_menu(cur_usr):
 
 
 # 2.2.1 Function to edit menu list
-def edit_menu_list(cur_usr, type, menuitem=""):
-    print(f"Edit {type}\nCurrent {type.lower()}: {updated_menu[0][type]}")
+def edit_menu_list(cur_usr, type, goback="", menuitem=""):
+    editmenu = loaddatabase("menuItems", "read")
+    currentvalue = next((item[type] for item in editmenu if item['MenuItmID'] == menuitem), None)
+    print(f"Edit {type}\nCurrent {type.lower()}: {currentvalue}")
+
     new_value = input(f"Enter new {type.lower()}: ")
-    updated_menu[0][type] = new_value
-    loaddatabase("menuItems", "write", updated_menu)
-    print(f"{type} updated successfully.")
-    if menuitem:
+
+    for item in editmenu:
+        if item['MenuItmID'] == menuitem:
+            item[type] = new_value
+            loaddatabase("menuItems", "write", editmenu)
+            print(f"{type} updated successfully.")
+            break
+
+    if goback == "view":
         view_menu(cur_usr)
     else:
         manage_menuandpricing(cur_usr)
 
 
 # 2.2 Function to edit menu item
-def edit_menu_item(cur_usr, menuitem=""):
+def edit_menu_item(cur_usr, goback="", menuitem=""):
     print("Edit Menu Item")
     editmenu = loaddatabase("menuItems", "read")
 
@@ -446,25 +454,24 @@ def edit_menu_item(cur_usr, menuitem=""):
     while True:
         if not menuitem:
             edit_menu_option = input("Enter menu item ID to edit: ").upper()
-        global updated_menu
-        updated_menu = [item for item in editmenu if item['MenuItmID'] == edit_menu_option]
 
-        if len(updated_menu) == 0:
+        if len(editmenu) == 0:
             print(f"Item with MenuItmID '{edit_menu_option}' not found.")
             continue
         else:
             print(f"Editing Menu Item: {edit_menu_option}")
             print(f"1: Edit Name\n2: Edit Cuisine Type\n3: Edit Price\n4: Edit Category\n5: Go Back")
             option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+            menuitem = edit_menu_option
             match option:
                 case 1:
-                    edit_menu_list(cur_usr, "Name", menuitem)
+                    edit_menu_list(cur_usr, "Name", goback, menuitem)
                 case 2:
-                    edit_menu_list(cur_usr, "CuisineType", menuitem)
+                    edit_menu_list(cur_usr, "CuisineType", goback, menuitem)
                 case 3:
-                    edit_menu_list(cur_usr, "Price", menuitem)
+                    edit_menu_list(cur_usr, "Price", goback, menuitem)
                 case 4:
-                    edit_menu_list(cur_usr, "Category", menuitem)
+                    edit_menu_list(cur_usr, "Category", goback, menuitem)
                 case 5:
                     manage_menuandpricing(cur_usr)
 
@@ -508,7 +515,7 @@ def view_menu(cur_usr):
                     "Do you want to edit or delete the menu item? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
 
                 if option2 == "e":
-                    edit_menu_item(cur_usr, menu[int(option) - 1]["MenuItmID"])
+                    edit_menu_item(cur_usr, "view", menu[int(option) - 1]["MenuItmID"])
                     break
                 elif option2 == "d":
                     delete_menu_item(cur_usr)
