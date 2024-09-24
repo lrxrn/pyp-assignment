@@ -52,7 +52,7 @@ def update_profile(username, admin_username=None, choice=None):
             ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
     else:
         ch = choice
-        
+  
 
     match ch:
         case 1:
