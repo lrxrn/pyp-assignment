@@ -23,16 +23,8 @@ def logout(usr=None):
     clear_console(2)
     main_start()
 
-def update_profile(username, admin_username=None):
+def update_profile(username, admin_username=None, choice=None):
     clear_console()
-    printD("Update Profile", "cyan")
-    print("-"*35)
-    user_data = db_getKey("users", username)
-    print(f"Name: {user_data['name']}")
-    print(f"Email: {user_data['email']}")
-    print(f"Phone Number: {user_data['PhoneNumber']}")
-    print(f"Date of Birth: {user_data['DOB']}")
-    print(f"Address: {user_data['Address']}")
     global admin_privileges
     admin_privileges = False
     if admin_username:
@@ -41,12 +33,26 @@ def update_profile(username, admin_username=None):
             admin_privileges = admin_user_data['role'] == "administrator"
     else:
         admin_privileges = False
-    if admin_privileges:
-        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Update Role \n7. Go Back to Main Menu")
-        ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
+    
+    printD("Update Profile", "cyan")
+    print("-"*35)
+    print(f"Username: {username}")
+    if choice is None:
+        user_data = db_getKey("users", username)
+        print(f"Name: {user_data['name']}")
+        print(f"Email: {user_data['email']}")
+        print(f"Phone Number: {user_data['PhoneNumber']}")
+        print(f"Date of Birth: {user_data['DOB']}")
+        print(f"Address: {user_data['Address']}")
+        if admin_privileges:
+            print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Update Role \n7. Go Back to Main Menu")
+            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
+        else:
+            print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Go Back to Main Menu")
+            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
     else:
-        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Go Back to Main Menu")
-        ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
+        ch = choice
+        
 
     match ch:
         case 1:
@@ -78,6 +84,19 @@ def update_profile(username, admin_username=None):
             wait_for_enter("Press Enter to go back to the main menu.", True)
             main_menu(username, user_data['role'])
         case 5:
+            current_password = base64.b64decode(db_getKey("passwords", username)['password']).decode()
+            inp_password = inp("Enter current password: ", "str")
+            if inp_password != current_password:
+                printD("Invalid password.", "red")
+                print("1. Try again  \n2. Forgot Password \n3. Go Back to Main Menu")
+                ch = inp("Enter your choice: ", "int", [1, 2, 3])
+                match ch:
+                    case 1:
+                        update_profile(username, None, 5)
+                    case 2:
+                        reset_password(username)
+                    case 3:
+                        main_menu(username, user_data['role'])
             new_password = inp("Enter new password: ", "password")
             new_password_confirm = inp("Confirm new password: ", "password")
             if new_password != new_password_confirm:
