@@ -608,3 +608,40 @@ def start(cur_usr):
             update_profile(cur_usr, start)
         case 5:
             logout(cur_usr)
+def updateprofile():
+    print("-" * 50)
+    print("Update own profile")
+
+
+def logout():
+    print("-" * 50)
+    print("Logout")
+
+
+def start():
+    print("-" * 50)
+    print("Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
+
+    while True:
+        option = input("Choose an option from 1 to 5: ")
+        if option == "1":
+            manage_customer()
+            break
+        elif option == "2":
+            manage_menuandpricing()
+            break
+        elif option == "3":
+            view_ingredientlist()
+            break
+        elif option == "4":
+            updateprofile()
+            break
+        elif option == "5":
+            logout()
+            exit()
+        else:
+            print("Invalid input. Please type a number from 1 to 5")
+            continue
+
+
+start()
