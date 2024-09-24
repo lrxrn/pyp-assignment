@@ -42,10 +42,10 @@ def update_profile(username, admin_username=None):
     else:
         admin_privileges = False
     if admin_privileges:
-        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Role \n6. Go Back to Main Menu")
+        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Update Role \n7. Go Back to Main Menu")
         ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
     else:
-        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Go Back to Main Menu")
+        print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Go Back to Main Menu")
         ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
 
     match ch:
@@ -78,6 +78,21 @@ def update_profile(username, admin_username=None):
             wait_for_enter("Press Enter to go back to the main menu.", True)
             main_menu(username, user_data['role'])
         case 5:
+            new_password = inp("Enter new password: ", "password")
+            new_password_confirm = inp("Confirm new password: ", "password")
+            if new_password != new_password_confirm:
+                printD("Passwords do not match. Please try again.", "yellow")
+                wait_for_enter("Press Enter to go back to the main menu.", True)
+                main_menu(username, user_data['role'])
+            password_data = {
+                "password": base64.b64encode(new_password.encode()),
+                "attempts": 0
+            }
+            db_updateKey("passwords", username, password_data)
+            printD("Password updated successfully.", "green")
+            wait_for_enter("Press Enter to go back to the main menu.", True)
+            main_menu(username, user_data['role'])
+        case 6:
             if admin_privileges:
                 print("1. Customer \n2. Chef \n3. Manager \n4. Administrator")
                 new_role = inp("Enter new role: ", "int", [1, 2, 3, 4])
@@ -191,7 +206,7 @@ def reset_password(usr=None):
                         main_start()
                         return
                     password_data = {
-                        "password": new_password,
+                        "password": base64.b64encode(new_password.encode()),
                         "attempts": 0
                     }
                     db_updateKey("passwords", username, password_data)
@@ -216,7 +231,7 @@ def reset_password(usr=None):
                         main_start()
                         return
                     password_data = {
-                        "password": new_password,
+                        "password": base64.b64encode(new_password.encode()),
                         "attempts": 0
                     }
                     db_updateKey("passwords", username, password_data)
@@ -270,7 +285,7 @@ def register():
         "Address": inp_address
     }
     password_data = {
-        "password": inp_password,
+        "password": base64.b64encode(inp_password.encode()),
         "attempts": 0
     }
     if db_getKey("users", inp_username):
@@ -310,8 +325,9 @@ def login(usr=None):
                 case 2:
                     main_start()
         else:
+            user_password = base64.b64decode(user_password_data['password']).decode()
             inp_password = input("Enter password: ").strip()
-            if inp_password == user_password_data['password']:
+            if inp_password == user_password:
                 user_password_data['attempts'] = 0
                 db_updateKey("passwords", inp_username, user_password_data)
                 clear_console(1)
