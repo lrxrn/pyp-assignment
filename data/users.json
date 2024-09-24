@@ -79,14 +79,6 @@
         "DOB": "11/12/1993",
         "Address": "852 Pine Crest Road, Los Angeles, CA"
     },
-    "mikko": {
-        "name": "Meesum Ahmed",
-        "email": "mikkoahmd@gmail.com",
-        "role": "customer",
-        "PhoneNumber": "7890123456",
-        "DOB": "11/12/1993",
-        "Address": "852 Pine Crest Road, Los Angeles, CA"
-    },
     "q": {
         "name": "q",
         "email": "q@qt.com",
@@ -94,5 +86,13 @@
         "PhoneNumber": 23456789,
         "DOB": "2023-10-29",
         "Address": "m"
+    },
+    "mikko": {
+        "name": "Meesum Ahmed",
+        "email": "mikko@mail.com",
+        "role": "manager",
+        "PhoneNumber": "+9607570702",
+        "DOB": "08-nov-2004",
+        "Address": "house"
     }
 }

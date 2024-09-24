@@ -3,6 +3,8 @@ import re
 import time
 import tabulate
 import datetime
+import random
+import string
 
 
 # Clear console function to de-clutter the console
@@ -48,6 +50,9 @@ def printD(msg, color="white", bold=False):
         print(f"{colors['bold']}{colors[color]}{msg}{colors['end']}")
     else:
         print(f"{colors[color]}{msg}{colors['end']}")
+        
+def generate_password():
+    return ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=8))
 
 """
 Function to take user input with validation
