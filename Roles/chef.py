@@ -2,6 +2,22 @@ from tabulate import tabulate
 import json as j
 import os as o
 
+# Import common functions from functions.py
+from Modules.functions import inp
+
+
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)
+
+def update_profile(cur_usr, return_func):
+    from main import update_profile as update_profile_main
+    update_profile_main(cur_usr, return_func)
+
+def start(cur_usr):
+    print(f"Welcome, {cur_usr}!")
+    print("Chef menu is currently under construction.")
+    logout(cur_usr)
 
 # A function to display the orders made by customers in a grid
 def show_orders(orders):
@@ -84,6 +100,25 @@ def request_ingredients(ingredients):
 
 
 print(request_ingredients(["fish", "eggs"]))
+
+# 0 Start function
+def start(cur_usr):
+    print(
+        "Chef Menu\n1. View orders placed by customers. \n2. Update orders \n3. Request ingredients \n4. Update own profile. \n5. Logout")
+
+    option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+    match option:
+        case 1:
+            show_orders(cur_usr)
+        case 2:
+            update_order_status(cur_usr)
+        case 3:
+            request_ingredients(cur_usr)
+        case 4:
+            update_profile(cur_usr, start)
+        case 5:
+            logout(cur_usr)
+
 
 database = {
     "users": {
