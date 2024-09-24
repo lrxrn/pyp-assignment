@@ -99,7 +99,7 @@ def request_ingredients(ingredients):
     return requested_ingredients
 
 
-print(request_ingredients(["fish", "eggs"]))
+#print(request_ingredients(["fish", "eggs"]))
 
 # 0 Start function
 def start(cur_usr):
