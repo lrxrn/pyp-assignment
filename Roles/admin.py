@@ -1,2 +1,8 @@
-def start():
-    print("This the admin start function")
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)
+
+def start(cur_usr):
+    print(f"Welcome, {cur_usr}!")
+    print("Admin menu is currently under construction.")
+    logout(cur_usr)
