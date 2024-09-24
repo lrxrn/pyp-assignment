@@ -93,7 +93,7 @@ def manageStaff_addStaff(cur_usr):
         "Address": inp_address
     }
     password_data = {
-        "password": base64.b64encode(gen_pass.encode()),
+        "password": f"{base64.b64encode(gen_pass.encode())}",
         "attempts": 0
     }
     if db_getKey("users", inp_username):
