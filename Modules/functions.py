@@ -184,7 +184,12 @@ def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None,
                 if re.fullmatch(r'\d{2}-[a-zA-Z]{3}-\d{4}', user_input):
                     try:
                         date = datetime.datetime.strptime(user_input, "%d-%b-%Y")
-                        break
+                        # check if the date is in the future
+                        if date < datetime.datetime.now():
+                            break
+                        else:
+                            printD("Date is in the future. Please enter a date in the past.", "yellow")
+                            continue
                     except ValueError:
                         printD("Invalid date! Please try again.", "yellow")
                         continue
