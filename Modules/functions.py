@@ -3,7 +3,13 @@ import re
 import time
 import tabulate
 import datetime
+import random
+import configparser
+projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+config = configparser.ConfigParser()
+config.read(f"{projectRoot}/config.ini")
 
+wordlist_path = config['Misc']['wordlist']
 
 # Clear console function to de-clutter the console
 def clear_console(wait_time=None):
@@ -48,6 +54,22 @@ def printD(msg, color="white", bold=False):
         print(f"{colors['bold']}{colors[color]}{msg}{colors['end']}")
     else:
         print(f"{colors[color]}{msg}{colors['end']}")
+        
+def generate_password():
+    # return a random word list password with 3 words and a number with a capital letter delimited by -
+    with open(f"{wordlist_path}", "r") as word_list:
+        words = [line.strip() for line in word_list]
+    
+    word_choice_1 = random.choice(words)
+    word_choice_2 = random.choice(words)
+    
+    random_index = random.randint(0, len(word_choice_1) - 1)
+    word_choice_1 = word_choice_1[:random_index] + word_choice_1[random_index].upper() + word_choice_1[random_index + 1:]
+    
+    word_choices = [word_choice_1, str(random.randint(10, 90)), word_choice_2]
+    random.shuffle(word_choices)
+    password = "-".join(word_choices)
+    return password
 
 """
 Function to take user input with validation
