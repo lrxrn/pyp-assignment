@@ -10,7 +10,7 @@
     "m": {
         "name": "Ibaan",
         "email": "ibaan@example.com",
-        "role": "manager",
+        "role": "chef",
         "PhoneNumber": "1234509876",
         "DOB": "22/07/1995",
         "Address": "789 Maple Avenue, Phoenix, AZ"
