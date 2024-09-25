@@ -6,7 +6,7 @@ import re
 
 # Import the modules
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey
-from Modules.functions import clear_console, inp, wait_for_enter, printD
+from Modules.functions import clear_console, inp, wait_for_enter, printD, generate_password
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -52,7 +52,7 @@ def update_profile(username, admin_username=None, choice=None):
             ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
     else:
         ch = choice
-        
+  
 
     match ch:
         case 1:
@@ -265,15 +265,21 @@ def reset_password(usr=None):
                 print("Cancelling...")
                 main_start()
             
-def register():
+def register(staff_username=None, return_func=None):
     clear_console()
-    print("Registration")
+    printD("Registration", "cyan")
     print("-"*35)
-    inp_name = input("What is your name? ").strip()
-    inp_email = inp("What is your email address? ", "email")
-    inp_phone = inp("What is your phone number? (International format): ", "phone")
-    inp_dob = inp("Enter your Date of Birth (YYYY-MM-DD): ", "date")
-    inp_address = input("Enter your address: ").strip()
+    global staff_privileges
+    staff_privileges = "customer"
+    if staff_username:
+        staff_privileges = db_getKey("users", staff_username)['role']
+        print(f"Hi, {staff_username} [{staff_privileges}].")
+        print("Please enter the details of the new user.")
+    inp_name = input("Name?: ").strip()
+    inp_email = inp("Email address?: ", "email")
+    inp_phone = inp("Phone number? (International format): ", "phone")
+    inp_dob = inp("Date of Birth (YYYY-MM-DD): ", "date")
+    inp_address = input("Address: ").strip()
     while True:
         inp_username = input("Enter a username (Note: Username is not changeable): ").strip().lower()
         if re.search(r"\W", inp_username):
@@ -286,19 +292,25 @@ def register():
             printD("Username already exists.", "yellow")
             continue
         break
-                
-    while True:
-        inp_password = inp("Enter password: ", "password")
-        inp_password_confirm = inp("Confirm password: ", "password")
-        if inp_password != inp_password_confirm:
-            printD("Passwords do not match. Please try again.", "yellow")
-            continue
-        break
+    
+    global inp_role
+    inp_role = "customer"
+    if staff_privileges == "customer": 
+        while True:
+            inp_password = inp("Enter password: ", "password")
+            inp_password_confirm = inp("Confirm password: ", "password")
+            if inp_password != inp_password_confirm:
+                printD("Passwords do not match. Please try again.", "yellow")
+                continue
+            break
+    elif staff_privileges == "administrator":
+        inp_role = inp("Role? (manager, chef, customer): ", "str", ["manager", "chef", "customer"])
+        inp_password = generate_password()
     
     user_data = {
         "name": inp_name,
         "email": inp_email,
-        "role": "customer",
+        "role": inp_role,
         "PhoneNumber": inp_phone,
         "DOB": inp_dob,
         "Address": inp_address
@@ -309,15 +321,15 @@ def register():
     }
     if db_getKey("users", inp_username):
         printD("Username already exists.", "yellow")
-        wait_for_enter("Press Enter to go back to the main screen.", True)
-        main_start()
+        wait_for_enter("Press Enter to go back.", True)
+        return_func()
         return
     else:
         db_addKey("users", inp_username, user_data)
         db_addKey("passwords", inp_username, password_data)
         printD("Registration successful.", "green")
-        wait_for_enter("Press Enter to go back to the main screen.", True)
-        main_start()
+        wait_for_enter("Press Enter to go back.", True)
+        return_func()
 
 def login(usr=None):
     clear_console()
@@ -381,7 +393,7 @@ def main_start():
         case 1:
             login()
         case 2:
-            register()
+            register(None, main_start)
         case 3:
             reset_password()
         case 4:
