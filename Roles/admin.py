@@ -61,54 +61,8 @@ def manageStaff(cur_usr):
 
 def manageStaff_addStaff(cur_usr):
     clear_console()
-    print("Registration")
-    print("-"*35)
-    inp_name = input("Name: ").strip()
-    inp_email = inp("Email: ", "email")
-    inp_phone = inp("Phone (International format): ", "phone")
-    inp_dob = inp("Date of Birth (dd-mmm-yyyy): ", "date")
-    inp_address = input("Address: ").strip()
-    while True:
-        inp_username = input("Enter a username (Note: Username is not changeable): ").strip().lower()
-        if re.search(r"\W", inp_username):
-            printD("Username should not contain any special characters.", "yellow")
-            continue
-        if len(inp_username) < 4:
-            printD("Username should be at least 4 characters long.", "yellow")
-            continue
-        if db_getKey("users", inp_username):
-            printD("Username already exists.", "yellow")
-            continue
-        break
-            
-    inp_role = inp("Role (manager, chef, customer): ", "str", ["manager", "chef", "customer"])
-    gen_pass = generate_password()
-    
-    user_data = {
-        "name": inp_name,
-        "email": inp_email,
-        "role": inp_role,
-        "PhoneNumber": inp_phone,
-        "DOB": inp_dob,
-        "Address": inp_address
-    }
-    password_data = {
-        "password": f"{base64.b64encode(gen_pass.encode())}",
-        "attempts": 0
-    }
-    if db_getKey("users", inp_username):
-        printD("Username already exists.", "yellow")
-        wait_for_enter("Press Enter to go back to the main screen.", True)
-        start(cur_usr)
-        return
-    else:
-        db_addKey("users", inp_username, user_data)
-        db_addKey("passwords", inp_username, password_data)
-        printD("User was successfully created.", "green")
-        print(f"Username: {inp_username}")
-        print(f"Password: {gen_pass}")
-        wait_for_enter("Press Enter to go back to the main screen.", True)
-        start(cur_usr)
+    from main import register as register_main
+    register_main(cur_usr, manageStaff)
 
 def manageStaff_removeStaff():
     print("Enter the username of the staff to be removed.")
