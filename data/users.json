@@ -10,7 +10,7 @@
     "m": {
         "name": "Test",
         "email": "ibaan@example.com",
-        "role": "manager",
+        "role": "chef",
         "PhoneNumber": "1234509876",
         "DOB": "22/07/1995",
         "Address": "789 Maple Avenue, Phoenix, AZ"
@@ -79,14 +79,6 @@
         "DOB": "11/12/1993",
         "Address": "852 Pine Crest Road, Los Angeles, CA"
     },
-    "mikko": {
-        "name": "Meesum Ahmed",
-        "email": "mikkoahmd@gmail.com",
-        "role": "customer",
-        "PhoneNumber": "7890123456",
-        "DOB": "11/12/1993",
-        "Address": "852 Pine Crest Road, Los Angeles, CA"
-    },
     "q": {
         "name": "q",
         "email": "q@qt.com",
@@ -94,5 +86,13 @@
         "PhoneNumber": 23456789,
         "DOB": "2023-10-29",
         "Address": "m"
+    },
+    "mikko": {
+        "name": "Meesum ahmed",
+        "email": "m@m.com",
+        "role": "manager",
+        "PhoneNumber": "+90930901934",
+        "DOB": "02-jan-2021",
+        "Address": "Google"
     }
 }
