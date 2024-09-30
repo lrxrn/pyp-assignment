@@ -1,0 +1,25 @@
+FUNCTION login():
+    max_attempts <- 3
+    user_data <- logicToGetUsersDB
+    
+    username <- INPUT("Enter your username: ")
+    IF username NOT IN user_data:
+        PRINT "User not found. Please try again."
+        CALL login()
+    
+    attempts <- user_data[username]["attempts"]
+    WHILE attempts < max_attempts:
+        password <- INPUT("Enter your password: ")
+        
+        IF password == user_data[username]["password"]:
+            user_data[username]["attempts"] <- 0
+            PRINT "Welcome, ", username
+            PRINT "Redirecting to main menu..."
+            CALL main_menu(username, user_data[username]["role"])
+        ELSE:
+            attempts <- attempts + 1
+            PRINT "Invalid password. Please try again. Attempts left:", max_attempts - attempts
+    
+    IF attempts == max_attempts:
+        PRINT "You have exceeded the maximum number of login attempts. Please try again later."
+        RETURN None
