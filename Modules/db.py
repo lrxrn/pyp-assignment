@@ -1,5 +1,6 @@
 import json
 import os
+import base64
 import configparser
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
@@ -41,7 +42,7 @@ def db_updateKey(DBName, key, value):
         data[key] = value
         _db_saveDB(DBName, data)
     else:
-        print("Key does not exist in the database. Use db_addKey() to add a new key.")
+        db_addKey(DBName, key, value)
         
 # Deprecated function; included for backwards compatibility
 def db_setKey(DBName, key, value):
@@ -54,7 +55,7 @@ def db_addKey(DBName, key, value):
         data[key] = value
         _db_saveDB(DBName, data)
     else:
-        print("Key already exists in the database. Use db_setKey() to update the value.")
+        db_updateKey(DBName, key, value)
     
 ## Delete a key from the database
 def db_deleteKey(DBName, key):
@@ -77,3 +78,9 @@ def db_getAllValues(DBName):
 def db_clearDB(DBName):
     data = {}
     _db_saveDB(DBName, data)
+    
+    
+# Save password after encrypting it
+def db_savePassword(username, password, attempts=0):
+    password = base64.b64encode(password.encode()).decode()
+    db_updateKey("passwords", username, {"password": password, "attempts": attempts})
