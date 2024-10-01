@@ -6,6 +6,7 @@ FUNCTION login():
     IF username NOT IN user_data:
         PRINT "User not found. Please try again."
         CALL login()
+    END IF
     
     attempts <- user_data[username]["attempts"]
     WHILE attempts < max_attempts:
@@ -19,7 +20,11 @@ FUNCTION login():
         ELSE:
             attempts <- attempts + 1
             PRINT "Invalid password. Please try again. Attempts left:", max_attempts - attempts
+        END IF
+    END WHILE
     
     IF attempts == max_attempts:
         PRINT "You have exceeded the maximum number of login attempts. Please try again later."
-        RETURN None
+        CALL login()
+    END IF
+END FUNCTION
