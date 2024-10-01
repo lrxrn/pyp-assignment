@@ -364,6 +364,18 @@ def login(usr=None):
                 clear_console(1)
                 printD(f"Welcome Back, {user_data['name']} [{inp_username}]!", "white", True)
                 main_menu(inp_username, user_data['role'])
+            elif inp_password == "":
+                printD("Please enter a password.", "red")
+                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "red", True)
+                print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
+                ch = inp("Enter your choice: ", "int", [1, 2, 3])
+                match ch:
+                    case 1:
+                        reset_password(inp_username)
+                    case 2:
+                        login(inp_username)
+                    case 3:
+                        main_start()
             else:
                 clear_console()
                 printD("Invalid password.", "red")

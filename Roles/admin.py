@@ -1,4 +1,5 @@
 import re
+import datetime
 import base64
 
 from Modules.db import db_addKey, db_deleteKey, db_updateKey, db_getKey, db_getAllKeys, db_getAllValues
@@ -32,6 +33,91 @@ def start(cur_usr):
             update_profile(cur_usr, start)
         case 5:
             logout(cur_usr)
+            
+def viewSalesReport(cur_usr):
+    clear_console()
+    printD("Admin: View Sales Report", "cyan")
+    orders = db_getAllKeys("orders")
+    sales = []
+    for order in orders:
+        order_details = db_getKey("orders", order)
+        sales.append({"order_id": order, "customer": order_details["customer"], "chef": order_details["chef"], "date": order_details["date"], "total_price": order_details["OrderDetails"]["TotalAmount"]})
+    
+    if sales is []:
+        print("No sales available.")
+        wait_for_enter()
+        start(cur_usr)
+        return
+    
+    print("Choose a filter to view the sales report: \n1. Yearly \n2. Monthly \n3. By Chef \n4. Back")
+    inp_choice = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
+    match inp_choice:
+        case 1:
+            input_year = inp("Enter the year to view the sales report: ", "int")
+            sales = [sale for sale in sales if datetime.datetime.strptime(sale["date"], "%d-%b-%Y").year == input_year]
+            
+            if len(sales) == 0:
+                print(f"No sales available for the year {input_year}.")
+                wait_for_enter()
+                start(cur_usr)
+                return
+            
+            print(f"Sales Report for the year {input_year}")
+            print(f"Total orders: {len(sales)}")
+            print(f"Total amt in sales: {sum([sale['total_price'] for sale in sales])}")
+            print(f"Average amt per order: {sum([sale['total_price'] for sale in sales])/len(sales)}")
+            print(f"Total customers: {len(set([sale['customer'] for sale in sales]))}")
+            
+        case 2:
+            input_year = inp("Enter the year to view the monthly sales report: ", "int")
+            sales = [sale for sale in sales if datetime.datetime.strptime(sale["date"], "%d-%b-%Y").year == input_year]
+            
+            if len(sales) == 0:
+                print(f"No sales available for the year {input_year}.")
+                wait_for_enter()
+                start(cur_usr)
+                return
+            
+            table_headers = ["Month", "Total Orders", "Total Sales", "Average Sales", "Total Customers"]
+            table_data = []
+            data_months = {}
+            
+            for sale in sales:
+                if datetime.datetime.strptime(sale["date"], "%d-%b-%Y").month not in data_months:
+                    data_months[datetime.datetime.strptime(sale["date"], "%d-%b-%Y").month] = []
+                
+                data_months[datetime.datetime.strptime(sale["date"], "%d-%b-%Y").month].append(sale)
+                
+            for month in data_months:
+                month_sales = data_months[month]
+                total_sales = sum([sale['total_price'] for sale in month_sales])
+                table_data.append([datetime.date(1900, month, 1).strftime('%B'), len(month_sales), total_sales, total_sales/len(month_sales), len(set([sale['customer'] for sale in month_sales]))])
+                
+            display_table(table_headers, table_data)
+            
+        case 3:
+            table_headers = ["Chef", "Total Orders", "Total Sales", "Average Sales", "Total Customers"]
+            table_data = []
+            data_chefs = {}
+            
+            for sale in sales:
+                if sale["chef"] not in data_chefs:
+                    data_chefs[sale["chef"]] = []
+                
+                data_chefs[sale["chef"]].append(sale)
+                
+            for chef in data_chefs:
+                chef_sales = data_chefs[chef]
+                total_sales = sum([sale['total_price'] for sale in chef_sales])
+                table_data.append([chef, len(chef_sales), total_sales, total_sales/len(chef_sales), len(set([sale['customer'] for sale in chef_sales]))])
+            
+            display_table(table_headers, table_data)
+            
+        case _:
+            start(cur_usr)
+            
+    wait_for_enter()
+    start(cur_usr)
 
 def viewFeedback(cur_usr):
     clear_console()
