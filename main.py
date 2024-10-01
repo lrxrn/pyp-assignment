@@ -287,9 +287,12 @@ def register(staff_username=None, return_func=None):
                 printD("Passwords do not match. Please try again.", "yellow")
                 continue
             break
-    elif staff_privileges == "administrator":
-        inp_role = inp("Role? (manager, chef, customer): ", "str", ["manager", "chef", "customer"])
+    else:
         inp_password = generate_password()
+        
+    if staff_privileges == "administrator":
+        inp_role = inp("Role? (manager, chef, customer): ", "str", ["manager", "chef", "customer"])
+        
     
     global user_data, password_data
     user_data = {
