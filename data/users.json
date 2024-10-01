@@ -94,5 +94,13 @@
         "PhoneNumber": "+90930901934",
         "DOB": "02-jan-2021",
         "Address": "Google"
+    },
+    "maishan": {
+        "name": "Maishan",
+        "email": "email@m.com",
+        "role": "customer",
+        "PhoneNumber": "+94023942035",
+        "DOB": "01-jan-2034",
+        "Address": "My House"
     }
 }

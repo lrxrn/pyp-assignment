@@ -1,0 +1,11 @@
+FUNCTION update_profile(user)
+    user_data <- logicToGetUsersDB
+    IF user NOT IN user_data THEN
+        RETURN "User not found"
+    ELSE
+        PRINT "Current user data: ", user_data[user]
+        INPUT "Enter new data: ", new_data
+        user_data[user] <- new_data
+        PRINT "User data updated successfully"
+    END IF
+END FUNCTION
