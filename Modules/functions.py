@@ -87,7 +87,8 @@ def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None,
     if cancelAllowed:
         if cancelFunc is None:
             cancelFunc = lambda: None
-        valid_values = valid_values + ["c"]
+        if valid_values:
+            valid_values = valid_values + ["c"]
         msg = f"{msg} (Type 'c' to cancel): "
     
     def is_valid(value):
