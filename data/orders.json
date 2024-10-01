@@ -1,39 +1,40 @@
 {
-  "ORD-001": {
-    "Status": "Delivered",
-    "OrderDetails": {
-      "MenuItems": [
-        {
-          "MenuItmID": "BG-01",
-          "Quantity": 2
+    "ORD-001": {
+        "Status": "Delivered",
+        "OrderDetails": {
+            "MenuItems": [
+                {
+                    "MenuItmID": "BG-01",
+                    "Quantity": 2
+                },
+                {
+                    "MenuItmID": "DR-01",
+                    "Quantity": 1
+                },
+                {
+                    "MenuItmID": "DS-01",
+                    "Quantity": 1
+                }
+            ],
+            "TotalAmount": 32,
+            "OrderDate": "2023-06-01",
+            "OrderTime": "12:30",
+            "DiningOption": "Delivery",
+            "DeliveryAddress": "123 Maple Street, Phoenix, AZ"
         },
-        {
-          "MenuItmID": "DR-01",
-          "Quantity": 1
+        "date": "01-Jun-2023",
+        "customer": "user_5",
+        "chef": "m",
+        "payment": {
+            "method": "Credit Card",
+            "status": "Paid",
+            "amount": 32,
+            "change": 0
         },
-        {
-          "MenuItmID": "DS-01",
-          "Quantity": 1
+        "feedback": {
+            "rating": 5,
+            "comments": "Great food, will order again!",
+            "response": "Thanks"
         }
-      ],
-      "TotalAmount": 32,
-      "OrderDate": "2023-06-01",
-      "OrderTime": "12:30",
-      "DiningOption": "Delivery",
-      "DeliveryAddress": "123 Maple Street, Phoenix, AZ"
-    },
-    "customer": "user_5",
-    "chef": "m",
-    "payment": {
-      "method": "Credit Card",
-      "status": "Paid",
-      "amount": 32,
-      "change": 0
-    },
-    "feedback": {
-      "rating": 5,
-      "comments": "Great food, will order again!",
-      "response": "Thank you for your feedback! We look forward to serving you again!"
     }
-  }
 }
