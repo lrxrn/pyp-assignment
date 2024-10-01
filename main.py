@@ -277,7 +277,7 @@ def register(staff_username=None, return_func=None):
             continue
         break
     
-    global inp_role
+    global inp_role, inp_password
     inp_role = "customer"
     if staff_privileges == "customer": 
         while True:
