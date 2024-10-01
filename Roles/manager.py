@@ -33,11 +33,11 @@ def loaddatabase(database, type, data="none"):
 
 
 # 0 Function to validate and input customer information
-def validate_and_input_customer(prompt, type="string"):
+def validate_and_input_customer(cur_usr, prompt, type="string"):
     while True:
         inp_value = input(prompt)
         if inp_value == "c":
-            manage_customer()
+            manage_customer(cur_usr)
 
         data = loaddatabase("users", "read")
 
@@ -54,14 +54,17 @@ def validate_and_input_customer(prompt, type="string"):
                 continue
 
         if type == "Username":
-            if inp_value in data:
-                print("Username already exists. Please choose a different username.")
+            if re.search(r"\W", inp_value):
+                print("Username should not contain any special characters.")
                 continue
-            if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
-                print("Invalid username. Username should not be in email format")
+            if len(inp_value) < 4:
+                print("Username should be at least 4 characters long.")
                 continue
-            else:
-                return inp_value
+            if db_getKey("users", inp_value):
+                print("Username already exists.")
+                continue
+
+            return inp_value
 
         if type == "Email":
             email_exists = False
@@ -121,17 +124,15 @@ def manage_customer(cur_usr):
 
 
 # 1.1 Function to add customer
+"""
 def add_customer(cur_usr):
-    new_customer_username = validate_and_input_customer(
-        "Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ",
-        "Username")
-    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
-    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", "Name")
-    new_customer_phonenumber = validate_and_input_customer("Enter new customer phone number (type \"c\" to cancel): ")
-    new_customer_dob = validate_and_input_customer("Enter new customer date of birth (type \"c\" to cancel): ", "dob")
-    new_customer_address = validate_and_input_customer("Enter new customer address (type \"c\" to cancel): ")
-    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ",
-                                                        "Password")
+    new_customer_username = validate_and_input_customer(cur_usr, "Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ","Username")
+    new_customer_email = inp("Enter new customer email (type \"c\" to cancel): ", "email", None, False, None, True)
+    new_customer_name = validate_and_input_customer(cur_usr, "Enter new customer name (type \"c\" to cancel): ", "Name")
+    new_customer_phonenumber = inp("Enter new customer phone number (type \"c\" to cancel): ", "phone", cancelAllowed=True)
+    new_customer_dob = inp("Enter new customer date of birth (DD/MM/YYYY) (type \"c\" to cancel): ", "date", cancelAllowed=True)
+    new_customer_address = validate_and_input_customer(cur_usr, "Enter new customer address (type \"c\" to cancel): ")
+    new_customer_password = validate_and_input_customer(cur_usr, "Enter new customer password (type \"c\" to cancel): ","Password")
 
     addusers = loaddatabase("users", "read")
 
@@ -156,6 +157,10 @@ def add_customer(cur_usr):
 
     print("Customer added successfully.")
     manage_customer(cur_usr)
+"""
+def add_customer(cur_usr):
+    from main import register as register_main
+    register_main(cur_usr, manage_customer)
 
 
 # 1.2 Function to edit customer
