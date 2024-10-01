@@ -310,23 +310,23 @@ def register(staff_username=None, return_func=None):
     if db_getKey("users", inp_username):
         printD("Username already exists.", "yellow")
         wait_for_enter("Press Enter to go back.", True)
-        return_func()
+        return_func(staff_username)
         return
     else:
         printD(f"Username: {inp_username}\nPassword: {inp_password} \nRole: {inp_role}", "green")
         printD("Please note down the username and password for future reference.", "green")
-        ch = inp("Do you want to continue? (y/n): ", "str", ["y", "n"])
+        ch = inp("Do you want to continue registering? (y/n): ", "str", ["y", "n"])
         match ch:
             case "y":    
                 db_addKey("users", inp_username, user_data)
                 db_addKey("passwords", inp_username, password_data)
                 printD("Registration successful.", "green")
                 wait_for_enter("Press Enter to go back.", True)
-                return_func()
+                return_func(staff_username)
             case "n":
                 printD("Registration cancelled.", "yellow")
                 wait_for_enter("Press Enter to go back.", True)
-                return_func()
+                return_func(staff_username)
 
 def login(usr=None):
     clear_console()
