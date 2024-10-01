@@ -301,7 +301,7 @@ def register(staff_username=None, return_func=None):
         "Address": inp_address
     }
     password_data = {
-        "password": base64.b64encode(inp_password.encode().decode()),
+        "password": base64.b64encode(inp_password.encode()).decode(),
         "attempts": 0
     }
     if db_getKey("users", inp_username):
