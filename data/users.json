@@ -102,5 +102,13 @@
         "PhoneNumber": "+94023942035",
         "DOB": "01-jan-2034",
         "Address": "My House"
+    },
+    "john24": {
+        "name": "John",
+        "email": "jho@n.com",
+        "role": "manager",
+        "PhoneNumber": "+94021334223",
+        "DOB": "05-Mar-2012",
+        "Address": "houss"
     }
 }
