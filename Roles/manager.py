@@ -179,6 +179,9 @@ def add_customer(cur_usr):
     new_customer_address = validate_and_input_customer("Enter new customer address (type \"c\" to cancel): ")
     new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ",
                                                         "Password")
+    if new_customer_username or new_customer_email or new_customer_name or new_customer_phonenumber or new_customer_dob or new_customer_address or new_customer_password is None:
+        print("Input cancelled")
+        manage_customer(cur_usr)
 
     addusers = loaddatabase("users", "read")
 
