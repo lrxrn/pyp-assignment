@@ -5,6 +5,7 @@ import tabulate
 import datetime
 import random
 import configparser
+import base64
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
 config.read(f"{projectRoot}/config.ini")
@@ -70,6 +71,12 @@ def generate_password():
     random.shuffle(word_choices)
     password = "-".join(word_choices)
     return password
+
+def encode_password(password):
+    return base64.b64encode(password.encode()).decode()
+
+def decode_password(encoded_password):
+    return base64.b64decode(encoded_password.encode()).decode()
 
 """
 Function to take user input with validation
