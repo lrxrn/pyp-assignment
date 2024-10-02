@@ -291,6 +291,6 @@ def manageStaff_viewStaff(cur_usr):
         table_data.append([i+1, staff, db_getKey("users", staff)["name"], db_getKey("users", staff)["role"]])
         
     display_table(table_headers, table_data)
-    printD(f"Total Staff: {len(staff)-1}", "white", True)
+    printD(f"Total Staff: {len(staff)}", "white", True)
     wait_for_enter()
     manageStaff(cur_usr)
