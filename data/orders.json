@@ -8,23 +8,18 @@
                     "Quantity": 2
                 },
                 {
-                    "MenuItmID": "DR-01",
-                    "Quantity": 1
-                },
-                {
                     "MenuItmID": "DS-01",
                     "Quantity": 1
                 }
             ],
             "TotalAmount": 32,
-            "OrderDate": "2023-06-01",
-            "OrderTime": "12:30",
             "DiningOption": "Delivery",
             "DeliveryAddress": "123 Maple Street, Phoenix, AZ"
         },
         "date": "01-Jun-2023",
-        "customer": "user_5",
-        "chef": "m",
+        "time": "12:30",
+        "customer": "zara",
+        "chef": "john",
         "payment": {
             "method": "Credit Card",
             "status": "Paid",
@@ -35,6 +30,39 @@
             "rating": 5,
             "comments": "Great food, will order again!",
             "response": "Thanks"
+        }
+    },
+    "ORD-002": {
+        "Status": "Completed",
+        "OrderDetails": {
+            "MenuItems": [
+                {
+                    "MenuItmID": "BG-03",
+                    "Quantity": 2
+                },
+                {
+                    "MenuItmID": "PZ-01",
+                    "Quantity": 1
+                }
+            ],
+            "TotalAmount": 25,
+            "DiningOption": "Dine-in",
+            "DeliveryAddress": "N/A"
+        },
+        "date": "01-Jun-2023",
+        "time": "15:05",
+        "customer": "zara",
+        "chef": "john",
+        "payment": {
+            "method": "Cash",
+            "status": "Paid",
+            "amount": 30,
+            "change": 5
+        },
+        "feedback": {
+            "rating": 4,
+            "comments": "",
+            "response": ""
         }
     }
 }

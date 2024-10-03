@@ -1,37 +1,43 @@
-[
-    {
-        "RequestID": "ING-002",
-        "RequestStatus": "Completed",
-        "Ingredient": {
-            "name": "Sugar",
-            "quantity": "500",
-            "unit": "g"
+{
+    "ING-002": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Sugar",
+                "quantity": "500",
+                "unit": "g"
+            }
+        ],
+        "request_user": {
+            "user": "john",
+            "date": "01-Jun-2023",
+            "time": "10:00"
         },
-        "RequestedBy": {
-            "User": "john",
-            "Date": "2021-06-01",
-            "Time": "10:00"
-        },
-        "ReviewedBy": {
-            "User": "jane",
-            "Status": "Approved",
-            "Date": "2021-06-02",
-            "Time": "11:00"
+        "review_user": {
+            "user": "ibaan",
+            "date": "02-Jun-2023",
+            "time": "11:00"
         }
     },
-    {
-        "RequestID": "ING-003",
-        "RequestStatus": "Pending",
-        "Ingredient": {
-            "name": "Salt",
-            "quantity": "2",
-            "unit": "KG"
+    "ING-003": {
+        "status": "pending",
+        "items": [
+            {
+                "name": "Salt",
+                "quantity": "2",
+                "unit": "KG"
+            },
+            {
+                "name": "Pepper",
+                "quantity": "400",
+                "unit": "g"
+            }
+        ],
+        "request_user": {
+            "user": "john",
+            "date": "05-Sep-2024",
+            "time": "18:00"
         },
-        "RequestedBy": {
-            "User": "john",
-            "Status": "Requested",
-            "Date": "2023-06-01",
-            "Time": "18:00"
-        }
+        "review_user": {}
     }
-]
+}
