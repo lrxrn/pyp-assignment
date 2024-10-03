@@ -6,7 +6,7 @@ import re
 
 # Import the modules
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, db_savePassword
-from Modules.functions import clear_console, inp, wait_for_enter, printD, generate_password
+from Modules.functions import clear_console, inp, wait_for_enter, printD, generate_password, decode_password
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -335,15 +335,24 @@ def login(usr=None):
     if usr:
         inp_username = usr
     else:
-        inp_username = input("Enter username: ").strip().lower()
+        inp_username = input("Enter username / email: ").strip().lower()
 
     # Check if the username is in the database
     usersList = db_getAllKeys("users")
-    if inp_username in usersList:
-        printD(f"Hi, {inp_username}.", "white", True)
-        user_data = dict(db_getKey("users", inp_username))
+    userData = db_getAllValues("users")
+    userDataMap = [{**data, 'username': usersList[userData.index(data)]} for data in userData]
+    userEmails = [i['email'] for i in userData]
+    if inp_username in usersList or inp_username in userEmails:
+        if inp_username in usersList:
+            user_data = dict(db_getKey("users", inp_username))
+            login_usr = inp_username
+        elif inp_username in userEmails:
+            user_data = userDataMap[userEmails.index(inp_username)]
+            login_usr = user_data['username']
+            
+        printD(f"Hi, {login_usr}.", "white", True)
         # check if the user has a password
-        user_password_data = db_getKey("passwords", inp_username)
+        user_password_data = db_getKey("passwords", login_usr)
         if not user_password_data:
             printD("Password not set. Please contact an administrator to reset your password.", "red")
             wait_for_enter("Press Enter to go back to the main screen.", True)
@@ -356,48 +365,48 @@ def login(usr=None):
             ch = inp("Enter your choice: ", "int", [1, 2])
             match ch:
                 case 1:
-                    reset_password(inp_username)
+                    reset_password(login_usr)
                 case 2:
                     main_start()
         else:
-            user_password = base64.b64decode(user_password_data['password']).decode()
+            user_password = decode_password(user_password_data['password'])
             inp_password = input("Enter password: \033[8m").strip()
             print("\033[0m")
             if inp_password == user_password:
                 user_password_data['attempts'] = 0
-                db_updateKey("passwords", inp_username, user_password_data)
+                db_updateKey("passwords", login_usr, user_password_data)
                 clear_console(1)
-                printD(f"Welcome Back, {user_data['name']} [{inp_username}]!", "white", True)
-                main_menu(inp_username, user_data['role'])
+                printD(f"Welcome Back, {user_data['name']} [{login_usr}]!", "white", True)
+                main_menu(login_usr, user_data['role'])
             elif inp_password == "":
-                printD("Please enter a password.", "red")
+                printD("Please enter your password to login.", "yellow")
                 printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "red", True)
                 print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
                 ch = inp("Enter your choice: ", "int", [1, 2, 3])
                 match ch:
                     case 1:
-                        reset_password(inp_username)
+                        reset_password(login_usr)
                     case 2:
-                        login(inp_username)
+                        login(login_usr)
                     case 3:
                         main_start()
             else:
                 clear_console()
                 printD("Invalid password.", "red")
                 user_password_data['attempts'] += 1
-                db_updateKey("passwords", inp_username, user_password_data)
+                db_updateKey("passwords", login_usr, user_password_data)
                 printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "red", True)
                 print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
                 ch = inp("Enter your choice: ", "int", [1, 2, 3])
                 match ch:
                     case 1:
-                        reset_password(inp_username)
+                        reset_password(login_usr)
                     case 2:
-                        login(inp_username)
+                        login(login_usr)
                     case 3:
                         main_start()
     else:
-        printD("Username not found.", "red")
+        printD("Username / Email not found.", "red")
         wait_for_enter("Press Enter to go back to the main screen.", True)
         main_start()
 
@@ -416,15 +425,18 @@ def main_start():
         case 3:
             reset_password()
         case 4:
-            print("Exiting...")
+            printD("Exiting...", "red", True)
             exit()
         case _:
-            print("Invalid choice. Please try again.")
-            clear_console(5)
+            printD("Invalid choice. Please try again.", "yellow")
+            wait_for_enter("Press Enter to go back to the main screen.")
             main_start()
 
 if __name__ == "__main__":
     try:
         main_start()
     except KeyboardInterrupt:
-        print("\nProgram interrupted. Exiting...")
+        clear_console()
+        printD("\nProgram interrupted. \nExiting...", "red", True)
+    except:
+        printD("\nAn error occurred. \nExiting...", "red", True)
