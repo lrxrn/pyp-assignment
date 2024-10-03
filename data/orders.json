@@ -1,20 +1,20 @@
 {
     "ORD-001": {
-        "Status": "Delivered",
-        "OrderDetails": {
-            "MenuItems": [
+        "status": "Delivered",
+        "details": {
+            "items": [
                 {
-                    "MenuItmID": "BG-01",
-                    "Quantity": 2
+                    "ID": "BG-01",
+                    "quantity": 2
                 },
                 {
-                    "MenuItmID": "DS-01",
-                    "Quantity": 1
+                    "ID": "DS-01",
+                    "quantity": 1
                 }
             ],
-            "TotalAmount": 32,
-            "DiningOption": "Delivery",
-            "DeliveryAddress": "123 Maple Street, Phoenix, AZ"
+            "totalAmount": 32,
+            "diningOption": "Delivery",
+            "deliveryAddress": "123 Maple Street, Phoenix, AZ"
         },
         "date": "01-Jun-2023",
         "time": "12:30",
@@ -33,9 +33,9 @@
         }
     },
     "ORD-002": {
-        "Status": "Completed",
-        "OrderDetails": {
-            "MenuItems": [
+        "status": "Completed",
+        "details": {
+            "items": [
                 {
                     "MenuItmID": "BG-03",
                     "Quantity": 2
@@ -45,9 +45,9 @@
                     "Quantity": 1
                 }
             ],
-            "TotalAmount": 25,
-            "DiningOption": "Dine-in",
-            "DeliveryAddress": "N/A"
+            "totalAmount": 25,
+            "diningOption": "Dine-in",
+            "deliveryAddress": "N/A"
         },
         "date": "01-Jun-2023",
         "time": "15:05",
