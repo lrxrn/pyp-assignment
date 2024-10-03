@@ -30,6 +30,20 @@ def wait_for_enter(msg="Press Enter to proceed...", clear=False):
     if clear:
         clear_console()
         
+# Function to get the next available ID for a given database
+def get_next_id(DBName, prefix="UNK"):
+    from Modules.db import db_getAllKeys
+    data = db_getAllKeys(DBName)
+    # ORD-001
+    if data:
+        ids = [int(item.split("-")[1]) for item in data]
+        prefix = data[0].split("-")[0]
+        new_id = max(ids) + 1
+    else:
+        new_id = 1
+    
+    return f"{prefix}-{new_id:03}"
+        
 # Function that takes in Menu Item Name and Category and generates a unique ID
 def generate_id(name, category):
     return f"{name[:3].upper()}{category[:3].upper()}{int(time.time())}"

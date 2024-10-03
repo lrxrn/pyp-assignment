@@ -1,6 +1,3 @@
-from Modules.functions import generate_password
-import base64
+from Modules.functions import get_next_id
 
-while True:
-    password = generate_password()
-    print(f"Generated password: {password} ({base64.b64encode(password.encode()).decode()})")
+print(get_next_id("ingredients"))
