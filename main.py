@@ -127,7 +127,7 @@ def main_menu(username, role:str):
     role = role.strip().lower()
     match role:
         case "customer":
-            print("You are a Customer. Choose an option:")
+            print("You are a Customer. What do you want to do:")
             print("1. Continue as Customer")
             print("2. Logout")
             ch = inp("Enter your choice: ", "int", [1, 2])
@@ -138,7 +138,7 @@ def main_menu(username, role:str):
                 case _:
                     logout(username)
         case "chef":
-            print("You are a Chef. Choose an option:")
+            print("You are a Chef. What do you want to do:")
             print("1. Continue as Chef")
             print("2. Continue as a Customer")
             print("3. Logout")
@@ -153,7 +153,7 @@ def main_menu(username, role:str):
                 case _:
                     logout(username)
         case "manager":
-            print("You are a Manager. Choose an option:")
+            print("You are a Manager. What do you want to do:")
             print("1. Continue as Manager")
             print("2. Continue as a Customer")
             print("3. Logout")
@@ -168,7 +168,7 @@ def main_menu(username, role:str):
                 case _:
                     logout(username)
         case "administrator":
-            print("You are an Adminstrator. Choose an option:")
+            print("You are an Adminstrator. What do you want to do:")
             print("1. Continue as Admin")
             print("2. Continue as a Customer")
             print("3. Logout")
@@ -361,7 +361,8 @@ def login(usr=None):
                     main_start()
         else:
             user_password = base64.b64decode(user_password_data['password']).decode()
-            inp_password = input("Enter password: ").strip()
+            inp_password = input("Enter password: \033[8m").strip()
+            print("\033[0m")
             if inp_password == user_password:
                 user_password_data['attempts'] = 0
                 db_updateKey("passwords", inp_username, user_password_data)
