@@ -311,7 +311,10 @@ def register(staff_username=None, return_func=None):
     if db_getKey("users", inp_username):
         printD("Username already exists.", "yellow")
         wait_for_enter("Press Enter to go back.", True)
-        return_func(staff_username)
+        if return_func:
+            return_func(staff_username)
+        else:
+            main_start()
         return
     else:
         printD(f"Username: {inp_username}\nPassword: {inp_password} \nRole: {inp_role}", "green")
@@ -323,11 +326,17 @@ def register(staff_username=None, return_func=None):
                 db_addKey("passwords", inp_username, password_data)
                 printD("Registration successful.", "green")
                 wait_for_enter("Press Enter to go back.", True)
-                return_func(staff_username)
+                if return_func:
+                    return_func(staff_username)
+                else:
+                    main_start()
             case "n":
                 printD("Registration cancelled.", "yellow")
                 wait_for_enter("Press Enter to go back.", True)
-                return_func(staff_username)
+                if return_func:
+                    return_func(staff_username)
+                else:
+                    main_start()
 
 def login(usr=None):
     clear_console()
@@ -437,5 +446,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         clear_console()
         printD("\nProgram interrupted. \nExiting...", "red", True)
-    except:
-        printD("\nAn error occurred. \nExiting...", "red", True)
+    # except:
+    #     printD("\nAn error occurred. \nExiting...", "red", True)
