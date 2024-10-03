@@ -402,6 +402,8 @@ def login(usr=None):
 
 def main_start():
     clear_console()
+    # Load the users database to run the pre-check and add the default admin user if not present
+    usersList = db_getAllKeys("users")
     printD("Welcome to the Restaurant Management System.", "cyan", True)
     print("1. Login \n2. Register \n3. Reset Password \n4. Exit")
     ch = inp("Enter your choice: ", "int", [1, 2, 3, 4])
