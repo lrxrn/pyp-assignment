@@ -6,6 +6,7 @@ import datetime
 import random
 import configparser
 import base64
+from pwinput import pwinput
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
 config.read(f"{projectRoot}/config.ini")
@@ -185,6 +186,9 @@ def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None,
                     break
                 else:
                     printD(f"Password does not meet requirements. It must be at least 8 characters long and include uppercase letters, lowercase letters, digits, and special characters (@#$%^&+=). \nPlease try again.", "yellow")
+            return user_input
+        case "pwd":
+            user_input = pwinput(prompt=msg, mask='*')
             return user_input
         case "phone":
             while True:

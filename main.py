@@ -370,8 +370,7 @@ def login(usr=None):
                     main_start()
         else:
             user_password = decode_password(user_password_data['password'])
-            inp_password = input("Enter password: \033[8m").strip()
-            print("\033[0m")
+            inp_password = inp("Enter your password: ", "pwd")
             if inp_password == user_password:
                 user_password_data['attempts'] = 0
                 db_updateKey("passwords", login_usr, user_password_data)
