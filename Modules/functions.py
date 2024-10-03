@@ -61,6 +61,7 @@ def printD(msg, color="white", bold=False):
         "blue": "\033[94m",
         "magenta": "\033[95m",
         "cyan": "\033[96m",
+        "pink": "\033[95m",
         "white": "\033[97m",
         "bold": "\033[1m",
         "end": "\033[0m"
