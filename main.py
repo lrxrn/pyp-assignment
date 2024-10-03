@@ -16,10 +16,11 @@ from Roles.customer import start as customer_menu
 
 # Logout function
 def logout(usr=None):
+    print("\n")
     if usr:
-        print(f"Logging out {usr}...")
+        printD(f"Logout. Goodbye {usr}.", "pink")
     else:
-        print("Logging out...")
+        printD("Logging out.", "pink")
     clear_console(2)
     main_start()
 
