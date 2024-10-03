@@ -35,6 +35,3 @@ Thumbs.db
 .venv/
 venv/
 venvm/
-
-# Data files
-Data/
