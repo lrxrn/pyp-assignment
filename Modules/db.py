@@ -2,11 +2,16 @@ import json
 import os
 import base64
 import configparser
+from Modules.functions import encode_password
+
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
 config.read(f"{projectRoot}/config.ini")
 
 dataDir = config['Database']['data_directory']
+adminUsername = config['Default']['admin_username']
+adminPassword = config['Default']['admin_password']
+
 
 # Internal load and save functions
 def _db_loadDB(DBName):
@@ -26,6 +31,18 @@ def _db_createDB(DBName):
         os.mkdir(dataDir)
     with open(f"{dataDir}/{DBName}.json", 'w') as f:
         f.write("{}")
+    if DBName == "users":
+        if _db_loadDB("users") == {}: # If the users database is empty, add an admin user
+            print("No users found. Adding default admin user.")
+            db_addKey("users", adminUsername, {
+                "name": "Admin User",
+                "email": "admin@restaurant.com",
+                "role": "administrator",
+                "PhoneNumber": "+1234567890",
+                "DOB": "10-May-1990",
+                "Address": "Restaurant Address, City"
+            })
+            db_addKey("passwords", adminUsername, {"password": encode_password(adminPassword), "attempts": 0})
         
         
         

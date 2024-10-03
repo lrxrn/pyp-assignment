@@ -2,7 +2,7 @@ import re
 import datetime
 import json
 from Modules.functions import display_table, inp, clear_console
-from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey
+from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, _db_loadDB, _db_saveDB
 
 
 def logout(cur_usr):
@@ -14,7 +14,7 @@ def update_profile(cur_usr, return_func):
     from main import update_profile as update_profile_main
     update_profile_main(cur_usr, return_func)
 
-
+"""
 # 0 Function to load database
 def loaddatabase(database, type, data="none"):
     if type == "read":
@@ -93,7 +93,54 @@ def validate_and_input_customer(cur_usr, prompt, type="string"):
 
         if type == "string":
             return inp_value
+"""
 
+            
+# Refactored function #0-1
+def loaddatabase(database, type, data="none"):
+    match type:
+        case "read":
+            return _db_loadDB(database)
+        case "write":
+            if data != "none":
+                _db_saveDB(database, data)
+                
+# Refactored function #0-2
+def validate_and_input_customer(prompt, type="string"):
+    type = type.lower()
+    match type:
+        case "password":
+            inp_value = inp(prompt, "password", cancelAllowed=True)
+            return inp_value
+        case "username":
+            inp_value = inp(prompt, "string", cancelAllowed=True)
+            data = loaddatabase("users", "read")
+            if inp_value in data:
+                print("Username already exists. Please choose a different username.")
+                return validate_and_input_customer(prompt, type)
+            else: 
+                return inp_value
+        case "email":
+            inp_value = inp(prompt, "email", cancelAllowed=True)
+            data = loaddatabase("users", "read")
+            email_exists = False
+            for entry in data.values():
+                if entry.get("email") == inp_value:
+                    email_exists = True
+                    break
+            if email_exists:
+                print("Email already exists.")
+                return validate_and_input_customer(prompt, type)
+            else:
+                return inp_value
+        case "dob":
+            inp_value = inp(prompt, "date", cancelAllowed=True)
+            return inp_value
+        case _:
+            inp_value = inp(prompt, "string", cancelAllowed=True)
+            return inp_value
+            
+    
 
 # 0 Function to get next ID
 def get_next_id(filename, prefix):
@@ -126,13 +173,19 @@ def manage_customer(cur_usr):
 # 1.1 Function to add customer
 """
 def add_customer(cur_usr):
-    new_customer_username = validate_and_input_customer(cur_usr, "Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ","Username")
-    new_customer_email = inp("Enter new customer email (type \"c\" to cancel): ", "email", None, False, None, True)
-    new_customer_name = validate_and_input_customer(cur_usr, "Enter new customer name (type \"c\" to cancel): ", "Name")
-    new_customer_phonenumber = inp("Enter new customer phone number (type \"c\" to cancel): ", "phone", cancelAllowed=True)
-    new_customer_dob = inp("Enter new customer date of birth (DD/MM/YYYY) (type \"c\" to cancel): ", "date", cancelAllowed=True)
-    new_customer_address = validate_and_input_customer(cur_usr, "Enter new customer address (type \"c\" to cancel): ")
-    new_customer_password = validate_and_input_customer(cur_usr, "Enter new customer password (type \"c\" to cancel): ","Password")
+    new_customer_username = validate_and_input_customer(
+        "Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ",
+        "Username")
+    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
+    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", "Name")
+    new_customer_phonenumber = validate_and_input_customer("Enter new customer phone number (type \"c\" to cancel): ")
+    new_customer_dob = validate_and_input_customer("Enter new customer date of birth (type \"c\" to cancel): ", "dob")
+    new_customer_address = validate_and_input_customer("Enter new customer address (type \"c\" to cancel): ")
+    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ",
+                                                        "Password")
+    if new_customer_username or new_customer_email or new_customer_name or new_customer_phonenumber or new_customer_dob or new_customer_address or new_customer_password is None:
+        print("Input cancelled")
+        manage_customer(cur_usr)
 
     addusers = loaddatabase("users", "read")
 
