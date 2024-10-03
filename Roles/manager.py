@@ -449,7 +449,7 @@ def manage_menuandpricing(cur_usr):
 
 # 2.1 Function to add menu item
 def add_menu(cur_usr):
-    file = loaddatabase("menuItems", "read")
+    file = loaddatabase("menu", "read")
 
     new_menu_name = input("Enter the name of the new menu item: ")
     new_cuisine_type = input("Enter the cuisine type of the new menu item: ")
@@ -463,15 +463,14 @@ def add_menu(cur_usr):
     new_category = input("Enter the category of the new menu item: ")
 
     new_item = {
-        "MenuItmID": get_next_id(file, "BG-"),
-        "Name": new_menu_name,
-        "CuisineType": new_cuisine_type,
-        "Price": new_price,
-        "Category": new_category
+        "name": new_menu_name,
+        "cuisineType": new_cuisine_type,
+        "price": new_price,
+        "category": new_category,
+        "available": True
     }
-    file.append(new_item)
 
-    loaddatabase("menuItems", "write", file)
+    db_addKey("menu", get_next_id("menu", "BG-"), new_item)
 
     print("Menu item added successfully")
     manage_menuandpricing(cur_usr)
@@ -479,7 +478,7 @@ def add_menu(cur_usr):
 
 # 2.2.1 Function to edit menu list
 def edit_menu_list(cur_usr, type, goback="", menuitem=""):
-    editmenu = loaddatabase("menuItems", "read")
+    editmenu = loaddatabase("menu", "read")
     currentvalue = next((item[type] for item in editmenu if item['MenuItmID'] == menuitem), None)
     print(f"Edit {type}\nCurrent {type.lower()}: {currentvalue}")
 
@@ -488,7 +487,7 @@ def edit_menu_list(cur_usr, type, goback="", menuitem=""):
     for item in editmenu:
         if item['MenuItmID'] == menuitem:
             item[type] = new_value
-            loaddatabase("menuItems", "write", editmenu)
+            loaddatabase("menu", "write", editmenu)
             print(f"{type} updated successfully.")
             break
 
@@ -501,7 +500,7 @@ def edit_menu_list(cur_usr, type, goback="", menuitem=""):
 # 2.2 Function to edit menu item
 def edit_menu_item(cur_usr, menuitem=""):
     print("Edit Menu Item")
-    editmenu = loaddatabase("menuItems", "read")
+    editmenu = loaddatabase("menu", "read")
 
     if menuitem:
         edit_menu_option = menuitem
@@ -538,7 +537,7 @@ def edit_menu_item(cur_usr, menuitem=""):
 # 2.3 Function to delete menu item
 def delete_menu_item(cur_usr, goback="", menu=""):
     print("Delete Menu Item")
-    deletemenu = loaddatabase("menuItems", "read")
+    deletemenu = loaddatabase("menu", "read")
 
     if not menu:
         display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [
@@ -556,7 +555,7 @@ def delete_menu_item(cur_usr, goback="", menu=""):
             menu = ""
             continue
         else:
-            loaddatabase("menuItems", "write", updated_menu)
+            loaddatabase("menu", "write", updated_menu)
             item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
             print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
             if goback == "view":
@@ -568,7 +567,7 @@ def delete_menu_item(cur_usr, goback="", menu=""):
 # 2.4 Function to view menu
 def view_menu(cur_usr):
     print("View Menu")
-    menu = loaddatabase("menuItems", "read")
+    menu = loaddatabase("menu", "read")
     display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [
         (i + 1, menu[i]["MenuItmID"], menu[i]["Name"], menu[i]["CuisineType"], menu[i]["Price"], menu[i]["Category"])
         for i in range(len(menu))])
