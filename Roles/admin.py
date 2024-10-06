@@ -3,7 +3,7 @@ import datetime
 import base64
 
 from Modules.db import db_addKey, db_deleteKey, db_updateKey, db_getKey, db_getAllKeys, db_getAllValues
-from Modules.functions import clear_console, inp, printD, wait_for_enter, generate_password, display_table
+from Modules.utils import clear_console, inp, printD, wait_for_enter, generate_password, display_table
 
 def logout(cur_usr):
     from main import logout as logout_main

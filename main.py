@@ -6,7 +6,7 @@ import re
 
 # Import the modules
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, db_savePassword
-from Modules.functions import clear_console, inp, wait_for_enter, printD, generate_password, decode_password
+from Modules.utils import clear_console, inp, wait_for_enter, printD, generate_password, decode_password
 
 # Import the roles
 from Roles.admin import start as admin_menu
