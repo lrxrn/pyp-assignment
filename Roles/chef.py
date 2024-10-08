@@ -3,6 +3,18 @@ from datetime import datetime
 from tabulate import tabulate
 TABLE_FORMAT = "rounded_outline"  # The table format to be displayed
 
+# Import common functions from functions.py
+from Modules.functions import inp, printD
+
+
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)
+
+def update_profile(cur_usr, return_func):
+    from main import update_profile as update_profile_main
+    update_profile_main(cur_usr, return_func)
+
 
 # Function to get the current date and time in the formats 05-Sep-2024 and 10:30 PM respectively
 def time_object():
@@ -11,16 +23,43 @@ def time_object():
 
 
 # Function to retrieve active orders from the database
-def get_orders(orders_object):
+def get_orders():
+    try:
+        with open("Data/orders.json", "r") as file:
+            orders_object = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON file: {e}")
+        return {}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {}
+
     return [
         {"order_id": order, "items": orders_object[order]["details"]["items"]}
         for order in orders_object if orders_object[order]["status"] not in ["Completed", "Delivered"]
     ]
+    
+def get_orders_raw():
+    try:
+        with open("Data/orders.json", "r") as file:
+            orders_object = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON file: {e}")
+        return {}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {}
+
+    return orders_object
+
+def save_orders(orders):
+    with open("Data/orders.json", "w") as file:
+        json.dump(orders, file, indent=4)
 
 
 # Display orders in a grid format
-def show_orders(orders_object):
-    orders = get_orders(orders_object)
+def show_orders(current_user):
+    orders = get_orders()
     if not orders:  # Checking the truthy value of orders to make sure it's not empty
         print("No orders :D")
         return False
@@ -45,21 +84,22 @@ def show_orders(orders_object):
 
 
 # Update order status to "Completed" or "Delivered" depending on dining option and cannot be undone.
-def update_order_status(orders_object):
-    if show_orders(orders_object):
+def update_order_status(current_user):
+    if show_orders(current_user):
+        orders_object = get_orders_raw()
         order_id = input("\nPlease input the order ID to mark as completed\nOrder ID: ").upper()
         if order_id not in orders_object:
             print("Invalid Order ID")
         else:
             dining_option = orders_object[order_id]["details"]["diningOption"]
             orders_object[order_id]["status"] = "Completed" if dining_option == "Dine-in" else "Delivered"
-    return orders_object
+            save_orders(orders_object)
 
 
 # Display ingredients in a grid format
 def show_ingredients(ingredients):
     headers = ["Item ID", "Ingredient", "Measure (Unit)"]
-    rows = [[i + 1, ingredient, details["Measure"]] for i, (ingredient, details) in enumerate(ingredients.items())]
+    rows = [[i + 1, ingredient, details["unit"]] for i, (ingredient, details) in enumerate(ingredients.items())]
     print(tabulate(rows, headers, tablefmt=TABLE_FORMAT))
 
 
@@ -67,15 +107,30 @@ def show_ingredients(ingredients):
 def show_requests(requests):
     if any(v["Quantity"] > 0 for v in requests.values()):
         headers = ["Item ID", "Ingredient", "Quantity", "Measure (Unit)"]
-        rows = [[i + 1, ingredient, details["Quantity"], details["Measure"]] for i, (ingredient, details) in
+        rows = [[i + 1, ingredient, details["quantity"], details["unit"]] for i, (ingredient, details) in
                 enumerate(requests.items()) if details["Quantity"] > 0]
         print(tabulate(rows, headers, tablefmt=TABLE_FORMAT))
     else:
         print("\nNo requests made :D")
+        
+        
+def get_ingredients():
+    try:
+        with open("Data/ingredients.json", "r") as file:
+            ingredients = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON file: {e}")
+        return {}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {}
+
+    return ingredients
 
 
 # Request ingredients and update the quantity
-def request_ingredients(ingredients):
+def request_ingredients(current_user):
+    ingredients = get_ingredients()
     requested_ingredients = {k: v.copy() for k, v in ingredients.items()}
     requested_item_ids = set()  # A set to keep track of requests made
 
@@ -193,35 +248,54 @@ def complete_request(request_object, request_id, name):
     return boiler_plate
 
 
-# Main function to test the above code
-def main():
-    try:
-        with open("Used_ingredients.json", "r") as file:
-            INGREDIENTS = json.load(file)
+# 0 Start function
+def start(cur_usr):
+    while True:
+        printD(f"Welcome, {cur_usr}!", "cyan", True)
+        print("1. View orders placed by customers. \n2. Update orders \n3. Request ingredients \n4. Update own profile. \n5. Logout")
 
-        with open("Orders.json", "r") as file:
-            ORDERS = json.load(file)
+        option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+        match option:
+            case 1:
+                show_orders(cur_usr)
+            case 2:
+                update_order_status(cur_usr)
+            case 3:
+                request_ingredients(cur_usr)
+            case 4:
+                update_profile(cur_usr, start)
+            case 5:
+                logout(cur_usr)
 
-        show_orders(ORDERS)
-        # update_order_status(ORDERS)
-        # show_ingredients(INGREDIENTS)
-        request = complete_request(request_ingredients(INGREDIENTS), "ING-005", "Jonny")
+# # Main function to test the above code
+# def main():
+#     try:
+#         with open("Used_ingredients.json", "r") as file:
+#             INGREDIENTS = json.load(file)
 
-        with open("ingredients.json", "r") as file:
-            requests = json.load(file)
+#         with open("Orders.json", "r") as file:
+#             ORDERS = json.load(file)
 
-        requests.update(request)
+#         show_orders(ORDERS)
+#         # update_order_status(ORDERS)
+#         # show_ingredients(INGREDIENTS)
+#         request = complete_request(request_ingredients(INGREDIENTS), "ING-005", "Jonny")
 
-        with open("ingredients.json", "w") as file:
-            json.dump(requests, file, indent=4)
+#         with open("ingredients.json", "r") as file:
+#             requests = json.load(file)
 
-        print("Ingredients JSON file updated successfully!")
+#         requests.update(request)
 
-    except json.JSONDecodeError as e:
-        print(f"Error reading JSON file: {e}")
-    except Exception as e:
-        print(f"Error: {e}")
+#         with open("ingredients.json", "w") as file:
+#             json.dump(requests, file, indent=4)
+
+#         print("Ingredients JSON file updated successfully!")
+
+#     except json.JSONDecodeError as e:
+#         print(f"Error reading JSON file: {e}")
+#     except Exception as e:
+#         print(f"Error: {e}")
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
