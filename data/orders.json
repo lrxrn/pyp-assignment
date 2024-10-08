@@ -1,6 +1,6 @@
 {
     "ORD-001": {
-        "status": "In-Progress",
+        "status": "Delivered",
         "details": {
             "items": [
                 {
@@ -37,12 +37,12 @@
         "details": {
             "items": [
                 {
-                    "MenuItmID": "BG-03",
-                    "Quantity": 2
+                    "ID": "BG-03",
+                    "quantity": 2
                 },
                 {
-                    "MenuItmID": "PZ-01",
-                    "Quantity": 1
+                    "ID": "PZ-01",
+                    "quantity": 1
                 }
             ],
             "totalAmount": 25,

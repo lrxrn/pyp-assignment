@@ -4,7 +4,7 @@ from tabulate import tabulate
 TABLE_FORMAT = "rounded_outline"  # The table format to be displayed
 
 # Import common functions from functions.py
-from Modules.functions import inp, printD
+from Modules.functions import inp, printD, get_next_id
 
 
 def logout(cur_usr):
@@ -96,22 +96,37 @@ def update_order_status(current_user):
             save_orders(orders_object)
 
 
-# Display ingredients in a grid format
-def show_ingredients(ingredients):
-    headers = ["Item ID", "Ingredient", "Measure (Unit)"]
-    rows = [[i + 1, ingredient, details["unit"]] for i, (ingredient, details) in enumerate(ingredients.items())]
-    print(tabulate(rows, headers, tablefmt=TABLE_FORMAT))
+# # Display ingredients in a grid format
+# def show_ingredients(ingredients):
+#     headers = ["Item ID", "Ingredient", "Measure (Unit)"]
+#     rows = [[i + 1, ingredient, details["unit"]] for i, (ingredient, details) in enumerate(ingredients.items())]
+#     print(tabulate(rows, headers, tablefmt=TABLE_FORMAT))
 
 
 # Display ingredient requests
 def show_requests(requests):
-    if any(v["Quantity"] > 0 for v in requests.values()):
-        headers = ["Item ID", "Ingredient", "Quantity", "Measure (Unit)"]
-        rows = [[i + 1, ingredient, details["quantity"], details["unit"]] for i, (ingredient, details) in
-                enumerate(requests.items()) if details["Quantity"] > 0]
+    if len(requests) != 0:
+        headers = ["#", "Ingredient", "Quantity", "Measure (Unit)"]
+        rows = [[i + 1, ingredient["name"], ingredient["quantity"], ingredient["unit"]] for i, (ingredient) in enumerate(requests)]
         print(tabulate(rows, headers, tablefmt=TABLE_FORMAT))
     else:
         print("\nNo requests made :D")
+        
+def add_request_to_file(request_id, request_object):
+    try:
+        with open("Data/Ingredients.json", "r") as file:
+            requests = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON file: {e}")
+        return
+    except Exception as e:
+        print(f"Error: {e}")
+        return
+
+    requests[request_id] = request_object
+
+    with open("Data/Ingredients.json", "w") as file:
+        json.dump(requests, file, indent=4)
         
         
 def get_ingredients():
@@ -130,43 +145,13 @@ def get_ingredients():
 
 # Request ingredients and update the quantity
 def request_ingredients(current_user):
-    ingredients = get_ingredients()
-    requested_ingredients = {k: v.copy() for k, v in ingredients.items()}
-    requested_item_ids = set()  # A set to keep track of requests made
+    requested_items = list()  # A set to keep track of requests made
 
-    while True:
-        show_ingredients(ingredients)
-
-        try:
-            item_number = int(input("\nSelect the number corresponding to the item you'd like to request: "))
-            if item_number not in range(1, len(ingredients) + 1):
-                raise ValueError
-        except ValueError:
-            print("\nInvalid Item ID")
-
-            continue
-
-        try:
-            quantity = int(input("Quantity number: "))
-            if quantity < 1:
-                raise ValueError
-        except ValueError:
-            print("\nInvalid quantity")
-            continue
-
-        item_name = list(ingredients.keys())[item_number - 1]
-        requested_ingredients[item_name]["Quantity"] += quantity
-        requested_item_ids.add(item_number)
-
-        # show_requests(requested_ingredients)
-        if not handle_request_options(requested_ingredients, requested_item_ids, ingredients):
-            break
-
-    return {k: v for k, v in requested_ingredients.items() if v["Quantity"] > 0}
+    handle_request_options(current_user, requested_items)
 
 
 # Handle request options for adding/editing/deleting ingredients
-def handle_request_options(requested_ingredients, requested_item_ids, ingredient_names):
+def handle_request_options(current_user, requested_ingredients: list):
     while True:
         show_requests(requested_ingredients)
         try:
@@ -179,73 +164,98 @@ def handle_request_options(requested_ingredients, requested_item_ids, ingredient
             continue
 
         if option == 1:
-            return True
+            add_ingredient(requested_ingredients, current_user)
         elif option == 2:
-            edit_request(ingredient_names, requested_ingredients, requested_item_ids)
+            edit_request(requested_ingredients, current_user)
         elif option == 3:
-            delete_request(ingredient_names, requested_ingredients, requested_item_ids)
+            delete_request(requested_ingredients, current_user)
         elif option == 4:
-            return False
+            complete_request(requested_ingredients, current_user)
 
+# Add a new ingredient to the request
+def add_ingredient(requested_ingredients: list, current_user):
+    item_name = input("Enter the name of the ingredient you'd like to request: ")
+    item_unit = input("Unit of measure: ")
+    try:
+        item_quantity = int(input("Quantity number: "))
+        if item_quantity < 1:
+            raise ValueError
+    except ValueError:
+        print("\nInvalid quantity")
+        add_ingredient(requested_ingredients)
+        return
+
+    requested_ingredient = {
+        "name": item_name,
+        "quantity": item_quantity,
+        "unit": item_unit
+    }
+
+    requested_ingredients.append(requested_ingredient)
+    print(f"Added {item_name} to the request")
+    handle_request_options(current_user, requested_ingredients)
 
 # Edit an existing request
-def edit_request(ingredients, requested_ingredients, requested_item_ids):
+def edit_request(requested_ingredients: list, current_user):
     show_requests(requested_ingredients)
 
     try:
         item_number = int(input("\nChoose an ingredient to edit: "))
-        if item_number not in requested_item_ids:
+        if item_number > len(requested_ingredients) or item_number < 1:
             raise ValueError
     except ValueError:
         print("\nInvalid Item ID")
-        edit_request(ingredients, requested_ingredients, requested_item_ids)
+        edit_request(requested_ingredients)
         return
 
+    item_name = requested_ingredients[item_number - 1]["name"]
     try:
         new_quantity = int(input("New Quantity: "))
         if new_quantity < 1:
             raise ValueError
     except ValueError:
         print("\nInvalid quantity")
-        edit_request(ingredients, requested_ingredients, requested_item_ids)
+        edit_request(requested_ingredients)
         return
 
-    item_name = list(ingredients.keys())[item_number - 1]
-    requested_ingredients[item_name]["Quantity"] = new_quantity
+    print(f"Changed quantity of {item_name} from {requested_ingredients[item_number - 1]['quantity']} to {new_quantity}")
+
+    requested_ingredients[item_number - 1]["quantity"] = new_quantity
+    handle_request_options(current_user, requested_ingredients)
 
 
 # Delete an existing request
-def delete_request(ingredients, requested_ingredients, requested_item_ids):
+def delete_request(requested_ingredients: list, current_user):
     show_requests(requested_ingredients)
 
     try:
         item_number = int(input("Choose the ingredient to delete: "))
-        if item_number not in requested_item_ids:
+        if item_number > len(requested_ingredients) or item_number < 1:
             raise ValueError
     except ValueError:
         print("\nInvalid Item ID")
-        delete_request(ingredients, requested_ingredients, requested_item_ids)
+        delete_request(requested_ingredients)
         return
 
-    item_name = list(ingredients.keys())[item_number - 1]
-    requested_ingredients[item_name]["Quantity"] = 0
-    requested_item_ids.remove(item_number)
+    item_name = requested_ingredients[item_number - 1]["name"]
+    print(f"Deleted {item_name} from the request")
+    requested_ingredients.pop(item_number - 1)
+    handle_request_options(current_user, requested_ingredients)
 
 
 # Complete the request by creating a boilerplate
-def complete_request(request_object, request_id, name):
+def complete_request(requested_items, current_user):
+    request_id = get_next_id("ingredients")
     date, time = time_object()
-    boiler_plate = {
-        f"{request_id}": {
+    request_object = {
             "status": "pending",
-            "items": [{"name": req, "quantity": details["Quantity"], "unit": details["Measure"]}
-                      for req, details in request_object.items()],
-            "request_Chef": {"user": name, "date": date, "time": time},
+            "items": requested_items,
+            "request_Chef": {"user": current_user, "date": date, "time": time},
             "review_user": {"user": "", "date": "", "time": ""}
         }
-    }
-    print("\nRequest was successfully submitted :D")
-    return boiler_plate
+    add_request_to_file(request_id, request_object)
+    print(f"\nRequest with id {request_id} was successfully submitted :D")
+    start(current_user)
 
 
 # 0 Start function
