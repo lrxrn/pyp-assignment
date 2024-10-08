@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
 from tabulate import tabulate
+from math import ceil
+
 TABLE_FORMAT = "rounded_outline"  # The table format to be displayed
 
 
@@ -75,43 +77,48 @@ def show_requests(requests):
 
 
 # Request ingredients and update the quantity
-def request_ingredients(ingredients):
-    requested_ingredients = {k: v.copy() for k, v in ingredients.items()}
-    requested_item_ids = set()  # A set to keep track of requests made
-
+def request_ingredients():
+    requested_ingredients = dict()  # A dictionary to store the ingredients
     while True:
-        show_ingredients(ingredients)
+        # requested_ingredients = {k: v.copy() for k, v in ingredients.items()}
+        # show_ingredients(ingredients)
 
         try:
-            item_number = int(input("\nSelect the number corresponding to the item you'd like to request: "))
-            if item_number not in range(1, len(ingredients) + 1):
+            ingredient = input("\nPlease input the ingredient you want to request for "
+                               "the quantity and measure\nIngredient: ")
+            if not ingredient.isalpha():
                 raise ValueError
-        except ValueError:
-            print("\nInvalid Item ID")
-
+        except ValueError as e:
+            print(f"\nInvalid ingredient input: {e}. Please put a valid ingredient")
             continue
-
         try:
-            quantity = int(input("Quantity number: "))
-            if quantity < 1:
+            quantity = ceil(float(input("Quantity: ")))
+            if quantity <= 0:
                 raise ValueError
-        except ValueError:
-            print("\nInvalid quantity")
+        except ValueError as e:
+            print(f"Invalid quantity: {e}")
+            continue
+        try:
+            measure = input("Measure: ")
+            measures = ["Kg", "L", "Litres", "Bottle", "Bottles", "Can", "Cans", "Tray", "Trays"]
+            if not (measure.isalpha() and measure.capitalize() in measures):
+                raise ValueError
+        except ValueError as e:
+            print(f"Invalid measure: {e}")
             continue
 
-        item_name = list(ingredients.keys())[item_number - 1]
-        requested_ingredients[item_name]["Quantity"] += quantity
-        requested_item_ids.add(item_number)
+        requested_ingredients.update(get_ingredients(ingredient, quantity, measure))
+        # requested_item_ids = set()  # A set to keep track of requests made
 
         # show_requests(requested_ingredients)
-        if not handle_request_options(requested_ingredients, requested_item_ids, ingredients):
+        if not handle_request_options(requested_ingredients):
             break
 
     return {k: v for k, v in requested_ingredients.items() if v["Quantity"] > 0}
 
 
 # Handle request options for adding/editing/deleting ingredients
-def handle_request_options(requested_ingredients, requested_item_ids, ingredient_names):
+def handle_request_options(requested_ingredients):
     while True:
         show_requests(requested_ingredients)
         try:
@@ -126,24 +133,25 @@ def handle_request_options(requested_ingredients, requested_item_ids, ingredient
         if option == 1:
             return True
         elif option == 2:
-            edit_request(ingredient_names, requested_ingredients, requested_item_ids)
+            edit_request(requested_ingredients)
         elif option == 3:
-            delete_request(ingredient_names, requested_ingredients, requested_item_ids)
+            delete_request(requested_ingredients)
         elif option == 4:
             return False
 
 
 # Edit an existing request
-def edit_request(ingredients, requested_ingredients, requested_item_ids):
+def edit_request(requested_ingredients):
     show_requests(requested_ingredients)
 
     try:
         item_number = int(input("\nChoose an ingredient to edit: "))
+        requested_item_ids = [x for x in range(1, len(requested_ingredients) + 1)]
         if item_number not in requested_item_ids:
             raise ValueError
     except ValueError:
         print("\nInvalid Item ID")
-        edit_request(ingredients, requested_ingredients, requested_item_ids)
+        edit_request(requested_ingredients)
         return
 
     try:
@@ -152,29 +160,30 @@ def edit_request(ingredients, requested_ingredients, requested_item_ids):
             raise ValueError
     except ValueError:
         print("\nInvalid quantity")
-        edit_request(ingredients, requested_ingredients, requested_item_ids)
+        edit_request(requested_ingredients)
         return
 
-    item_name = list(ingredients.keys())[item_number - 1]
+    item_name = list(requested_ingredients.keys())[item_number - 1]
     requested_ingredients[item_name]["Quantity"] = new_quantity
 
 
 # Delete an existing request
-def delete_request(ingredients, requested_ingredients, requested_item_ids):
+def delete_request(requested_ingredients):
     show_requests(requested_ingredients)
 
     try:
         item_number = int(input("Choose the ingredient to delete: "))
+        requested_item_ids = [x for x in range(1, len(requested_ingredients) + 1)]
         if item_number not in requested_item_ids:
             raise ValueError
     except ValueError:
         print("\nInvalid Item ID")
-        delete_request(ingredients, requested_ingredients, requested_item_ids)
+        delete_request(requested_ingredients)
         return
 
-    item_name = list(ingredients.keys())[item_number - 1]
+    item_name = list(requested_ingredients.keys())[item_number - 1]
     requested_ingredients[item_name]["Quantity"] = 0
-    requested_item_ids.remove(item_number)
+    requested_ingredients.pop(item_name)
 
 
 # Complete the request by creating a boilerplate
@@ -189,15 +198,27 @@ def complete_request(request_object, request_id, name):
             "review_user": {"user": "", "date": "", "time": ""}
         }
     }
+    print(boiler_plate)
     print("\nRequest was successfully submitted :D")
+    return boiler_plate
+
+
+# A function that gets the requested items. Takes information such as ingredient, unit and quantity
+def get_ingredients(Ingredient, Quantity, Measure):
+    boiler_plate = {
+        Ingredient.capitalize(): {
+            "Quantity": ceil(Quantity),
+            "Measure": Measure.capitalize()
+        }
+    }
     return boiler_plate
 
 
 # Main function to test the above code
 def main():
     try:
-        with open("Used_ingredients.json", "r") as file:
-            INGREDIENTS = json.load(file)
+        # with open("Used_ingredients.json", "r") as file:
+        # INGREDIENTS = json.load(file)
 
         with open("Orders.json", "r") as file:
             ORDERS = json.load(file)
@@ -205,7 +226,7 @@ def main():
         show_orders(ORDERS)
         # update_order_status(ORDERS)
         # show_ingredients(INGREDIENTS)
-        request = complete_request(request_ingredients(INGREDIENTS), "ING-005", "Jonny")
+        request = complete_request(request_ingredients(), "ING-006", "Harry")
 
         with open("ingredients.json", "r") as file:
             requests = json.load(file)
