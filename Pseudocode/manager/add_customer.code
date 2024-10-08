@@ -1,11 +1,6 @@
 FUNCTION add_customer(cur_usr):
-    new_customer_username = INPUT("Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: "
-    new_customer_email = INPUT("Enter new customer email (type \"c\" to cancel): ")
-    new_customer_name = INPUT("Enter new customer name (type \"c\" to cancel): ")
-    new_customer_phonenumber = INPUT("Enter new customer phone number (type \"c\" to cancel): ")
-    new_customer_dob = INPUT("Enter new customer date of birth (type \"c\" to cancel): ")
-    new_customer_address = INPUT("Enter new customer address (type \"c\" to cancel): ")
-    new_customer_password = INPUT("Enter new customer password (type \"c\" to cancel): ")
+    PROMPT user for new customer's username, name, email, phone number, DOB, address, and password
+    READ new_customer_username, new_customer_name, new_customer_email, new_customer_phonenumber, new_customer_dob, new_customer_address, new_customer_password
 
     addusers = CALL loaddatabase("users", "read")
 
@@ -24,6 +19,7 @@ FUNCTION add_customer(cur_usr):
 
     addpasswords[new_customer_username] = {
         "password": new_customer_password
+        "attempts": 0
     }
 
     CALL loaddatabase("passwords", "write", addpasswords)
