@@ -1,7 +1,7 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table, inp, clear_console
+from Modules.functions import display_table, inp, clear_console, get_next_id, printD
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, _db_loadDB, _db_saveDB
 
 
@@ -139,16 +139,6 @@ def validate_and_input_customer(prompt, type="string"):
         case _:
             inp_value = inp(prompt, "string", cancelAllowed=True)
             return inp_value
-            
-    
-
-# 0 Function to get next ID
-def get_next_id(filename, prefix):
-    if not filename:
-        return f"{prefix}01"
-    ids = [int(item["MenuItmID"].split('-')[1]) for item in filename]
-    next_id_num = max(ids) + 1
-    return f"{prefix}{next_id_num:02d}"
 
 
 # 1 Function to manage customer
@@ -379,21 +369,7 @@ def view_customer_list(cur_usr):
         print("No customers found")
         manage_customer(cur_usr)
 
-    display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i + 1,
-                                                                                                      customers[i][
-                                                                                                          "username"],
-                                                                                                      customers[i][
-                                                                                                          "name"],
-                                                                                                      customers[i][
-                                                                                                          "email"],
-                                                                                                      customers[i][
-                                                                                                          "PhoneNumber"],
-                                                                                                      customers[i][
-                                                                                                          "DOB"],
-                                                                                                      customers[i][
-                                                                                                          "Address"])
-                                                                                                     for i in range(
-            len(customers))])
+    display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i + 1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
 
     while True:
         option = input("Enter the customer number to edit or delete (type \"c\" to cancel): ")
@@ -539,25 +515,46 @@ def delete_menu_item(cur_usr, goback="", menu=""):
     print("Delete Menu Item")
     deletemenu = loaddatabase("menu", "read")
 
+    menuitems = db_getAllKeys("menu")
+    menu_objs = []
+    for item in menuitems:
+        menuitem = db_getKey("menu", item)
+        if menuitem is {}:
+            continue
+        else:
+            menu_name = menuitem["name"]
+            menu_cuisine = menuitem["cuisineType"]
+            menu_price = menuitem["price"]
+            menu_category = menuitem["category"]
+            menu_available = menuitem["available"]
+            menu_objs.append({"menuitem_id": item, "name": menu_name, "cuisineType": menu_cuisine,
+                                  "price": menu_price, "category": menu_category, "available": menu_available})
+
     if not menu:
-        display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [
-            (i + 1, deletemenu[i]["MenuItmID"], deletemenu[i]["Name"], deletemenu[i]["CuisineType"],
-             deletemenu[i]["Price"], deletemenu[i]["Category"]) for i in range(len(deletemenu))])
+        if menu_objs is []:
+            printD("No feedback available.", "red")
+            manage_menuandpricing(cur_usr)
+            return
+
+        table_headers = ["Menu Item ID", "Name", "Cuisine Type", "Price", "Category", "Available"]
+        table_data = []
+        for menu_obj in menu_objs:
+            available = "Yes" if menu_obj["available"] else "No"
+            table_data.append([menu_obj["menuitem_id"], menu_obj["name"], menu_obj["cuisineType"], menu_obj["price"], menu_obj["category"], available])
+        display_table(table_headers, table_data)
 
     while True:
         if not menu:
             menu = input("Enter menu item ID to delete: ").upper()
 
-        updated_menu = [item for item in deletemenu if item['MenuItmID'] != menu]
-
-        if len(updated_menu) == len(deletemenu):
-            print(f"Item with MenuItmID '{menu}' not found.")
+        if db_getKey("menu", menu) is None:
+            print(f"Item with menu item ID '{menu}' not found.")
             menu = ""
             continue
         else:
-            loaddatabase("menu", "write", updated_menu)
-            item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
-            print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
+            menu_delete_item = db_getKey("menu", menu)
+            db_deleteKey("menu", menu)
+            print(f"Menu item \"{menu} - {menu_delete_item["name"]}\" deleted.")
             if goback == "view":
                 view_menu(cur_usr)
             else:
