@@ -1,8 +1,8 @@
 import re
 import datetime
 import json
-from Modules.utils import display_table, inp, clear_console, get_next_id, printD
-from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, _db_loadDB, _db_saveDB
+from Modules.utils import display_table, inp, clear_console, get_next_id, printD, wait_for_enter
+from Modules.db import db_addKey, db_getKey, db_getAllKeys, db_deleteKey, _db_loadDB, _db_saveDB
 
 
 def logout(cur_usr):
@@ -492,26 +492,28 @@ def view_ingredientlist(cur_usr):
     
     if len(pendingrequest) == 0:
         print("No pending ingredient requests found.")
+        wait_for_enter()
         start(cur_usr)
     else:
-        print("Pending Ingredient requests")
-        table_headers = ["Request ID", "Ingredient-Quantity(Unit)","Request Status", "Requsted By", "Reviewed By"]
-        table_data = [
-            (
-                item['RequestID'],
-                pendingrequest_ingr.get(item['RequestID'], "N/A"), 
-                item.get('status', "N/A"),
-                item.get("request_chef", {}).get("user", "-"),
-                item.get("review_user", {}).get("user", "-")
-            ) 
-            for item in pendingrequest
-        ]
-        display_table(table_headers, table_data)
-
         while True:
+            clear_console()
+            print("Pending Ingredient requests")
+            table_headers = ["Request ID", "Ingredient-Quantity(Unit)","Request Status", "Requsted By", "Reviewed By"]
+            table_data = [
+                (
+                    item['RequestID'],
+                    pendingrequest_ingr.get(item['RequestID'], "N/A"), 
+                    item.get('status', "N/A"),
+                    item.get("request_chef", {}).get("user", "-"),
+                    item.get("review_user", {}).get("user", "-")
+                ) 
+                for item in pendingrequest
+            ]
+            display_table(table_headers, table_data)
             option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
             if option == "C":
                 print("Cancelled.")
+                wait_for_enter()
                 start(cur_usr)
                 break
             else:
@@ -533,20 +535,24 @@ def view_ingredientlist(cur_usr):
                         }
                         loaddatabase("ingredients", "write", ingredients_from_db)
                         print(f"Request ID: {selected_ing['RequestID']} - {selected_ingredient["status"].capitalize()} successfully.")
+                        wait_for_enter()
                         start(cur_usr)
                         break
                     else:
                         print("Invalid input. Please type either 'Approved' or 'Rejected'")
+                        wait_for_enter()
                         continue
                 else:
                     print(f"Request ID '{option}' not found.")
+                    wait_for_enter()
                     continue
 
 
 # 0 Start function
 def start(cur_usr):
-    print(
-        "Manager Menu\n1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
+    clear_console()
+    printD("Manager Menu", "magenta")
+    print("1: Manage Customer\n2: Manage menu categories and pricing\n3: View ingredients list requested by chef\n4: Update own profile\n5: Logout")
 
     option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
     match option:
