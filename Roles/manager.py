@@ -475,7 +475,7 @@ def view_menu(cur_usr):
 
 # 3 Function to view ingredients list requested by chefs
 def view_ingredientlist(cur_usr):
-    print("View ingredients list requested by chefs")
+    ingredients_from_db = loaddatabase("ingredients", "read")
     ingredients = loaddatabase("ingredients", "read")
     pendingrequest = []
     pendingrequest_ids = []
@@ -489,56 +489,58 @@ def view_ingredientlist(cur_usr):
             for ingr in ingredients[req]['items']:
                 ingredients[req]["fmt_ingr"].append(f"{ingr['name']} - {ingr['quantity']} {ingr['unit']}")
             pendingrequest_ingr = {item['RequestID']: ", ".join(item['fmt_ingr']) for item in pendingrequest}
-            
-    print("Ingredients list requested by chef")
-    table_headers = ["Request ID", "Ingredient-Quantity(Unit)","Request Status", "Requsted By", "Reviewed By"]
-    table_data = [
-        (
-            item['RequestID'],
-            pendingrequest_ingr.get(item['RequestID'], "N/A"), 
-            item.get('status', "N/A"),
-            item.get("request_chef", {}).get("user", "-"),
-            item.get("review_user", {}).get("user", "-")
-        ) 
-        for item in pendingrequest
-    ]
-    display_table(table_headers, table_data)
+    
+    if len(pendingrequest) == 0:
+        print("No pending ingredient requests found.")
+        start(cur_usr)
+    else:
+        print("Pending Ingredient requests")
+        table_headers = ["Request ID", "Ingredient-Quantity(Unit)","Request Status", "Requsted By", "Reviewed By"]
+        table_data = [
+            (
+                item['RequestID'],
+                pendingrequest_ingr.get(item['RequestID'], "N/A"), 
+                item.get('status', "N/A"),
+                item.get("request_chef", {}).get("user", "-"),
+                item.get("review_user", {}).get("user", "-")
+            ) 
+            for item in pendingrequest
+        ]
+        display_table(table_headers, table_data)
 
-    while True:
-        option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
-        if option == "C":
-            start(cur_usr)
-            break
-        else:
-            if option not in pendingrequest_ids:
-                print(f"Request ID '{option}' not found.")
-                continue
-            ingredient = next((item for item in ingredients if item['RequestID'] == option), None)
-            if ingredient:
-                print(
-                    f"Request ID: {ingredient['RequestID']}\nIngredient: {ingredient['Ingredient']['name']}\nQuantity: {ingredient['Ingredient']['quantity']}{ingredient['Ingredient']['unit']}\nRequest Status: {ingredient['RequestStatus']}")
-                status = input("Enter the status of the request (Approved/Rejected): ").capitalize()
-                if status == "Approved" or status == "Rejected":
-                    ingredient['RequestStatus'] = "Completed"
-                    loaddatabase("ingredients", "write", ingredients)
-                    ingredient['ReviewedBy'] = {
-                        "User": cur_usr,
-                        "Status": status,
-                        "Date": datetime.datetime.now().strftime("%Y-%m-%d"),
-                        "Time": datetime.datetime.now().strftime("%H:%M")
-                    }
-
-                    loaddatabase("ingredients", "write", ingredients)
-                    print(
-                        f"Request ID: {ingredient['RequestID']} - {ingredient['RequestStatus']} - Reviewed by {ingredient['ReviewedBy']['User']} on {ingredient['ReviewedBy']['Date']} at {ingredient['ReviewedBy']['Time']}")
-                    start(cur_usr)
-                    break
-                else:
-                    print("Invalid input. Please type either 'Approved' or 'Rejected'")
-                    continue
+        while True:
+            option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
+            if option == "C":
+                print("Cancelled.")
+                start(cur_usr)
+                break
             else:
-                print(f"Request ID '{option}' not found.")
-                continue
+                if option not in pendingrequest_ids:
+                    print(f"Request ID '{option}' not found.")
+                    continue
+                
+                selected_ing = ingredients[option]
+                selected_ingredient = ingredients_from_db[option]
+                if selected_ingredient:
+                    print(f"Request ID: {selected_ing['RequestID']}\nRequested Items: {', '.join(selected_ing['fmt_ingr'])}\nRequest Status: {selected_ing.get('status', 'N/A')}\nRequested By: {selected_ing.get('request_chef', {}).get('user', '-')}\nReviewed By: {selected_ing.get('review_user', {}).get('user', '-')}")
+                    status = input("Enter the status of the request (Approve/Reject): ").lower()
+                    if status == "approve" or status == "reject":
+                        selected_ingredient['status'] = "completed" if status == "approve" else "rejected"
+                        selected_ingredient['review_user'] = {
+                            "user": cur_usr,
+                            "date": datetime.datetime.now().strftime('%d-%b-%Y'),
+                            "time": datetime.datetime.now().strftime('%I:%M %p')
+                        }
+                        loaddatabase("ingredients", "write", ingredients_from_db)
+                        print(f"Request ID: {selected_ing['RequestID']} - {selected_ingredient["status"].capitalize()} successfully.")
+                        start(cur_usr)
+                        break
+                    else:
+                        print("Invalid input. Please type either 'Approved' or 'Rejected'")
+                        continue
+                else:
+                    print(f"Request ID '{option}' not found.")
+                    continue
 
 
 # 0 Start function
