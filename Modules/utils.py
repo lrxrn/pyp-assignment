@@ -50,8 +50,8 @@ def generate_id(name, category):
     return f"{name[:3].upper()}{category[:3].upper()}{int(time.time())}"
         
 # Function to display a table
-def display_table(headers, data):
-    print(tabulate.tabulate(data, headers=headers, tablefmt="grid"))
+def display_table(headers, data, tablefmt="rounded_outline"):
+    print(tabulate.tabulate(data, headers=headers, tablefmt=tablefmt))
     
 # Function to display messages in color
 def printD(msg, color="white", bold=False):
