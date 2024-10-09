@@ -44,20 +44,15 @@
         "status": "pending",
         "items": [
             {
-                "name": "Cheese",
-                "quantity": 500,
-                "unit": "Grams"
-            },
-            {
-                "name": "Pasta",
-                "quantity": 700,
-                "unit": "Grams"
+                "name": "Fish",
+                "quantity": 34,
+                "unit": "Kg"
             }
         ],
         "request_Chef": {
-            "user": "admin",
-            "date": "08-Oct-2024",
-            "time": "12:44 PM"
+            "user": "Tony",
+            "date": "07-Oct-2024",
+            "time": "09:05 AM"
         },
         "review_user": {
             "user": "",
@@ -69,15 +64,25 @@
         "status": "pending",
         "items": [
             {
+                "name": "Fish",
+                "quantity": 1,
+                "unit": "Kg"
+            },
+            {
                 "name": "Eggs",
-                "quantity": 10,
-                "unit": "Cartons"
+                "quantity": 4,
+                "unit": "Tray(s)"
+            },
+            {
+                "name": "Soy sauce",
+                "quantity": 20,
+                "unit": "Bottle(s)"
             }
         ],
         "request_Chef": {
-            "user": "john",
-            "date": "08-Oct-2024",
-            "time": "05:01 PM"
+            "user": "Jonny",
+            "date": "07-Oct-2024",
+            "time": "10:51 AM"
         },
         "review_user": {
             "user": "",
