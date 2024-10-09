@@ -206,7 +206,7 @@ def complete_request(requested_items, current_user):
     request_object = {
             "status": "pending",
             "items": requested_items,
-            "request_Chef": {"user": current_user, "date": date, "time": time},
+            "request_chef": {"user": current_user, "date": date, "time": time},
             "review_user": {"user": "", "date": "", "time": ""}
         }
     add_request_to_file(request_id, request_object)
