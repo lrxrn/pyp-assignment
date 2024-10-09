@@ -1,7 +1,7 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table, inp, clear_console
+from Modules.functions import display_table, inp, clear_console, get_next_id, printD
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, _db_loadDB, _db_saveDB
 
 
@@ -33,11 +33,11 @@ def loaddatabase(database, type, data="none"):
 
 
 # 0 Function to validate and input customer information
-def validate_and_input_customer(prompt, type="string"):
+def validate_and_input_customer(cur_usr, prompt, type="string"):
     while True:
         inp_value = input(prompt)
         if inp_value == "c":
-            manage_customer()
+            manage_customer(cur_usr)
 
         data = loaddatabase("users", "read")
 
@@ -54,14 +54,17 @@ def validate_and_input_customer(prompt, type="string"):
                 continue
 
         if type == "Username":
-            if inp_value in data:
-                print("Username already exists. Please choose a different username.")
+            if re.search(r"\W", inp_value):
+                print("Username should not contain any special characters.")
                 continue
-            if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
-                print("Invalid username. Username should not be in email format")
+            if len(inp_value) < 4:
+                print("Username should be at least 4 characters long.")
                 continue
-            else:
-                return inp_value
+            if db_getKey("users", inp_value):
+                print("Username already exists.")
+                continue
+
+            return inp_value
 
         if type == "Email":
             email_exists = False
@@ -136,16 +139,6 @@ def validate_and_input_customer(prompt, type="string"):
         case _:
             inp_value = inp(prompt, "string", cancelAllowed=True)
             return inp_value
-            
-    
-
-# 0 Function to get next ID
-def get_next_id(filename, prefix):
-    if not filename:
-        return f"{prefix}01"
-    ids = [int(item["MenuItmID"].split('-')[1]) for item in filename]
-    next_id_num = max(ids) + 1
-    return f"{prefix}{next_id_num:02d}"
 
 
 # 1 Function to manage customer
@@ -168,6 +161,7 @@ def manage_customer(cur_usr):
 
 
 # 1.1 Function to add customer
+"""
 def add_customer(cur_usr):
     new_customer_username = validate_and_input_customer(
         "Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ",
@@ -206,6 +200,10 @@ def add_customer(cur_usr):
 
     print("Customer added successfully.")
     manage_customer(cur_usr)
+"""
+def add_customer(cur_usr):
+    from main import register as register_main
+    register_main(cur_usr, manage_customer)
 
 
 # 1.2 Function to edit customer
@@ -371,21 +369,7 @@ def view_customer_list(cur_usr):
         print("No customers found")
         manage_customer(cur_usr)
 
-    display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i + 1,
-                                                                                                      customers[i][
-                                                                                                          "username"],
-                                                                                                      customers[i][
-                                                                                                          "name"],
-                                                                                                      customers[i][
-                                                                                                          "email"],
-                                                                                                      customers[i][
-                                                                                                          "PhoneNumber"],
-                                                                                                      customers[i][
-                                                                                                          "DOB"],
-                                                                                                      customers[i][
-                                                                                                          "Address"])
-                                                                                                     for i in range(
-            len(customers))])
+    display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i + 1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
 
     while True:
         option = input("Enter the customer number to edit or delete (type \"c\" to cancel): ")
@@ -441,7 +425,7 @@ def manage_menuandpricing(cur_usr):
 
 # 2.1 Function to add menu item
 def add_menu(cur_usr):
-    file = loaddatabase("menuItems", "read")
+    file = loaddatabase("menu", "read")
 
     new_menu_name = input("Enter the name of the new menu item: ")
     new_cuisine_type = input("Enter the cuisine type of the new menu item: ")
@@ -455,15 +439,14 @@ def add_menu(cur_usr):
     new_category = input("Enter the category of the new menu item: ")
 
     new_item = {
-        "MenuItmID": get_next_id(file, "BG-"),
-        "Name": new_menu_name,
-        "CuisineType": new_cuisine_type,
-        "Price": new_price,
-        "Category": new_category
+        "name": new_menu_name,
+        "cuisineType": new_cuisine_type,
+        "price": new_price,
+        "category": new_category,
+        "available": True
     }
-    file.append(new_item)
 
-    loaddatabase("menuItems", "write", file)
+    db_addKey("menu", get_next_id("menu", "BG-"), new_item)
 
     print("Menu item added successfully")
     manage_menuandpricing(cur_usr)
@@ -471,7 +454,7 @@ def add_menu(cur_usr):
 
 # 2.2.1 Function to edit menu list
 def edit_menu_list(cur_usr, type, goback="", menuitem=""):
-    editmenu = loaddatabase("menuItems", "read")
+    editmenu = loaddatabase("menu", "read")
     currentvalue = next((item[type] for item in editmenu if item['MenuItmID'] == menuitem), None)
     print(f"Edit {type}\nCurrent {type.lower()}: {currentvalue}")
 
@@ -480,7 +463,7 @@ def edit_menu_list(cur_usr, type, goback="", menuitem=""):
     for item in editmenu:
         if item['MenuItmID'] == menuitem:
             item[type] = new_value
-            loaddatabase("menuItems", "write", editmenu)
+            loaddatabase("menu", "write", editmenu)
             print(f"{type} updated successfully.")
             break
 
@@ -493,7 +476,7 @@ def edit_menu_list(cur_usr, type, goback="", menuitem=""):
 # 2.2 Function to edit menu item
 def edit_menu_item(cur_usr, menuitem=""):
     print("Edit Menu Item")
-    editmenu = loaddatabase("menuItems", "read")
+    editmenu = loaddatabase("menu", "read")
 
     if menuitem:
         edit_menu_option = menuitem
@@ -530,27 +513,48 @@ def edit_menu_item(cur_usr, menuitem=""):
 # 2.3 Function to delete menu item
 def delete_menu_item(cur_usr, goback="", menu=""):
     print("Delete Menu Item")
-    deletemenu = loaddatabase("menuItems", "read")
+    deletemenu = loaddatabase("menu", "read")
+
+    menuitems = db_getAllKeys("menu")
+    menu_objs = []
+    for item in menuitems:
+        menuitem = db_getKey("menu", item)
+        if menuitem is {}:
+            continue
+        else:
+            menu_name = menuitem["name"]
+            menu_cuisine = menuitem["cuisineType"]
+            menu_price = menuitem["price"]
+            menu_category = menuitem["category"]
+            menu_available = menuitem["available"]
+            menu_objs.append({"menuitem_id": item, "name": menu_name, "cuisineType": menu_cuisine,
+                                  "price": menu_price, "category": menu_category, "available": menu_available})
 
     if not menu:
-        display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [
-            (i + 1, deletemenu[i]["MenuItmID"], deletemenu[i]["Name"], deletemenu[i]["CuisineType"],
-             deletemenu[i]["Price"], deletemenu[i]["Category"]) for i in range(len(deletemenu))])
+        if menu_objs is []:
+            printD("No feedback available.", "red")
+            manage_menuandpricing(cur_usr)
+            return
+
+        table_headers = ["Menu Item ID", "Name", "Cuisine Type", "Price", "Category", "Available"]
+        table_data = []
+        for menu_obj in menu_objs:
+            available = "Yes" if menu_obj["available"] else "No"
+            table_data.append([menu_obj["menuitem_id"], menu_obj["name"], menu_obj["cuisineType"], menu_obj["price"], menu_obj["category"], available])
+        display_table(table_headers, table_data)
 
     while True:
         if not menu:
             menu = input("Enter menu item ID to delete: ").upper()
 
-        updated_menu = [item for item in deletemenu if item['MenuItmID'] != menu]
-
-        if len(updated_menu) == len(deletemenu):
-            print(f"Item with MenuItmID '{menu}' not found.")
+        if db_getKey("menu", menu) is None:
+            print(f"Item with menu item ID '{menu}' not found.")
             menu = ""
             continue
         else:
-            loaddatabase("menuItems", "write", updated_menu)
-            item_to_delete = next((item for item in deletemenu if item['MenuItmID'] == menu), None)
-            print(f"Menu item \"{menu} - {item_to_delete['Name']}\" deleted.")
+            menu_delete_item = db_getKey("menu", menu)
+            db_deleteKey("menu", menu)
+            print(f"Menu item \"{menu} - {menu_delete_item["name"]}\" deleted.")
             if goback == "view":
                 view_menu(cur_usr)
             else:
@@ -560,7 +564,7 @@ def delete_menu_item(cur_usr, goback="", menu=""):
 # 2.4 Function to view menu
 def view_menu(cur_usr):
     print("View Menu")
-    menu = loaddatabase("menuItems", "read")
+    menu = loaddatabase("menu", "read")
     display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [
         (i + 1, menu[i]["MenuItmID"], menu[i]["Name"], menu[i]["CuisineType"], menu[i]["Price"], menu[i]["Category"])
         for i in range(len(menu))])
