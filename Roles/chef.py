@@ -4,7 +4,7 @@ from tabulate import tabulate
 TABLE_FORMAT = "rounded_outline"  # The table format to be displayed
 
 # Import common functions from functions.py
-from Modules.functions import inp, printD, get_next_id
+from Modules.utils import inp, printD, get_next_id
 
 # 0 - Start function
 def start(cur_usr):
@@ -206,7 +206,7 @@ def complete_request(requested_items, current_user):
     request_object = {
             "status": "pending",
             "items": requested_items,
-            "request_Chef": {"user": current_user, "date": date, "time": time},
+            "request_chef": {"user": current_user, "date": date, "time": time},
             "review_user": {"user": "", "date": "", "time": ""}
         }
     add_request_to_file(request_id, request_object)

@@ -1,37 +1,7 @@
 .
 ├── Data
 │   ├── ingredients.json
-│   ├── menuItems.json
-│   ├── orders.json
-│   ├── passwords.json
-│   └── users.json
-├── Modules
-│   ├── db.py
-│   └── functions.py
-├── Pseudocode
-│   ├── login.code
-│   └── update-profile.code
-├── README.md
-├── Roles
-│   ├── admin.py
-│   ├── chef.py
-│   ├── customer.py
-│   ├── manager.py
-│   ├── menuItems.json
-│   ├── passwords.json
-│   └── users.json
-├── config.ini
-├── file_strcuture.txt
-├── main.py
-├── requirements.txt
-├── test.py
-└── wordlist.txt
-
-5 directories, 23 files
-.
-├── Data
-│   ├── ingredients.json
-│   ├── menuItems.json
+│   ├── menu.json
 │   ├── orders.json
 │   ├── passwords.json
 │   └── users.json

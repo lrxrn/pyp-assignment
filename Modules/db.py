@@ -2,7 +2,7 @@ import json
 import os
 import base64
 import configparser
-from Modules.functions import encode_password
+from Modules.utils import encode_password
 
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()

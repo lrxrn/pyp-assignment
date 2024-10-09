@@ -30,5 +30,13 @@
         "PhoneNumber": "6789341256",
         "DOB": "18-Nov-1998",
         "Address": "456 Oak Street, Dallas, TX"
+    },
+    "mikko": {
+        "name": "Meesum Ahmed",
+        "email": "mikkoahmd@gmail.com",
+        "role": "customer",
+        "PhoneNumber": "+60103667202",
+        "DOB": "08-Nov-2004",
+        "Address": "Garden @ One South, Seri Kembangan, Selangor"
     }
 }

@@ -3,7 +3,7 @@ import datetime
 import base64
 
 from Modules.db import db_addKey, db_deleteKey, db_updateKey, db_getKey, db_getAllKeys, db_getAllValues
-from Modules.functions import clear_console, inp, printD, wait_for_enter, generate_password, display_table
+from Modules.utils import clear_console, inp, printD, wait_for_enter, generate_password, display_table
 
 def logout(cur_usr):
     from main import logout as logout_main
@@ -41,7 +41,7 @@ def viewSalesReport(cur_usr):
     sales = []
     for order in orders:
         order_details = db_getKey("orders", order)
-        sales.append({"order_id": order, "customer": order_details["customer"], "chef": order_details["chef"], "date": order_details["date"], "total_price": order_details["OrderDetails"]["TotalAmount"]})
+        sales.append({"order_id": order, "customer": order_details["customer"], "chef": order_details["chef"], "date": order_details["date"], "total_price": order_details["details"]["totalAmount"]})
     
     if sales is []:
         print("No sales available.")
@@ -239,7 +239,7 @@ def manageStaff_removeStaff(cur_usr):
         return
     
     # check if the user is a customer
-    if db_getKey("usrRoles", username) == "customer":
+    if db_getKey("users", username) == "customer":
         printD("You can remove only staff.", "red")
         wait_for_enter()
         manageStaff(cur_usr)

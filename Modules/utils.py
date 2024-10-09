@@ -6,6 +6,7 @@ import datetime
 import random
 import configparser
 import base64
+from pwinput import pwinput
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
 config.read(f"{projectRoot}/config.ini")
@@ -61,6 +62,7 @@ def printD(msg, color="white", bold=False):
         "blue": "\033[94m",
         "magenta": "\033[95m",
         "cyan": "\033[96m",
+        "pink": "\033[95m",
         "white": "\033[97m",
         "bold": "\033[1m",
         "end": "\033[0m"
@@ -184,6 +186,9 @@ def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None,
                     break
                 else:
                     printD(f"Password does not meet requirements. It must be at least 8 characters long and include uppercase letters, lowercase letters, digits, and special characters (@#$%^&+=). \nPlease try again.", "yellow")
+            return user_input
+        case "pwd":
+            user_input = pwinput(prompt=msg, mask='*')
             return user_input
         case "phone":
             while True:
