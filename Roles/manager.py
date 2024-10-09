@@ -1,7 +1,7 @@
 import re
 import datetime
 import json
-from Modules.functions import display_table, inp, clear_console, get_next_id, printD
+from Modules.utils import display_table, inp, clear_console, get_next_id, printD
 from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, _db_loadDB, _db_saveDB
 
 

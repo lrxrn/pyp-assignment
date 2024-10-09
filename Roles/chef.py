@@ -4,7 +4,7 @@ from tabulate import tabulate
 TABLE_FORMAT = "rounded_outline"  # The table format to be displayed
 
 # Import common functions from functions.py
-from Modules.functions import inp, printD, get_next_id
+from Modules.utils import inp, printD, get_next_id
 
 # 0 - Start function
 def start(cur_usr):
