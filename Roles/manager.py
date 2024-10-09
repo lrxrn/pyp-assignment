@@ -14,98 +14,18 @@ def update_profile(cur_usr, return_func):
     from main import update_profile as update_profile_main
     update_profile_main(cur_usr, return_func)
 
-"""
-# 0 Function to load database
-def loaddatabase(database, type, data="none"):
-    if type == "read":
-        try:
-            with open(f"{database}.json", 'r') as file:
-                file = json.load(file)
-        except FileNotFoundError:
-            if database == "users" or database == "passwords":
-                file = {}
-            else:
-                file = []
-        return file
-    if type == "write":
-        with open(f"{database}.json", 'w') as file:
-            json.dump(data, file, indent=4)
-
-
-# 0 Function to validate and input customer information
-def validate_and_input_customer(cur_usr, prompt, type="string"):
-    while True:
-        inp_value = input(prompt)
-        if inp_value == "c":
-            manage_customer(cur_usr)
-
-        data = loaddatabase("users", "read")
-
-        if type == "Password":
-            if re.match(r"[A-Za-z0-9@#$%^&+=]{8,}", inp_value):
-                confirm_password = input("Confirm password: ")
-                if inp_value != confirm_password:
-                    print("Passwords do not match")
-                    continue
-                else:
-                    return inp_value
-            else:
-                print("Password must be at least 8 characters long and contain at least one letter and one number")
-                continue
-
-        if type == "Username":
-            if re.search(r"\W", inp_value):
-                print("Username should not contain any special characters.")
-                continue
-            if len(inp_value) < 4:
-                print("Username should be at least 4 characters long.")
-                continue
-            if db_getKey("users", inp_value):
-                print("Username already exists.")
-                continue
-
-            return inp_value
-
-        if type == "Email":
-            email_exists = False
-            for entry in data.values():
-                if entry.get("email") == inp_value:
-                    email_exists = True
-                    break
-            if email_exists:
-                print("Email already exists.")
-                continue
-            if re.match(r"[^@]+@[^@]+\.[^@]+", inp_value):
-                return inp_value
-            else:
-                print("Invalid email")
-                continue
-
-        if type == "Name":
-            return inp_value
-
-        if type == "dob":
-            try:
-                datetime.datetime.strptime(inp_value, "%d/%m/%Y")
-                return inp_value
-            except ValueError:
-                print("Incorrect date format, should be DD/MM/YYYY")
-
-        if type == "string":
-            return inp_value
-"""
-
             
-# Refactored function #0-1
-def loaddatabase(database, type, data="none"):
+# 0.1 Refactored function
+def loaddatabase(database, type="read", data="none"):
     match type:
         case "read":
             return _db_loadDB(database)
         case "write":
             if data != "none":
                 _db_saveDB(database, data)
+
                 
-# Refactored function #0-2
+# 0.2 Refactored function
 def validate_and_input_customer(prompt, type="string"):
     type = type.lower()
     match type:
@@ -161,46 +81,6 @@ def manage_customer(cur_usr):
 
 
 # 1.1 Function to add customer
-"""
-def add_customer(cur_usr):
-    new_customer_username = validate_and_input_customer(
-        "Enter new customer username (type \"c\" to cancel). NOTE: Username cannot be changed once created: ",
-        "Username")
-    new_customer_email = validate_and_input_customer("Enter new customer email (type \"c\" to cancel): ", "Email")
-    new_customer_name = validate_and_input_customer("Enter new customer name (type \"c\" to cancel): ", "Name")
-    new_customer_phonenumber = validate_and_input_customer("Enter new customer phone number (type \"c\" to cancel): ")
-    new_customer_dob = validate_and_input_customer("Enter new customer date of birth (type \"c\" to cancel): ", "dob")
-    new_customer_address = validate_and_input_customer("Enter new customer address (type \"c\" to cancel): ")
-    new_customer_password = validate_and_input_customer("Enter new customer password (type \"c\" to cancel): ",
-                                                        "Password")
-    if new_customer_username or new_customer_email or new_customer_name or new_customer_phonenumber or new_customer_dob or new_customer_address or new_customer_password is None:
-        print("Input cancelled")
-        manage_customer(cur_usr)
-
-    addusers = loaddatabase("users", "read")
-
-    addusers[new_customer_username] = {
-        "name": new_customer_name,
-        "email": new_customer_email,
-        "role": "customer",
-        "PhoneNumber": new_customer_phonenumber,
-        "DOB": new_customer_dob,
-        "Address": new_customer_address
-    }
-
-    loaddatabase("users", "write", addusers)
-
-    addpasswords = loaddatabase("passwords", "read")
-
-    addpasswords[new_customer_username] = {
-        "password": new_customer_password
-    }
-
-    loaddatabase("passwords", "write", addpasswords)
-
-    print("Customer added successfully.")
-    manage_customer(cur_usr)
-"""
 def add_customer(cur_usr):
     from main import register as register_main
     register_main(cur_usr, manage_customer)
@@ -445,10 +325,12 @@ def add_menu(cur_usr):
         "category": new_category,
         "available": True
     }
+    
+    new_item_id = get_next_id("menu", "BG-")
 
-    db_addKey("menu", get_next_id("menu", "BG-"), new_item)
+    db_addKey("menu", new_item_id, new_item)
 
-    print("Menu item added successfully")
+    print(f"Menu item {new_item_id} added successfully")
     manage_menuandpricing(cur_usr)
 
 
@@ -591,22 +473,36 @@ def view_menu(cur_usr):
                 continue
 
 
-# 3 Function to view ingredients list requested by chef
+# 3 Function to view ingredients list requested by chefs
 def view_ingredientlist(cur_usr):
-    print("View ingredients list requested by chef")
+    print("View ingredients list requested by chefs")
     ingredients = loaddatabase("ingredients", "read")
-    print("Ingredients list requested by chef")
     pendingrequest = []
-    for item in ingredients:
-        if item['RequestStatus'] == "Pending":
-            pendingrequest.append(item['RequestID'])
-
-    display_table(["Request ID", "Ingredient", "Quantity", "Request Status"], [(item['RequestID'],
-                                                                                item['Ingredient']['name'],
-                                                                                f"{item['Ingredient']['quantity']}{item['Ingredient']['unit']}",
-                                                                                item['RequestStatus']) for item in
-                                                                               ingredients if
-                                                                               item['RequestStatus'] == "Pending"])
+    pendingrequest_ids = []
+    pendingrequest_ingr = {}
+    for req in ingredients:
+        if ingredients[req]['status'] == "pending":
+            pendingrequest_ids.append(req)
+            ingredients[req]["RequestID"] = req
+            pendingrequest.append(ingredients[req])
+            ingredients[req]["fmt_ingr"] = []
+            for ingr in ingredients[req]['items']:
+                ingredients[req]["fmt_ingr"].append(f"{ingr['name']} - {ingr['quantity']} {ingr['unit']}")
+            pendingrequest_ingr = {item['RequestID']: ", ".join(item['fmt_ingr']) for item in pendingrequest}
+            
+    print("Ingredients list requested by chef")
+    table_headers = ["Request ID", "Ingredient-Quantity(Unit)","Request Status", "Requsted By", "Reviewed By"]
+    table_data = [
+        (
+            item['RequestID'],
+            pendingrequest_ingr.get(item['RequestID'], "N/A"), 
+            item.get('status', "N/A"),
+            item.get("request_chef", {}).get("user", "-"),
+            item.get("review_user", {}).get("user", "-")
+        ) 
+        for item in pendingrequest
+    ]
+    display_table(table_headers, table_data)
 
     while True:
         option = input("Enter the request ID to change the status of the request (type \"c\" to cancel): ").upper()
@@ -614,7 +510,7 @@ def view_ingredientlist(cur_usr):
             start(cur_usr)
             break
         else:
-            if option not in pendingrequest:
+            if option not in pendingrequest_ids:
                 print(f"Request ID '{option}' not found.")
                 continue
             ingredient = next((item for item in ingredients if item['RequestID'] == option), None)
