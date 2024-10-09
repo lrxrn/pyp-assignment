@@ -1,226 +1,250 @@
+import json
+from datetime import datetime
 from tabulate import tabulate
-import json as j
-from Modules.utils import printD, inp
+TABLE_FORMAT = "rounded_outline"  # The table format to be displayed
 
-with open("./Data/ingredients.json", "r") as file:
-    INGREDIENTS = j.load(file)
+# Import common functions from functions.py
+from Modules.functions import inp, printD, get_next_id
 
-with open("./Data/orders.json", "r") as file:
-    ORDERS = j.load(file)
+# 0 - Start function
+def start(cur_usr):
+    while True:
+        printD(f"Chef menu", "magenta", True)
+        print("1. View orders placed by customers. \n2. Update orders \n3. Request ingredients \n4. Update own profile. \n5. Logout")
 
+        option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
+        match option:
+            case 1:
+                show_orders(cur_usr)
+            case 2:
+                update_order_status(cur_usr)
+            case 3:
+                request_ingredients(cur_usr)
+            case 4:
+                update_profile(cur_usr, start)
+            case 5:
+                logout(cur_usr)
 
-# A function that gets the active orders
-def get_orders(orders_object):
-    orders = []
-    order_status = ["Completed", "Delivered"]
-
-    for order in orders_object:
-        if orders_object[order]["status"] not in order_status:
-            order = {
-                "order_id": order,
-                "items": orders_object[order]["details"]["items"],
-            }
-            orders.append(order)
-    return orders
-
-
-# A function to display the orders made by customers in a grid. Takes in an orders object
-def show_orders(orders_object):
-    orders = get_orders(orders_object)
-
-    if not orders:
+# 1 - Display orders in a grid format
+def show_orders(current_user):
+    orders = get_orders()
+    if not orders:  # Checking the truthy value of orders to make sure it's not empty
         print("No orders :D")
         return False
-    else:
-        headers = ["Order ID", "Order (Item --> Quantity)"]
-        rows = [
-            [order["order_id"], "\n".join([f'{item["ID"]} {item["quantity"]}' for item in order["items"]])]
-            for order in orders
-        ]
-        print(tabulate(rows, headers, tablefmt="grid"))
-        return True
 
+    headers = ["Order ID", "Item ID", "Quantity"]
+    rows = []
 
-# Function to update the status of an order
-def update_order_status(orders_object):
-    order_ids = orders_object.keys()
+    # Preparing row data
+    for order in orders:
+        # Add the first item with the order ID
+        for index, item in enumerate(order["items"]):
+            if index == 0:
+                rows.append([order['order_id'], item['ID'], item['quantity']])
+            else:
+                # For subsequent items, leave the order ID blank
+                rows.append(["", item['ID'], item['quantity']])
+        rows.append(["-----------", "----------", "---------"])  # Creates a separator between orders
+    rows.pop()  # removing last separator for the final order
 
-    if show_orders(orders_object):
+    print(tabulate(rows, headers, tablefmt=TABLE_FORMAT))
+    return True
+
+# 1.0.1 - Function to get the current date and time in the formats 05-Sep-2024 and 10:30 PM respectively
+def time_object():
+    now = datetime.now()
+    return now.strftime('%d-%b-%Y'), now.strftime('%I:%M %p')
+
+# 1.0.2 - Function to retrieve active orders from the database
+def get_orders():
+    try:
+        with open("Data/orders.json", "r") as file:
+            orders_object = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON file: {e}")
+        return {}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {}
+    return [
+        {"order_id": order, "items": orders_object[order]["details"]["items"]}
+        for order in orders_object if orders_object[order]["status"] not in ["Completed", "Delivered"]
+    ]
+
+# 1.0.3 - Function to save orders to the database
+def save_orders(orders):
+    with open("Data/orders.json", "w") as file:
+        json.dump(orders, file, indent=4)
+
+# 2 - Update order status to "Completed" or "Delivered" depending on dining option and cannot be undone.
+def update_order_status(current_user):
+    if show_orders(current_user):
+        orders_object = get_orders_raw()
         order_id = input("\nPlease input the order ID to mark as completed\nOrder ID: ").upper()
-        if order_id not in order_ids:
+        if order_id not in orders_object:
             print("Invalid Order ID")
         else:
             dining_option = orders_object[order_id]["details"]["diningOption"]
             orders_object[order_id]["status"] = "Completed" if dining_option == "Dine-in" else "Delivered"
+            save_orders(orders_object)
+
+# 2.0.1 - Function to retrieve all orders from the database 
+def get_orders_raw():
+    try:
+        with open("Data/orders.json", "r") as file:
+            orders_object = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON file: {e}")
+        return {}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {}
     return orders_object
 
+# 3 - Request ingredients and update the quantity
+def request_ingredients(current_user):
+    requested_items = list()  # A set to keep track of requests made by the user
+    handle_request_options(current_user, requested_items)
 
-# A function to show the list of ingredients required to make any dish
-def show_ingredients(ingredients):
-    headers = ["Item ID", "Ingredient"]
-    rows = [[item_number + 1, ingredient] for item_number, ingredient in enumerate(ingredients)]
-    print(tabulate(rows, headers, tablefmt="grid"))
-
-
-# A function to show the requests made by the chef
-def show_requests(requests):
-    requests_exist = any(quantity > 0 for quantity in requests.values())
-    if requests_exist:
-        headers = ["Item ID", "Ingredient", "Quantity"]
-        rows = [(item_number + 1, ingredient, quantity)
-                for item_number, (ingredient, quantity) in enumerate(requests.items()) if quantity > 0]
-        print(tabulate(rows, headers, tablefmt="grid"))
-    else:
-        print("\nNo requests made :D")
-
-
-# Function to request ingredients
-def request_ingredients(ingredients):
-    requested_ingredients = {ingredient: 0 for ingredient in ingredients}
-    requested_item_ids = set()
-
-    is_requesting = True
-    while is_requesting:
-        show_ingredients(ingredients)  # Display ingredient options
-
+# 3.1 - Handle request options for adding/editing/deleting ingredients
+def handle_request_options(current_user, requested_ingredients: list):
+    while True:
+        show_requests(requested_ingredients)
         try:
-            item_number = int(input("\nSelect the number corresponding to the item you'd like to request: "))
-            if not (1 <= item_number <= len(ingredients)):
+            option = int(
+                input("\n1. Add ingredient\n2. Edit ingredient\n3. Delete ingredient\n4. Complete request\nOption: "))
+            if option not in [1, 2, 3, 4]:
                 raise ValueError
         except ValueError:
-            print("Invalid Item ID")
+            print("\nInvalid option")
             continue
 
-        try:
-            quantity = int(input("Quantity number: "))
-            if quantity < 0:
-                raise ValueError
-        except ValueError:
-            print("Invalid quantity")
-            continue
+        if option == 1:
+            add_ingredient(requested_ingredients, current_user)
+        elif option == 2:
+            edit_request(requested_ingredients, current_user)
+        elif option == 3:
+            delete_request(requested_ingredients, current_user)
+        elif option == 4:
+            complete_request(requested_ingredients, current_user)
 
-        item_name = ingredients[item_number - 1]
-        requested_ingredients[item_name] += quantity
-        if item_number not in requested_item_ids:
-            requested_item_ids.add(item_number)
-
-        show_requests(requested_ingredients)  # Show current requests after updating
-
-        while True:
-            try:
-                option = int(input("\nWould you like to:\n1. Add ingredient\n2. Edit ingredient\n"
-                                   "3. Delete ingredient\n4. Complete request\nOption: "))
-                if option not in [1, 2, 3, 4]:
-                    raise ValueError
-            except ValueError:
-                print("Invalid option")
-                continue
-
-            if option == 1:
-                break  # Go back to outer loop to add another item
-            elif option == 2:
-                if not any(quantity > 0 for quantity in requested_ingredients.values()):
-                    print("\nNo requests made :D")
-                else:
-                    edit_request(ingredients, requested_ingredients, requested_item_ids)
-            elif option == 3:
-                if not any(quantity > 0 for quantity in requested_ingredients.values()):
-                    print("\nNo requests made :D")
-                else:
-                    delete_request(ingredients, requested_ingredients, requested_item_ids)
-            elif option == 4:
-                requested_ingredients = {k: v for k, v in requested_ingredients.items() if v > 0}
-                if requested_ingredients:
-                    print("\nFinal Request:")
-                    show_requests(requested_ingredients)  # Show final request before confirmation
-                else:
-                    print("\nNo requests made.")
-                return requested_ingredients
-
-
-# Function to edit an existing request
-def edit_request(ingredients, requested_ingredients, requested_item_ids):
-    show_requests(requested_ingredients)  # Always show requests before editing
-
-    if not any(quantity > 0 for quantity in requested_ingredients.values()):
-        print("\nNo requests made :D")
+# 3.1.1 - Add a new ingredient to the request
+def add_ingredient(requested_ingredients: list, current_user):
+    item_name = input("Enter the name of the ingredient you'd like to request: ")
+    item_unit = input("Unit of measure: ")
+    try:
+        item_quantity = int(input("Quantity number: "))
+        if item_quantity < 1:
+            raise ValueError
+    except ValueError:
+        print("\nInvalid quantity")
+        add_ingredient(requested_ingredients)
         return
+
+    requested_ingredient = {
+        "name": item_name,
+        "quantity": item_quantity,
+        "unit": item_unit
+    }
+
+    requested_ingredients.append(requested_ingredient)
+    print(f"Added {item_name} to the request")
+    handle_request_options(current_user, requested_ingredients)
+
+# 3.1.2 - Edit an existing request
+def edit_request(requested_ingredients: list, current_user):
+    show_requests(requested_ingredients)
 
     try:
         item_number = int(input("\nChoose an ingredient to edit: "))
-        if item_number not in requested_item_ids:
+        if item_number > len(requested_ingredients) or item_number < 1:
             raise ValueError
     except ValueError:
-        print("Invalid Item ID")
+        print("\nInvalid Item ID")
+        edit_request(requested_ingredients)
         return
 
+    item_name = requested_ingredients[item_number - 1]["name"]
     try:
         new_quantity = int(input("New Quantity: "))
-        if new_quantity < 0:
+        if new_quantity < 1:
             raise ValueError
     except ValueError:
-        print("Invalid quantity")
+        print("\nInvalid quantity")
+        edit_request(requested_ingredients)
         return
 
-    item_name = ingredients[item_number - 1]
-    requested_ingredients[item_name] = new_quantity
-    if new_quantity == 0:
-        requested_item_ids.remove(item_number)
-    show_requests(requested_ingredients)  # Show updated requests after editing
+    print(f"Changed quantity of {item_name} from {requested_ingredients[item_number - 1]['quantity']} to {new_quantity}")
+
+    requested_ingredients[item_number - 1]["quantity"] = new_quantity
+    handle_request_options(current_user, requested_ingredients)
 
 
-# Function to delete an existing request
-def delete_request(ingredients, requested_ingredients, requested_item_ids):
-    show_requests(requested_ingredients)  # Always show requests before deleting
-
-    if not any(quantity > 0 for quantity in requested_ingredients.values()):
-        print("\nNo requests made :D")
-        return
+# 3.1.3 - Delete an existing request
+def delete_request(requested_ingredients: list, current_user):
+    show_requests(requested_ingredients)
 
     try:
         item_number = int(input("Choose the ingredient to delete: "))
-        if item_number not in requested_item_ids:
+        if item_number > len(requested_ingredients) or item_number < 1:
             raise ValueError
     except ValueError:
-        print("Invalid Item ID")
+        print("\nInvalid Item ID")
+        delete_request(requested_ingredients)
         return
 
-    item_name = ingredients[item_number - 1]
-    requested_ingredients[item_name] = 0
-    requested_item_ids.remove(item_number)
-    show_requests(requested_ingredients)  # Show updated requests after deletion
-    
-def logout(cur_usr):
-    from main import logout as logout_main
-    logout_main(cur_usr)
+    item_name = requested_ingredients[item_number - 1]["name"]
+    print(f"Deleted {item_name} from the request")
+    requested_ingredients.pop(item_number - 1)
+    handle_request_options(current_user, requested_ingredients)
 
+
+# 3.1.4 - Complete the request by creating a boilerplate
+def complete_request(requested_items, current_user):
+    request_id = get_next_id("ingredients")
+    date, time = time_object()
+    request_object = {
+            "status": "pending",
+            "items": requested_items,
+            "request_Chef": {"user": current_user, "date": date, "time": time},
+            "review_user": {"user": "", "date": "", "time": ""}
+        }
+    add_request_to_file(request_id, request_object)
+    print(f"\nRequest with id {request_id} was successfully submitted :D")
+    start(current_user)
+
+# 3.2 - Display ingredient requests
+def show_requests(requests):
+    if len(requests) != 0:
+        headers = ["#", "Ingredient", "Quantity", "Measure (Unit)"]
+        rows = [[i + 1, ingredient["name"], ingredient["quantity"], ingredient["unit"]] for i, (ingredient) in enumerate(requests)]
+        print(tabulate(rows, headers, tablefmt=TABLE_FORMAT))
+    else:
+        print("\nNo requests made :D")
+
+# 3.3 - Add a complete request to the file
+def add_request_to_file(request_id, request_object):
+    try:
+        with open("Data/Ingredients.json", "r") as file:
+            requests = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"Error reading JSON file: {e}")
+        return
+    except Exception as e:
+        print(f"Error: {e}")
+        return
+
+    requests[request_id] = request_object
+
+    with open("Data/Ingredients.json", "w") as file:
+        json.dump(requests, file, indent=4)
+
+# 4 - Update profile function
 def update_profile(cur_usr, return_func):
     from main import update_profile as update_profile_main
     update_profile_main(cur_usr, return_func)
-    
-def start(cur_usr):
-    printD(f"Welcome, {cur_usr}!", "cyan", True)
-    print("1. View orders placed by customers. \n2. Update orders \n3. Request ingredients \n4. Update own profile. \n5. Logout")
 
-    option = inp("Choose an option from 1 to 5: ", "int", [1, 2, 3, 4, 5])
-    match option:
-        case 1:
-            show_orders(cur_usr)
-        case 2:
-            update_order_status(cur_usr)
-        case 3:
-            request_ingredients(cur_usr)
-        case 4:
-            update_profile(cur_usr, start)
-        case 5:
-            logout(cur_usr)
-
-
-# A function to test the working of the rest of the functions
-# def main():
-#     # show_orders(ORDERS)
-#     # update_order_status(ORDERS)
-#     request_ingredients(["Fish", "Eggs"])
-
-
-# main()
+# 5 - Logout function
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)
