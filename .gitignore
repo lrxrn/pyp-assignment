@@ -35,3 +35,6 @@ Thumbs.db
 .venv/
 venv/
 venvm/
+
+# Ignore Database files
+Data/*.json
