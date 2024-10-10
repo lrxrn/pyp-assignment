@@ -72,7 +72,7 @@ def clear_console(wait_time=None):
 
 # Function to wait for user to press Enter
 def wait_for_enter(msg="Press Enter to proceed...", clear=False):
-    input(msg)
+    pwinput(prompt=msg, mask='')
     if clear:
         clear_console()
         
