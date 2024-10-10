@@ -179,7 +179,6 @@ def edit_request(requested_ingredients: list, current_user):
     requested_ingredients[item_number - 1]["quantity"] = new_quantity
     handle_request_options(current_user, requested_ingredients)
 
-
 # 3.1.3 - Delete an existing request
 def delete_request(requested_ingredients: list, current_user):
     show_requests(requested_ingredients)
@@ -197,7 +196,6 @@ def delete_request(requested_ingredients: list, current_user):
     print(f"Deleted {item_name} from the request")
     requested_ingredients.pop(item_number - 1)
     handle_request_options(current_user, requested_ingredients)
-
 
 # 3.1.4 - Complete the request by creating a boilerplate
 def complete_request(requested_items, current_user):
