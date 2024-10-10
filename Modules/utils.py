@@ -31,27 +31,34 @@ def date_diff(datetime1, datetime2=datetime.datetime.now().strftime("%d-%b-%Y %I
         seconds = abs(seconds)
     else:
         past = True
+        
+    formatted_time = int(f"{seconds:.0f}")
     
     if seconds == 0:
         return "Just now"
     elif seconds < 60:
-        time_str = f"{seconds:.0f} seconds"
+        time_str = f"{formatted_time} second{"" if formatted_time == 1 else "s"}"
     elif seconds < 3600: # 60 * 60 = 3600
         minutes = seconds // 60
-        time_str = f"{minutes:.0f} minutes"
+        formatted_time = int(f"{minutes:.0f}")
+        time_str = f"{formatted_time} minute{"" if formatted_time == 1 else "s"}"
     elif seconds < 86400: # 24 * 60 * 60 = 86400
         hours = seconds // 3600
-        time_str = f"{hours:.0f} hours"
+        formatted_time = int(f"{hours:.0f}")
+        time_str = f"{formatted_time} hour{"" if formatted_time == 1 else "s"}"
     elif seconds < 2592000: # 30 * 24 * 60 * 60 = 2592000
         days = seconds // 86400
-        time_str = f"{days:.0f} days"
+        formatted_time = int(f"{days:.0f}")
+        time_str = f"{formatted_time} day{"" if formatted_time == 1 else "s"}"
     else:
         months = (date2.year - date1.year) * 12 + date2.month - date1.month
         if months < 12:
-            time_str = f"{months:.0f} months"
+            formatted_time = int(f"{months:.0f}")
+            time_str = f"{formatted_time} month{"" if formatted_time == 1 else "s"}"
         else:
             years = months // 12
-            time_str = f"{years:.0f} years"
+            formatted_time = int(f"{years:.0f}")
+            time_str = f"{formatted_time} year{"" if formatted_time == 1 else "s"}"
     
     if past:
         return f"{time_str} ago"
@@ -171,7 +178,8 @@ def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None,
         if invalidInpMsg:
             print(invalidInpMsg)
         else:
-            printD(f"Invalid input! Expected one of {valid_values}. Please try again.", "yellow")
+            valid_values_str = ", ".join(str(value) for value in valid_values)
+            printD(f"Invalid input! Expected one of ({valid_values_str}). Please try again.", "yellow")
     
     match type:
         case "int":
