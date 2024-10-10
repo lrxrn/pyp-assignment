@@ -1,12 +1,10 @@
 # Import the core modules
-import os
-import time
 import base64
 import re
 
 # Import the modules
-from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, db_savePassword
-from Modules.utils import clear_console, inp, wait_for_enter, printD, generate_password, decode_password
+from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_savePassword
+from Modules.utils import clear_console, inp, wait_for_enter, printD, generate_password, decode_password, time_object, date_diff
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -18,9 +16,9 @@ from Roles.customer import start as customer_menu
 def logout(usr=None):
     print("\n")
     if usr:
-        printD(f"Logout. Goodbye {usr}.", "pink")
+        printD(f"Logging out {usr}.", "yellow")
     else:
-        printD("Logging out.", "pink")
+        printD("Logging out.", "yellow")
     clear_console(2)
     main_start()
 
@@ -44,7 +42,7 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
         print(f"Email: {user_data['email']}")
         print(f"Phone Number: {user_data['PhoneNumber']}")
         print(f"Date of Birth: {user_data['DOB']}")
-        print(f"Address: {user_data['Address']}")
+        print(f"Address: {user_data['address']}")
         if admin_privileges:
             print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Update Role \n7. Go Back to Main Menu")
             ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
@@ -73,7 +71,7 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
             printD("Phone number updated successfully.", "green")
         case 4:
             new_address = input("Enter new address: ").strip()
-            user_data['Address'] = new_address
+            user_data['address'] = new_address
             db_updateKey("users", username, user_data)
             printD("Address updated successfully.", "green")
         case 5:
@@ -302,11 +300,12 @@ def register(staff_username=None, return_func=None):
         "role": inp_role,
         "PhoneNumber": inp_phone,
         "DOB": inp_dob,
-        "Address": inp_address
+        "address": inp_address
     }
     password_data = {
         "password": base64.b64encode(inp_password.encode()).decode(),
-        "attempts": 0
+        "attempts": 0,
+        "last_login": "never"
     }
     if db_getKey("users", inp_username):
         printD("Username already exists.", "yellow")
@@ -382,9 +381,15 @@ def login(usr=None):
             inp_password = inp("Enter your password: ", "pwd")
             if inp_password == user_password:
                 user_password_data['attempts'] = 0
+                user_last_login = user_password_data['last_login']
+                user_password_data['last_login'] = f"{time_object()[0]} {time_object()[1]}"
                 db_updateKey("passwords", login_usr, user_password_data)
                 clear_console(1)
-                printD(f"Welcome Back, {user_data['name']} [{login_usr}]!", "white", True)
+                if user_last_login == "never":
+                    printD(f"Welcome, {user_data['name']} [{login_usr}]!\n", "white", True)
+                else:
+                    printD(f"Welcome Back, {user_data['name']} [{login_usr}]!", "white", True)
+                    print(f"Last Successful Login: {user_last_login} ({date_diff(user_last_login)})\n")
                 main_menu(login_usr, user_data['role'])
             elif inp_password == "":
                 printD("Please enter your password to login.", "yellow")
@@ -421,8 +426,8 @@ def login(usr=None):
 def main_start():
     clear_console()
     # Load the users database to run the pre-check and add the default admin user if not present
-    usersList = db_getAllKeys("users")
-    printD("Welcome to the Restaurant Management System.", "cyan", True)
+    db_getAllKeys("users")
+    printD("Welcome to the Restaurant Management System.", "blue", True)
     print("1. Login \n2. Register \n3. Reset Password \n4. Exit")
     ch = inp("Enter your choice: ", "int", [1, 2, 3, 4])
     match ch:

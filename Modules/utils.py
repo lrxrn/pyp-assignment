@@ -13,6 +13,58 @@ config.read(f"{projectRoot}/config.ini")
 
 wordlist_path = config['Misc']['wordlist']
 
+def time_object():
+    now = datetime.datetime.now()
+    return now.strftime('%d-%b-%Y'), now.strftime('%I:%M %p')
+
+# Function to get the difference between two dates
+# Function to get the difference between two dates
+def date_diff(datetime1, datetime2=datetime.datetime.now().strftime("%d-%b-%Y %I:%M %p")):
+    date1 = datetime.datetime.strptime(datetime1, "%d-%b-%Y %I:%M %p")
+    date2 = datetime.datetime.strptime(datetime2, "%d-%b-%Y %I:%M %p")
+    
+    diff = date2 - date1
+    seconds = diff.total_seconds()
+    
+    if seconds < 0:
+        past = False
+        seconds = abs(seconds)
+    else:
+        past = True
+        
+    formatted_time = int(f"{seconds:.0f}")
+    
+    if seconds == 0:
+        return "Just now"
+    elif seconds < 60:
+        time_str = f"{formatted_time} second{"" if formatted_time == 1 else "s"}"
+    elif seconds < 3600: # 60 * 60 = 3600
+        minutes = seconds // 60
+        formatted_time = int(f"{minutes:.0f}")
+        time_str = f"{formatted_time} minute{"" if formatted_time == 1 else "s"}"
+    elif seconds < 86400: # 24 * 60 * 60 = 86400
+        hours = seconds // 3600
+        formatted_time = int(f"{hours:.0f}")
+        time_str = f"{formatted_time} hour{"" if formatted_time == 1 else "s"}"
+    elif seconds < 2592000: # 30 * 24 * 60 * 60 = 2592000
+        days = seconds // 86400
+        formatted_time = int(f"{days:.0f}")
+        time_str = f"{formatted_time} day{"" if formatted_time == 1 else "s"}"
+    else:
+        months = (date2.year - date1.year) * 12 + date2.month - date1.month
+        if months < 12:
+            formatted_time = int(f"{months:.0f}")
+            time_str = f"{formatted_time} month{"" if formatted_time == 1 else "s"}"
+        else:
+            years = months // 12
+            formatted_time = int(f"{years:.0f}")
+            time_str = f"{formatted_time} year{"" if formatted_time == 1 else "s"}"
+    
+    if past:
+        return f"{time_str} ago"
+    else:
+        return f"in {time_str}"
+
 # Clear console function to de-clutter the console
 def clear_console(wait_time=None):
     # Wait for specifc time before clearing the console
@@ -27,7 +79,7 @@ def clear_console(wait_time=None):
 
 # Function to wait for user to press Enter
 def wait_for_enter(msg="Press Enter to proceed...", clear=False):
-    input(msg)
+    pwinput(prompt=msg, mask='')
     if clear:
         clear_console()
         
@@ -126,7 +178,8 @@ def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None,
         if invalidInpMsg:
             print(invalidInpMsg)
         else:
-            printD(f"Invalid input! Expected one of {valid_values}. Please try again.", "yellow")
+            valid_values_str = ", ".join(str(value) for value in valid_values)
+            printD(f"Invalid input! Expected one of ({valid_values_str}). Please try again.", "yellow")
     
     match type:
         case "int":
