@@ -1,21 +1,9 @@
-import re
 import datetime
-import json
 from Modules.utils import display_table, inp, clear_console, get_next_id, printD, wait_for_enter
 from Modules.db import db_addKey, db_getKey, db_getAllKeys, db_deleteKey, _db_loadDB, _db_saveDB
 
-
-def logout(cur_usr):
-    from main import logout as logout_main
-    logout_main(cur_usr)
-
-
-def update_profile(cur_usr, return_func):
-    from main import update_profile as update_profile_main
-    update_profile_main(cur_usr, return_func)
-
-            
-# 0.1 Refactored function
+         
+# 0.1 Function to load and save database
 def loaddatabase(database, type="read", data="none"):
     match type:
         case "read":
@@ -25,7 +13,7 @@ def loaddatabase(database, type="read", data="none"):
                 _db_saveDB(database, data)
 
                 
-# 0.2 Refactored function
+# 0.2 Function to validate and input customer details
 def validate_and_input_customer(prompt, type="string"):
     type = type.lower()
     match type:
@@ -549,6 +537,18 @@ def view_ingredientlist(cur_usr):
                     print(f"Request ID '{option}' not found.")
                     wait_for_enter()
                     continue
+
+
+# 4 Function to update own profile
+def update_profile(cur_usr, return_func):
+    from main import update_profile as update_profile_main
+    update_profile_main(cur_usr, return_func)
+
+
+# 5 Logout function
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)
 
 
 # 0 Start function
