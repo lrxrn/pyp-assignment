@@ -13,6 +13,51 @@ config.read(f"{projectRoot}/config.ini")
 
 wordlist_path = config['Misc']['wordlist']
 
+def time_object():
+    now = datetime.datetime.now()
+    return now.strftime('%d-%b-%Y'), now.strftime('%I:%M %p')
+
+# Function to get the difference between two dates
+# Function to get the difference between two dates
+def date_diff(datetime1, datetime2=datetime.datetime.now().strftime("%d-%b-%Y %I:%M %p")):
+    date1 = datetime.datetime.strptime(datetime1, "%d-%b-%Y %I:%M %p")
+    date2 = datetime.datetime.strptime(datetime2, "%d-%b-%Y %I:%M %p")
+    
+    diff = date2 - date1
+    seconds = diff.total_seconds()
+    
+    if seconds < 0:
+        past = False
+        seconds = abs(seconds)
+    else:
+        past = True
+    
+    if seconds == 0:
+        return "Just now"
+    elif seconds < 60:
+        time_str = f"{seconds:.0f} seconds"
+    elif seconds < 3600: # 60 * 60 = 3600
+        minutes = seconds // 60
+        time_str = f"{minutes:.0f} minutes"
+    elif seconds < 86400: # 24 * 60 * 60 = 86400
+        hours = seconds // 3600
+        time_str = f"{hours:.0f} hours"
+    elif seconds < 2592000: # 30 * 24 * 60 * 60 = 2592000
+        days = seconds // 86400
+        time_str = f"{days:.0f} days"
+    else:
+        months = (date2.year - date1.year) * 12 + date2.month - date1.month
+        if months < 12:
+            time_str = f"{months:.0f} months"
+        else:
+            years = months // 12
+            time_str = f"{years:.0f} years"
+    
+    if past:
+        return f"{time_str} ago"
+    else:
+        return f"in {time_str}"
+
 # Clear console function to de-clutter the console
 def clear_console(wait_time=None):
     # Wait for specifc time before clearing the console

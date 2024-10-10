@@ -5,7 +5,7 @@
         "role": "administrator",
         "PhoneNumber": "+9876543210",
         "DOB": "19-Mar-1990",
-        "Address": "123 Elm Street, Springfield, IL"
+        "address": "123 Elm Street, Springfield, IL"
     },
     "ibaan": {
         "name": "Ibaan Ibrahim",
@@ -13,7 +13,7 @@
         "role": "manager",
         "PhoneNumber": "+1234509876",
         "DOB": "22-Jul-1995",
-        "Address": "789 Maple Avenue, Phoenix, AZ"
+        "address": "789 Maple Avenue, Phoenix, AZ"
     },
     "john": {
         "name": "John Hunter",
@@ -21,7 +21,7 @@
         "role": "chef",
         "PhoneNumber": "+2489342034",
         "DOB": "03-May-1985",
-        "Address": "639 Pine Street, Miami, FL"
+        "address": "639 Pine Street, Miami, FL"
     },
     "zara": {
         "name": "Zara Patel",
@@ -29,7 +29,7 @@
         "role": "customer",
         "PhoneNumber": "6789341256",
         "DOB": "18-Nov-1998",
-        "Address": "456 Oak Street, Dallas, TX"
+        "address": "456 Oak Street, Dallas, TX"
     },
     "mikko": {
         "name": "Meesum Ahmed",
@@ -37,6 +37,6 @@
         "role": "customer",
         "PhoneNumber": "+60103667202",
         "DOB": "08-Nov-2004",
-        "Address": "Garden @ One South, Seri Kembangan, Selangor"
+        "address": "Garden @ One South, Seri Kembangan, Selangor"
     }
 }
