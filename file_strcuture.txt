@@ -7,19 +7,20 @@
 │   └── users.json
 ├── Modules
 │   ├── db.py
-│   └── functions.py
+│   └── utils.py
 ├── Pseudocode
 │   ├── login.code
+│   ├── manager
+│   │   ├── add_customer.code
+│   │   ├── edit_customer.code
+│   │   └── manage_customer.code
 │   └── update-profile.code
 ├── README.md
 ├── Roles
 │   ├── admin.py
 │   ├── chef.py
 │   ├── customer.py
-│   ├── manager.py
-│   ├── menuItems.json
-│   ├── passwords.json
-│   └── users.json
+│   └── manager.py
 ├── config.ini
 ├── file_strcuture.txt
 ├── main.py
@@ -27,4 +28,4 @@
 ├── test.py
 └── wordlist.txt
 
-5 directories, 23 files
+6 directories, 23 files
