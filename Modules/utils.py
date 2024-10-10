@@ -19,9 +19,15 @@ def time_object():
 
 # Function to get the difference between two dates
 # Function to get the difference between two dates
-def date_diff(datetime1, datetime2=datetime.datetime.now().strftime("%d-%b-%Y %I:%M %p")):
-    date1 = datetime.datetime.strptime(datetime1, "%d-%b-%Y %I:%M %p")
-    date2 = datetime.datetime.strptime(datetime2, "%d-%b-%Y %I:%M %p")
+def date_diff(datetime1, datetime2=datetime.datetime.now().strftime("%d-%b-%Y %I:%M %p"), type="normal"):
+    if type == "dob":
+        datetime2 = datetime.datetime.now().strftime("%d-%b-%Y")
+        
+        date1 = datetime.datetime.strptime(datetime1, "%d-%b-%Y")
+        date2 = datetime.datetime.strptime(datetime2, "%d-%b-%Y")
+    else:
+        date1 = datetime.datetime.strptime(datetime1, "%d-%b-%Y %I:%M %p")
+        date2 = datetime.datetime.strptime(datetime2, "%d-%b-%Y %I:%M %p")
     
     diff = date2 - date1
     seconds = diff.total_seconds()
@@ -60,10 +66,14 @@ def date_diff(datetime1, datetime2=datetime.datetime.now().strftime("%d-%b-%Y %I
             formatted_time = int(f"{years:.0f}")
             time_str = f"{formatted_time} year{"" if formatted_time == 1 else "s"}"
     
-    if past:
-        return f"{time_str} ago"
-    else:
-        return f"in {time_str}"
+    match type:
+        case "dob":
+            return f"{time_str}"
+        case _:
+            if past:
+                return f"{time_str} ago"
+            else:
+                return f"in {time_str}"
 
 # Clear console function to de-clutter the console
 def clear_console(wait_time=None):
@@ -102,7 +112,7 @@ def generate_id(name, category):
     return f"{name[:3].upper()}{category[:3].upper()}{int(time.time())}"
         
 # Function to display a table
-def display_table(headers, data, tablefmt="rounded_outline"):
+def display_table(headers=[], data=[], tablefmt="rounded_outline"):
     print(tabulate.tabulate(data, headers=headers, tablefmt=tablefmt))
     
 # Function to display messages in color

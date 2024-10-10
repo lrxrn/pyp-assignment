@@ -16,12 +16,13 @@ from Roles.customer import start as customer_menu
 def logout(usr=None):
     print("\n")
     if usr:
-        printD(f"Logging out {usr}.", "yellow")
+        printD(f"Logging out... \nGoodbye {usr}.", "yellow")
     else:
-        printD("Logging out.", "yellow")
-    clear_console(2)
+        printD("Logging out..", "yellow")
+    clear_console(1)
     main_start()
 
+# Update profile function
 def update_profile(username, admin_username=None, choice=None, return_func=None):
     clear_console()
     global admin_privileges
@@ -34,21 +35,30 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
         admin_privileges = False
     
     printD("Update Profile", "cyan")
-    print("-"*35)
     print(f"Username: {username}")
     if choice is None:
         user_data = db_getKey("users", username)
+        user_password_data = db_getKey("passwords", username)
         print(f"Name: {user_data['name']}")
         print(f"Email: {user_data['email']}")
         print(f"Phone Number: {user_data['PhoneNumber']}")
-        print(f"Date of Birth: {user_data['DOB']}")
+        print(f"Date of Birth: {user_data['DOB']} ({date_diff(user_data['DOB'], type='dob')} old)")
         print(f"Address: {user_data['address']}")
+        print(f"Role: {user_data['role']}")
+        if user_password_data is None or user_password_data.get('last_login') is None:
+            printD("Last Login: unknown", "yellow")
+        else:
+            printD(f"Last Login: {user_password_data['last_login']} ({date_diff(user_password_data['last_login'])})", "white", True)
         if admin_privileges:
+            if user_password_data is None or user_password_data.get('password') is None:
+                printD("Password: Not set", "yellow")
+            elif user_password_data['attempts'] >= 3:
+                printD("Password: Locked", "yellow")
             print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Update Role \n7. Go Back to Main Menu")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
+            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6, 7])
         else:
             print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Go Back to Main Menu")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
+            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
     else:
         ch = choice
   
@@ -75,31 +85,47 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
             db_updateKey("users", username, user_data)
             printD("Address updated successfully.", "green")
         case 5:
-            current_password = base64.b64decode(db_getKey("passwords", username)['password']).decode()
-            inp_password = inp("Enter current password: ", "str")
-            if inp_password != current_password:
-                printD("Invalid password.", "red")
-                print("1. Try again  \n2. Forgot Password \n3. Go Back to Main Menu")
-                ch = inp("Enter your choice: ", "int", [1, 2, 3])
-                match ch:
-                    case 1:
-                        update_profile(username, None, 5)
-                    case 2:
-                        reset_password(username)
-                    case 3:
-                        main_menu(username, user_data['role'])
-            new_password = inp("Enter new password: ", "password")
-            new_password_confirm = inp("Confirm new password: ", "password")
-            if new_password != new_password_confirm:
-                printD("Passwords do not match. Please try again.", "yellow")
-                wait_for_enter("Press Enter to go back to the main menu.", True)
-                main_menu(username, user_data['role'])
-            password_data = {
-                "password": base64.b64encode(new_password.encode()),
-                "attempts": 0
-            }
-            db_updateKey("passwords", username, password_data)
-            printD("Password updated successfully.", "green")
+            if user_password_data is None or user_password_data.get('password') is None: # If password is not set
+                if admin_privileges:
+                    printD("Password not set. Please set a password for this user.", "yellow")
+                    print("1. Reset Password \n2. Go Back to Main Menu")
+                    ch = inp("Enter your choice: ", "int", [1, 2])
+                    match ch:
+                        case 1:
+                            reset_password(username)
+                        case 2:
+                            main_menu(username, user_data['role'])
+                else:
+                    printD("Password not set. Please contact an administrator to set your password.", "yellow")
+                    wait_for_enter("Press Enter to go back to the main menu.", True)
+                    main_menu(username, user_data['role'])
+            else:
+                current_password = base64.b64decode(db_getKey("passwords", username)['password']).decode()
+                inp_password = inp("Enter current password: ", "str")
+                if inp_password != current_password:
+                    printD("Invalid password.", "red")
+                    print("1. Try again  \n2. Forgot Password \n3. Go Back to Main Menu")
+                    ch = inp("Enter your choice: ", "int", [1, 2, 3])
+                    match ch:
+                        case 1:
+                            update_profile(username, None, 5)
+                        case 2:
+                            reset_password(username)
+                        case 3:
+                            main_menu(username, user_data['role'])
+                new_password = inp("Enter new password: ", "password")
+                new_password_confirm = inp("Confirm new password: ", "password")
+                if new_password != new_password_confirm:
+                    printD("Passwords do not match. Please try again.", "yellow")
+                    wait_for_enter("Press Enter to go back to the main menu.", True)
+                    main_menu(username, user_data['role'])
+                password_data = {
+                    "password": base64.b64encode(new_password.encode()),
+                    "attempts": 0,
+                    "last_login": "never"
+                }
+                db_updateKey("passwords", username, password_data)
+                printD("Password updated successfully.", "green")
         case 6:
             if admin_privileges:
                 print("1. Customer \n2. Chef \n3. Manager \n4. Administrator")
@@ -119,71 +145,62 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
     else:
         wait_for_enter("Press Enter to go back to the main menu.", True)
         main_menu(username, user_data['role'])
-            
-        
+
+# Main menu function
 def main_menu(username, role:str):
     role = role.strip().lower()
     match role:
         case "customer":
-            print("You are a Customer. What do you want to do:")
-            print("1. Continue as Customer")
-            print("2. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2])
-            match ch:
-                case 1:
-                    clear_console(2)
-                    customer_menu(username)
-                case _:
-                    logout(username)
+            # No need to ask whether to continue as a customer or not
+            clear_console(0.5)
+            customer_menu(username)
         case "chef":
-            print("You are a Chef. What do you want to do:")
-            print("1. Continue as Chef")
+            print("You are a Chef. How would you like to proceed:")
+            print("1. Continue as a Chef")
             print("2. Continue as a Customer")
             print("3. Logout")
             ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            clear_console(0.5)
             match ch:
                 case 1:
-                    clear_console(2)
                     chef_menu(username)
                 case 2:
-                    clear_console(2)
                     customer_menu(username)
                 case _:
                     logout(username)
         case "manager":
-            print("You are a Manager. What do you want to do:")
-            print("1. Continue as Manager")
+            print("You are a Manager. How would you like to proceed:")
+            print("1. Continue as a Manager")
             print("2. Continue as a Customer")
             print("3. Logout")
             ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            clear_console(0.5)
             match ch:
                 case 1:
-                    clear_console(2)
                     manager_menu(username)
                 case 2:
-                    clear_console(2)
                     customer_menu(username)
                 case _:
                     logout(username)
         case "administrator":
-            print("You are an Adminstrator. What do you want to do:")
-            print("1. Continue as Admin")
+            print("You are an Adminstrator. How would you like to proceed:")
+            print("1. Continue as an Admin")
             print("2. Continue as a Customer")
             print("3. Logout")
             ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            clear_console(0.5)
             match ch:
                 case 1:
-                    clear_console(2)
                     admin_menu(username)
                 case 2:
-                    clear_console(2)
                     customer_menu(username)
                 case _:
                     logout(username)
         case _:
-            printD("Invalid role. Please contact the administrator.", "red")
-            logout()
-            
+            printD("Your user role in our Database is invalid. Please contact an Administrator to reset your user role.", "yellow")
+            logout(username)
+
+# Reset password function
 def reset_password(usr=None):
     clear_console()
     printD("Reset Password", "cyan")
@@ -247,7 +264,8 @@ def reset_password(usr=None):
             case 3:
                 print("Cancelling...")
                 main_start()
-            
+
+# Registration function     
 def register(staff_username=None, return_func=None):
     clear_console()
     printD("Registration", "cyan")
@@ -337,6 +355,7 @@ def register(staff_username=None, return_func=None):
                 else:
                     main_start()
 
+# Login function
 def login(usr=None):
     clear_console()
     printD("Login to continue.", "cyan")
@@ -362,13 +381,14 @@ def login(usr=None):
         # check if the user has a password
         user_password_data = db_getKey("passwords", login_usr)
         if not user_password_data:
-            printD("Password not set. Please contact an administrator to reset your password.", "red")
+            printD("Password not set. Please contact an administrator to reset your password.", "yellow")
             wait_for_enter("Press Enter to go back to the main screen.", True)
             main_start()
             
         # check if the attempts is greater than or equal to 3, dont let user login if so
         if user_password_data['attempts'] >= 3:
-            printD("You have exceeded the maximum number of login attempts. Please reset your password to unlock your account.", "red")
+            printD("Your account has been locked due to multiple failed login attempts.", "red")
+            printD("Please reset your password to unlock your account.", "yellow")
             print("1. Reset Password \n2. Go Back to Main Menu")
             ch = inp("Enter your choice: ", "int", [1, 2])
             match ch:
@@ -393,7 +413,7 @@ def login(usr=None):
                 main_menu(login_usr, user_data['role'])
             elif inp_password == "":
                 printD("Please enter your password to login.", "yellow")
-                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "red", True)
+                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "yellow", True)
                 print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
                 ch = inp("Enter your choice: ", "int", [1, 2, 3])
                 match ch:
@@ -408,7 +428,7 @@ def login(usr=None):
                 printD("Invalid password.", "red")
                 user_password_data['attempts'] += 1
                 db_updateKey("passwords", login_usr, user_password_data)
-                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "red", True)
+                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "yellow", True)
                 print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
                 ch = inp("Enter your choice: ", "int", [1, 2, 3])
                 match ch:
@@ -451,5 +471,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         clear_console()
         printD("\nProgram interrupted. \nExiting...", "red", True)
+    except Exception as e:
+        printD(f"\nAn error occurred: {e}. \nExiting...", "red", True)
     # except:
     #     printD("\nAn error occurred. \nExiting...", "red", True)
