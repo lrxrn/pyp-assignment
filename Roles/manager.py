@@ -336,18 +336,17 @@ def add_menu(cur_usr):
 
 # 2.2.1 Function to edit menu list
 def edit_menu_list(cur_usr, type, goback="", menuitem=""):
-    editmenu = loaddatabase("menu", "read")
-    currentvalue = next((item[type] for item in editmenu if item['MenuItmID'] == menuitem), None)
+    menu = loaddatabase("menu", "read")
+
+    currentvalue = menu[menuitem][type]
     print(f"Edit {type}\nCurrent {type.lower()}: {currentvalue}")
 
     new_value = input(f"Enter new {type.lower()}: ")
 
-    for item in editmenu:
-        if item['MenuItmID'] == menuitem:
-            item[type] = new_value
-            loaddatabase("menu", "write", editmenu)
-            print(f"{type} updated successfully.")
-            break
+    if menu[menuitem]:
+        menu[menuitem][type] = new_value
+        loaddatabase("menu", "write", menu)
+        print(f"{type} updated successfully.")
 
     if goback == "view":
         view_menu(cur_usr)
@@ -381,13 +380,13 @@ def edit_menu_item(cur_usr, menuitem=""):
             menuitem = edit_menu_option
             match option:
                 case 1:
-                    edit_menu_list(cur_usr, "Name", goback, menuitem)
+                    edit_menu_list(cur_usr, "name", goback, menuitem)
                 case 2:
-                    edit_menu_list(cur_usr, "CuisineType", goback, menuitem)
+                    edit_menu_list(cur_usr, "cuisineType", goback, menuitem)
                 case 3:
-                    edit_menu_list(cur_usr, "Price", goback, menuitem)
+                    edit_menu_list(cur_usr, "price", goback, menuitem)
                 case 4:
-                    edit_menu_list(cur_usr, "Category", goback, menuitem)
+                    edit_menu_list(cur_usr, "category", goback, menuitem)
                 case 5:
                     manage_menuandpricing(cur_usr)
 
@@ -447,23 +446,24 @@ def delete_menu_item(cur_usr, goback="", menu=""):
 def view_menu(cur_usr):
     print("View Menu")
     menu = loaddatabase("menu", "read")
-    display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category"], [
-        (i + 1, menu[i]["MenuItmID"], menu[i]["Name"], menu[i]["CuisineType"], menu[i]["Price"], menu[i]["Category"])
-        for i in range(len(menu))])
+    menuitems = []
+    for key, value in menu.items():
+        value["MenuItmID"] = key
+        menuitems.append(value)
 
+    display_table(["No.", "Menu Item ID", "Name", "Cuisine Type", "Price", "Category", "Available"], [(i + 1, menuitems[i]["MenuItmID"], menuitems[i]["name"], menuitems[i]["cuisineType"], menuitems[i]["price"], menuitems[i]["category"], "Yes" if menuitems[i]["available"] else "No") for i in range(len(menu))])
     while True:
         option = input("Enter the menu number to edit or delete (type \"c\" to cancel): ")
 
         if option.isnumeric():
             if 0 < int(option) <= len(menu):
-                option2 = input(
-                    "Do you want to edit or delete the menu item? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
+                option2 = input("Do you want to edit or delete the menu item? (type \"e\" to edit, \"d\" to delete, \"c\" to cancel): ").lower()
 
                 if option2 == "e":
-                    edit_menu_item(cur_usr, menu[int(option) - 1]["MenuItmID"])
+                    edit_menu_item(cur_usr, menuitem=menuitems[int(option) - 1]["MenuItmID"])
                     break
                 elif option2 == "d":
-                    delete_menu_item(cur_usr, "view", menu[int(option) - 1]["MenuItmID"])
+                    delete_menu_item(cur_usr, "view", menuitems[int(option) - 1]["MenuItmID"])
                     break
                 else:
                     manage_menuandpricing(cur_usr)
@@ -471,6 +471,9 @@ def view_menu(cur_usr):
             else:
                 print(f"Invalid input. Please type a number from 1 to {len(menu)}")
                 continue
+        elif option.lower() == "c":
+            manage_menuandpricing(cur_usr)
+            break
 
 
 # 3 Function to view ingredients list requested by chefs
