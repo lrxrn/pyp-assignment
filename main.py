@@ -1,10 +1,13 @@
-# Import the core modules
+"""The main program file for the Restaurant Management System."""
+# Import the required modules
 import base64
 import re
 
 # Import the modules
-from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_savePassword
-from Modules.utils import clear_console, inp, wait_for_enter, printD, generate_password, decode_password, time_object, date_diff
+from Modules.db import db_addKey, db_getKey, db_updateKey
+from Modules.db import db_getAllKeys, db_getAllValues, db_savePassword
+from Modules.utils import clear_console, inp, wait_for_enter, printD, display_rich_table
+from Modules.utils import generate_password, decode_password, time_object, date_diff
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -14,6 +17,11 @@ from Roles.customer import start as customer_menu
 
 # Logout function
 def logout(usr=None):
+    """Function to logout the user and return to the main menu.
+
+    Args:
+        usr (str, optional): The username of the user who is logging out. Defaults to None.
+    """
     print("\n")
     if usr:
         printD(f"Logging out... \nGoodbye {usr}.", "yellow")
@@ -24,8 +32,15 @@ def logout(usr=None):
 
 # Update profile function
 def update_profile(username, admin_username=None, choice=None, return_func=None):
+    """Function to update the profile of a user.
+
+    Args:
+        username (str): The username of the user that the profile is being updated.
+        admin_username (str, optional): The governing admin user if any. Defaults to None.
+        choice (int, optional): The pre-chosen choice option. Defaults to None.
+        return_func (func, optional): The function to return to. Defaults to None.
+    """
     clear_console()
-    global admin_privileges
     admin_privileges = False
     if admin_username:
         admin_user_data = db_getKey("users", admin_username)
@@ -148,6 +163,12 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
 
 # Main menu function
 def main_menu(username, role:str):
+    """The main menu function that redirects the user to their respective roles.
+
+    Args:
+        username (str): The username of the user.
+        role (str): The role of the user.
+    """
     role = role.strip().lower()
     match role:
         case "customer":
@@ -202,6 +223,11 @@ def main_menu(username, role:str):
 
 # Reset password function
 def reset_password(usr=None):
+    """A function to reset the password of a user.
+
+    Args:
+        usr (str, optional): The username of the user to reset the password of. Defaults to None.
+    """
     clear_console()
     printD("Reset Password", "cyan")
     print("-"*35)
@@ -267,6 +293,12 @@ def reset_password(usr=None):
 
 # Registration function     
 def register(staff_username=None, return_func=None):
+    """Function to register a new user.
+
+    Args:
+        staff_username (str, optional): The username of the staff that invokes the register function. Defaults to None.
+        return_func (func, optional): The user menu function to return to. Defaults to None.
+    """
     clear_console()
     printD("Registration", "cyan")
     print("-"*35)
@@ -357,6 +389,11 @@ def register(staff_username=None, return_func=None):
 
 # Login function
 def login(usr=None):
+    """Function to login to the system.
+
+    Args:
+        usr (str, optional): The username of the user that is logging in. Defaults to None.
+    """
     clear_console()
     printD("Login to continue.", "cyan")
     if usr:
@@ -376,6 +413,10 @@ def login(usr=None):
         elif inp_username in userEmails:
             user_data = userDataMap[userEmails.index(inp_username)]
             login_usr = user_data['username']
+        else:
+            printD("Username / Email not found.", "red")
+            wait_for_enter("Press Enter to go back to the main screen.", True)
+            return main_start()
             
         printD(f"Hi, {login_usr}.", "white", True)
         # check if the user has a password
@@ -444,26 +485,24 @@ def login(usr=None):
         main_start()
 
 def main_start():
+    """A function to start the main program. This function is the entry point of the program.
+    """
     clear_console()
     # Load the users database to run the pre-check and add the default admin user if not present
     db_getAllKeys("users")
     printD("Welcome to the Restaurant Management System.", "blue", True)
-    print("1. Login \n2. Register \n3. Reset Password \n4. Exit")
-    ch = inp("Enter your choice: ", "int", [1, 2, 3, 4])
+    display_rich_table(title="Main Menu", data=[["1", "Login"], ["2", "Register"], ["3", "Reset Password"], ["E", "Exit"]])
+    ch = inp("Enter your choice: ", "str", ["1", "2", "3", "E"], stringUpperSensitive=True)
     match ch:
-        case 1:
+        case "1":
             login()
-        case 2:
+        case "2":
             register(None, main_start)
-        case 3:
+        case "3":
             reset_password()
-        case 4:
+        case "E":
             printD("Exiting...", "red", True)
             exit()
-        case _:
-            printD("Invalid choice. Please try again.", "yellow")
-            wait_for_enter("Press Enter to go back to the main screen.")
-            main_start()
 
 if __name__ == "__main__":
     try:
@@ -472,6 +511,8 @@ if __name__ == "__main__":
         clear_console()
         printD("\nProgram interrupted. \nExiting...", "red", True)
     except Exception as e:
-        printD(f"\nAn error occurred: {e}. \nExiting...", "red", True)
+        printD(f"\nAn error occurred: {e}. \nForced Logout...", "red", True)
+        logout()
+        raise e
     # except:
     #     printD("\nAn error occurred. \nExiting...", "red", True)

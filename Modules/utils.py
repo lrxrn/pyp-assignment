@@ -112,8 +112,20 @@ def generate_id(name, category):
     return f"{name[:3].upper()}{category[:3].upper()}{int(time.time())}"
         
 # Function to display a table
-def display_table(headers=[], data=[], tablefmt="rounded_outline"):
+def display_table(headers=[], data=[], tablefmt="rounded_grid"):
     print(tabulate.tabulate(data, headers=headers, tablefmt=tablefmt))
+    
+def display_rich_table(data, title):
+    from rich.console import Console
+    from rich.table import Table
+    from rich import box
+    table = Table(title=title, show_header=False, box=box.ROUNDED, show_lines=False, title_style="black on white")
+
+    for row in data:
+        table.add_row(*row)
+
+    console = Console()
+    console.print(table)
     
 # Function to display messages in color
 def printD(msg, color="white", bold=False):
@@ -168,13 +180,17 @@ Function to take user input with validation
 
 Returns: the user input or None if the user cancels the input
 """
-def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None, reverse=False, invalidInpMsg: str=None, cancelAllowed=False, cancelFunc=None):
+def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None, reverse=False, invalidInpMsg: str=None, cancelAllowed=False, cancelFunc=None, stringUpperSensitive=False):
     if cancelAllowed:
         if cancelFunc is None:
             cancelFunc = lambda: None
         if valid_values:
             valid_values = valid_values + ["c"]
         msg = f"{msg} (Type 'c' to cancel): "
+        
+    # stringCaseSensitive is only applicable to string type
+    if type == "str" and stringUpperSensitive:
+        valid_values = [str(val).upper() for val in valid_values]
     
     def is_valid(value):
         if valid_values is None:
@@ -292,6 +308,8 @@ def inp(msg: str="Input your value: ", type: str="str", valid_values: list=None,
                 if cancelAllowed and user_input.lower() == 'c':
                     cancelFunc()
                     return None
+                if stringUpperSensitive:
+                    user_input = user_input.upper()
                 if is_valid(user_input):
                     break
                 else:
