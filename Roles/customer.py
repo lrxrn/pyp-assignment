@@ -1,5 +1,11 @@
 from tabulate import tabulate
 from Modules.db import *
+from datetime import datetime
+from Modules.functions import get_next_id
+
+def time_object():
+    now = datetime.now()
+    return now.strftime('%d-%b-%Y'), now.strftime('%I:%M %p')
 
 
 def logout(cur_usr):
@@ -12,6 +18,7 @@ def update_profile(cur_user):
 
 
 def start(current_user):
+    print("Customer Menu")
     print("1. View and Order food")
     print("2. View order status")
     print("3. Send feedback to owner")
@@ -19,7 +26,7 @@ def start(current_user):
     print("5. Logout")
     choice = int(input("Enter a choice: "))
     if choice == 1:
-        show_menu(current_user)
+        collect_order(current_user)
     elif choice == 2:
         view_order_status(current_user)
     elif choice == 3:
@@ -34,7 +41,7 @@ def start(current_user):
 
 
 # Function to display the menu
-def show_menu(current_user):
+def show_menu():
     menu = db_getAllKeys("menu")
     items = []
     for item in menu:
@@ -46,8 +53,96 @@ def show_menu(current_user):
     rows = [(items[i]["ID"],items[i]["name"], items[i]["price"]) for i in range(len(items))]
     table = tabulate(rows, headers, tablefmt="grid")
     print(table)
-    start(current_user)
+    
+def collect_order(current_user):
+    orderItems = []
+    while True:
+        show_menu()
+        item = input("Enter the item number you want to order: ").upper()
+        if not db_getKey("menu", item):
+            print("Invalid item number")
+            continue
+        quantity = int(input("Enter the quantity: "))
+        orderItems.append({"item": item, "quantity": quantity})
+        ch = input("Do you want to order more items? (y/n): ")
+        if ch.lower() == "n":
+            break
 
+    diningOpt = input("Enter the dining option (Dine-in/Takeaway): ")
+    if diningOpt.lower() == "takeaway":
+        address = input("Enter the address: ")
+    else:
+        address = "Dine-in"
+        
+    print("Order Summary")
+    headers = ["Item", "Quantity"]
+    rows = [(db_getKey("menu", item["item"])["name"], item["quantity"]) for item in orderItems]
+    print(tabulate(rows, headers, tablefmt="grid"))
+    print(f"Dining Option: {diningOpt}")
+    if diningOpt.lower() == "takeaway":
+        print(f"Delivery Address: {address}")
+    totalAmt = sum([db_getKey("menu", item["item"])["price"] * item["quantity"] for item in orderItems])
+    print(f"Total Amount: {totalAmt}")
+    confirm = input("Confirm Order? (y/n): ")
+    if confirm.lower() == "y":
+        while True:
+            payment_method = input("How would you like to pay? (Card, Cash): ")
+            payment_amount = int(input("Enter the amount: "))
+            if payment_method.lower() == "cash":
+                if payment_amount < totalAmt:
+                    print("Insufficient amount")
+                    continue
+                elif payment_amount > totalAmt:
+                    change = payment_amount - totalAmt
+                    print(f"Change: {change}")
+                print("Payment successful")
+                break
+            elif payment_method.lower() == "card":
+                print("Payment successful")
+                break
+            else:
+                print("Invalid payment method")
+                continue
+        payment_dict = {
+            "method": payment_method,
+            "status": "Paid",
+            "amount": payment_amount,
+            "change": change if payment_method.lower() == "cash" else 0
+        }
+        place_order(orderItems, diningOpt, address, current_user, payment_dict)
+    else:
+        print("Order Cancelled")
+    start(current_user)
+        
+        
+        
+    
+def place_order(orderItems, diningOpt, address, current_user):
+    order_dict = create_order_dict(orderItems, diningOpt, address, current_user)
+    order_id = get_next_id("orders")
+    db_addKey("orders", order_id, order_dict)
+    print(f"Order placed successfully. Your order ID is {order_id}")
+        
+
+def create_order_dict(orderItems, diningOpt, address, customer, payment_dict):
+    date, time = time_object()
+    totalAmt = sum([db_getKey("menu", item["item"])["price"] * item["quantity"] for item in orderItems])
+    order = {
+        "status": "Order Placed",
+        "details": {
+            "items": orderItems,
+            "totalAmount": totalAmt,
+            "diningOption": diningOpt,
+            "deliveryAddress": address
+        },
+        "date": date,
+        "time": time,
+        "customer": customer,
+        "chef": "N/a",
+        "payment": payment_dict,
+        "feedback": {}
+    }
+    return order
 
 # this function is to show the order status
 def view_order_status(order_id):
@@ -59,77 +154,3 @@ def show_feedback(Feedback_ID):
     rating = input("pleas give us your rating:")
     additionalfeedbck = input("pleas give us any addiotion: ")
     return {Feedback_ID: {"rating": rating, "additionfeedback": additionalfeedbck}}
-
-
-database = {
-    "users": {
-        "username": {
-            "name": "Name",
-            "email": "Email",
-            "role": "Customer",
-            "Phone": "+1243456789",
-            "DOB": "01/01/2000",
-            "address": "One South"
-        }
-    },
-    "passwords": {
-        "username": "Password"
-    },
-    "orders": {
-        "OrderID": {
-            "date": "01/01/2000",
-            "MenuItems": [
-                "MenuOptID"
-            ],
-            "OrderStatus": "In Progress",
-            "DineOpt": "Dine in",
-            "PaymentOpt": "Cash",
-            "TotalAmt": 52
-        }
-    },
-    "menu": [
-        {
-            "MenuOptID": "C_01_1",
-            "Name": "Dish1",
-            "CuisineType": "Arabic",
-            "Price": 4,
-            "Category": "Main Dish"
-        },
-        {
-            "MenuOptID": "C_01_1",
-            "Name": "Dish2",
-            "CuisineType": "Arabic",
-            "Price": 4.8,
-            "Category": "Main Dish"
-        }
-    ],
-    "ingridients": [
-        {
-            "RequestID": "R_1",
-            "RequestStatus": "Completed",
-            "Ingredient": {
-                "name": "egg",
-                "quantity": 2
-            },
-            "RequestedChef": "user1",
-            "History": [
-                {
-                    "User": "jonh",
-                    "Status": "Completed Request",
-                    "Date": "01/01/2020",
-                    "Time": "01:00PM"
-                }
-            ]
-        }
-    ],
-    "feedback": {
-        "FeedbackID": {
-            "rating": 3,
-            "additionalFeedback": 0,
-            "adminResponse": 0,
-            "Customer": 0
-        }
-    }
-}
-
-
