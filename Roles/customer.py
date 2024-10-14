@@ -63,7 +63,7 @@ def collect_order(current_user):
             print("Invalid item number")
             continue
         quantity = int(input("Enter the quantity: "))
-        orderItems.append({"item": item, "quantity": quantity})
+        orderItems.append({"ID": item, "quantity": quantity})
         ch = input("Do you want to order more items? (y/n): ")
         if ch.lower() == "n":
             break
@@ -143,12 +143,99 @@ def create_order_dict(orderItems, diningOpt, address, customer, payment_dict):
     return order
 
 # this function is to show the order status
-def view_order_status(order_id):
-    print(f"Order Status: {database["orders"][order_id]["OrderStatus"]}")
+def view_order_status(current_user):
+    orders = db_getAllKeys("orders")
+    order_list = []
+    for order in orders:
+        order_dict = db_getKey("orders", order)
+        order_dict["ID"] = order
+        if order_dict["customer"] == current_user and order_dict["status"].lower() != "completed":
+            order_list.append(order_dict)
+    if not order_list:
+        print("No orders found")
+        start(current_user)
+    headers = ["Order ID", "Status", "Date", "Time", "Total Amount"]
+    rows = [(order["ID"], order["status"], order["date"], order["time"], order["details"]["totalAmount"]) for order in order_list]
+    print(tabulate(rows, headers, tablefmt="grid"))
+    order_id = input("Enter the order ID to view details: ").upper()
+    order_details = db_getKey("orders", order_id)
+    if not order_details:
+        print("Invalid Order ID")
+        start(current_user)
+    print("Order Details")
+    print(f"Order ID: {order_id}")
+    print(f"Status: {order_details['status']}")
+    print(f"Date: {order_details['date']}")
+    print(f"Time: {order_details['time']}")
+    print("Items")
+    headers = ["Item", "Quantity"]
+    rows = [(db_getKey("menu", item["ID"])["name"], item["quantity"]) for item in order_details["details"]["items"]]
+    print(tabulate(rows, headers, tablefmt="grid"))
+    print(f"Total Amount: {order_details['details']['totalAmount']}")
+    print(f"Dining Option: {order_details['details']['diningOption']}")
+    if order_details['details']['diningOption'].lower() == "takeaway":
+        print(f"Delivery Address: {order_details['details']['deliveryAddress']}")
+    print("Payment Details")
+    print(f"Payment Method: {order_details['payment']['method']}")
+    print(f"Payment Status: {order_details['payment']['status']}")
+    print(f"Amount: {order_details['payment']['amount']}")
+    if order_details['payment']['method'].lower() == "cash":
+        print(f"Change: {order_details['payment']['change']}")
+    start(current_user)
+    
+def show_orders(user=None):
+    if not user:
+        orders = db_getAllKeys("orders")
+    else:
+        orders = db_getAllKeys("orders")
+        for order in orders:
+            order_dict = db_getKey("orders", order)
+            if order_dict["customer"] != user:
+                orders.remove(order)
+        
+    order_list = []
+    for order in orders:
+        order_dict = db_getKey("orders", order)
+        order_dict["ID"] = order
+        order_list.append(order_dict)
+    
+    if not orders:
+        print("No orders :D")
+        return False
+    else:
+        headers = ["Order ID", "Item ID", "Quantity"]
+        rows = [(order["ID"], order["status"], order["date"], order["time"], order["details"]["totalAmount"]) for order in order_list]
+        print(tabulate(rows, headers, tablefmt="grid"))
+        return True
 
 
 # this function is asking the customer for feedbacks
-def show_feedback(Feedback_ID):
-    rating = input("pleas give us your rating:")
-    additionalfeedbck = input("pleas give us any addiotion: ")
-    return {Feedback_ID: {"rating": rating, "additionfeedback": additionalfeedbck}}
+def show_feedback(current_user):
+    show_orders(current_user)
+    order_id = input("Enter the order ID to give feedback: ").upper()
+    order = db_getKey("orders", order_id)
+    if not order:
+        print("Invalid Order ID")
+        start(current_user)
+    if order["customer"] != current_user:
+        print("You can only give feedback for your orders")
+        start(current_user)
+    if order["status"].lower() != "completed":
+        print("You can only give feedback for completed orders")
+        start(current_user)
+    if order["feedback"] != {}:
+        print("Feedback already given")
+        start(current_user)
+    feedback = input("How much would you rate the food? (1-5): ")
+    ch = input("Any additional feedback? (y/n): ")
+    if ch.lower() == "y":
+        additional_feedback = input("Enter your feedback: ")
+    else:
+        additional_feedback = ""
+    order["feedback"] = {
+        "rating": feedback,
+        "comments": additional_feedback,
+        "response": ""
+    }
+    db_updateKey("orders", order_id, order)
+    print("Feedback submitted successfully")
