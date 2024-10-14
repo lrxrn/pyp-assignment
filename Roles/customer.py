@@ -113,12 +113,10 @@ def collect_order(current_user):
     else:
         print("Order Cancelled")
     start(current_user)
-        
-        
-        
-    
-def place_order(orderItems, diningOpt, address, current_user):
-    order_dict = create_order_dict(orderItems, diningOpt, address, current_user)
+
+
+def place_order(orderItems, diningOpt, address, current_user, payment_dict):
+    order_dict = create_order_dict(orderItems, diningOpt, address, current_user, payment_dict)
     order_id = get_next_id("orders")
     db_addKey("orders", order_id, order_dict)
     print(f"Order placed successfully. Your order ID is {order_id}")
