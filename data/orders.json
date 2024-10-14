@@ -28,7 +28,7 @@
         },
         "feedback": {
             "rating": "5",
-            "additional": "",
+            "comments": "",
             "response": ""
         }
     },
@@ -60,9 +60,9 @@
             "change": 5
         },
         "feedback": {
-            "rating": 4,
+            "rating": "5",
             "comments": "",
-            "response": ""
+            "response": "Ok"
         }
     },
     "ORD-003": {
@@ -88,6 +88,10 @@
             "amount": 75,
             "change": 25
         },
-        "feedback": {}
+        "feedback": {
+            "rating": "",
+            "comments": "",
+            "response": ""
+        }
     }
 }
