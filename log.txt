@@ -1,3 +1,1 @@
-[15-Oct-2024 11:42 AM] [ERROR] [main.py] time data 'never' does not match format '%d-%b-%Y %I:%M %p'
-[15-Oct-2024 12:01 PM] [ERROR] [main.py] manageStaff() missing 1 required positional argument: 'cur_usr'
-[15-Oct-2024 12:14 PM] [ERROR] [main.py] Object of type bytes is not JSON serializable
+_LOG_
