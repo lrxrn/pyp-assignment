@@ -19,30 +19,34 @@ Project is created with:
 ```ascii
 .
 ├── Data
-│   ├── menuItems.json
+│   ├── ingredients.json
+│   ├── menu.json
+│   ├── orders.json
 │   ├── passwords.json
 │   └── users.json
-├── Individual
-│   ├── mazin
-│   │   ├── main.py
-│   │   ├── test.py
-│   │   └── testmenu.py
-│   └── mikko
-│       └── main.py
 ├── Modules
 │   ├── db.py
 │   └── functions.py
+├── Pseudocode
+│   ├── login.code
+│   └── update-profile.code
 ├── README.md
 ├── Roles
-│   └── manager.py
+│   ├── admin.py
+│   ├── chef.py
+│   ├── customer.py
+│   ├── manager.py
+│   ├── menuItems.json
+│   ├── passwords.json
+│   └── users.json
 ├── config.ini
 ├── file_strcuture.txt
 ├── main.py
 ├── requirements.txt
 ├── test.py
-└── test_manager.py
+└── wordlist.txt
 
-7 directories, 17 files
+5 directories, 23 files
 ```
 
 ## Database
