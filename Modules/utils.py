@@ -115,11 +115,11 @@ def generate_id(name, category):
 def display_table(headers=[], data=[], tablefmt="rounded_grid"):
     print(tabulate.tabulate(data, headers=headers, tablefmt=tablefmt))
     
-def display_rich_table(data, title):
+def display_rich_table(data, title, title_style="black on white"):
     from rich.console import Console
     from rich.table import Table
     from rich import box
-    table = Table(title=title, show_header=False, box=box.ROUNDED, show_lines=False, title_style="black on white")
+    table = Table(title=title, show_header=False, box=box.ROUNDED, show_lines=False, title_style=title_style, row_styles=["", "dim"])
 
     for row in data:
         table.add_row(*row)

@@ -69,10 +69,12 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
                 printD("Password: Not set", "yellow")
             elif user_password_data['attempts'] >= 3:
                 printD("Password: Locked", "yellow")
-            print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Update Role \n7. Go Back to Main Menu")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6, 7])
+            
+            display_rich_table(title="Update profile", data=[["1", "Update name"], ["2", "Update email"], ["3", "Update phone number"], ["4", "Update address"], ["5", "Update password"], ["6", "Update role"], ["M", "Go back to [M]ain menu"]], title_style="cyan on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
+            ch = inp("Enter your choice: ", "str", ["1", "2", "3", "4", "5", "6", "M"], stringUpperSensitive=True)
         else:
-            print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Go Back to Main Menu")
+            display_rich_table(title="Update profile", data=[["1", "Update name"], ["2", "Update email"], ["3", "Update phone number"], ["4", "Update address"], ["5", "Update password"], ["M", "Go back to [M]ain menu"]], title_style="cyan on white")
             ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
     else:
         ch = choice
@@ -176,44 +178,35 @@ def main_menu(username, role:str):
             clear_console(0.5)
             customer_menu(username)
         case "chef":
-            print("You are a Chef. How would you like to proceed:")
-            print("1. Continue as a Chef")
-            print("2. Continue as a Customer")
-            print("3. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            display_rich_table(title="You are a Chef.", data=[["1", "Continue as a Chef"], ["2", "Continue as a Customer"], ["L", "[L]ogout"]], title_style="bright_magenta on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
             clear_console(0.5)
             match ch:
-                case 1:
+                case "1":
                     chef_menu(username)
-                case 2:
+                case "2":
                     customer_menu(username)
                 case _:
                     logout(username)
         case "manager":
-            print("You are a Manager. How would you like to proceed:")
-            print("1. Continue as a Manager")
-            print("2. Continue as a Customer")
-            print("3. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            display_rich_table(title="You are a Manager.", data=[["1", "Continue as a Manager"], ["2", "Continue as a Customer"], ["L", "[L]ogout"]], title_style="bright_magenta on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
             clear_console(0.5)
             match ch:
-                case 1:
+                case "1":
                     manager_menu(username)
-                case 2:
+                case "2":
                     customer_menu(username)
                 case _:
                     logout(username)
         case "administrator":
-            print("You are an Adminstrator. How would you like to proceed:")
-            print("1. Continue as an Admin")
-            print("2. Continue as a Customer")
-            print("3. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            display_rich_table(title="You are an Admin.", data=[["1", "Continue as an Administrator"], ["2", "Continue as a Customer"], ["L", "[L]ogout"]], title_style="bright_magenta on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
             clear_console(0.5)
             match ch:
-                case 1:
+                case "1":
                     admin_menu(username)
-                case 2:
+                case "2":
                     customer_menu(username)
                 case _:
                     logout(username)
@@ -242,10 +235,10 @@ def reset_password(usr=None):
         return
     else:
         print(f"Hi, {username}. \nBefore resetting your password, we need to verify your identity.")
-        print("1. Email Verification \n2. Phone Verification \n3. Cancel")
-        ch = inp("Enter your choice: ", "int", [1, 2, 3])
+        display_rich_table(title="Identity verification", data=[["1", "Email verification"], ["2", "Phone verification"], ["C", "[C]ancel and Go back to Main menu"]], title_style="green on white")
+        ch = inp("Enter your choice: ", "str", ["1", "2", "C"], stringUpperSensitive=True)
         match ch:
-            case 1:
+            case "1":
                 email = db_getKey("users", username)["email"]
                 print("Please enter your email address to verify your identity.")
                 user_input = inp("Enter your email: ", "email")
@@ -266,7 +259,7 @@ def reset_password(usr=None):
                     printD("Email is not the valid email on file.", "yellow")
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_start()
-            case 2:
+            case "2":
                 phone = db_getKey("users", username)["PhoneNumber"]
                 print("Please enter your phone number to verify your identity.")
                 user_input = inp("Enter your phone number: ", "int")
@@ -287,7 +280,7 @@ def reset_password(usr=None):
                     printD("Phone number is not the valid number on file.", "yellow")
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_start()
-            case 3:
+            case "C":
                 print("Cancelling...")
                 main_start()
 
@@ -430,12 +423,12 @@ def login(usr=None):
         if user_password_data['attempts'] >= 3:
             printD("Your account has been locked due to multiple failed login attempts.", "red")
             printD("Please reset your password to unlock your account.", "yellow")
-            print("1. Reset Password \n2. Go Back to Main Menu")
-            ch = inp("Enter your choice: ", "int", [1, 2])
+            display_rich_table(title="Forgot password?", data=[["1", "Reset Password"], ["M", "Go back to [M]ain menu"]], title_style="yellow on white")
+            ch = inp("Enter your choice: ", "str", ["1", "M"], stringUpperSensitive=True)
             match ch:
-                case 1:
+                case "1":
                     reset_password(login_usr)
-                case 2:
+                case "M":
                     main_start()
         else:
             user_password = decode_password(user_password_data['password'])
@@ -454,31 +447,21 @@ def login(usr=None):
                 main_menu(login_usr, user_data['role'])
             elif inp_password == "":
                 printD("Please enter your password to login.", "yellow")
-                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "yellow", True)
-                print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
-                ch = inp("Enter your choice: ", "int", [1, 2, 3])
-                match ch:
-                    case 1:
-                        reset_password(login_usr)
-                    case 2:
-                        login(login_usr)
-                    case 3:
-                        main_start()
             else:
                 clear_console()
                 printD("Invalid password.", "red")
                 user_password_data['attempts'] += 1
                 db_updateKey("passwords", login_usr, user_password_data)
-                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "yellow", True)
-                print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
-                ch = inp("Enter your choice: ", "int", [1, 2, 3])
-                match ch:
-                    case 1:
-                        reset_password(login_usr)
-                    case 2:
-                        login(login_usr)
-                    case 3:
-                        main_start()
+            printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "yellow", True)
+            display_rich_table(title="Forgot password?", data=[["1", "Reset Password"], ["2", "Try again"], ["M", "Go back to [M]ain menu"]], title_style="yellow on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "M"], stringUpperSensitive=True)
+            match ch:
+                case "1":
+                    reset_password(login_usr)
+                case "2":
+                    login(login_usr)
+                case "M":
+                    main_start()
     else:
         printD("Username / Email not found.", "red")
         wait_for_enter("Press Enter to go back to the main screen.", True)
@@ -491,7 +474,7 @@ def main_start():
     # Load the users database to run the pre-check and add the default admin user if not present
     db_getAllKeys("users")
     printD("Welcome to the Restaurant Management System.", "blue", True)
-    display_rich_table(title="Main Menu", data=[["1", "Login"], ["2", "Register"], ["3", "Reset Password"], ["E", "Exit"]])
+    display_rich_table(title="Main Menu", data=[["1", "Login"], ["2", "Register"], ["3", "Reset Password"], ["E", "[E]xit"]])
     ch = inp("Enter your choice: ", "str", ["1", "2", "3", "E"], stringUpperSensitive=True)
     match ch:
         case "1":
