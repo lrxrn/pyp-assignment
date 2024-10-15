@@ -212,7 +212,7 @@ def get_ingredients(Ingredient, Quantity, Measure):
     }
 
 
-# Main function test the functions
+# Main function to test the functions
 def main():
     def load_file(file_name):
         with open(file_name) as file:
