@@ -8,7 +8,7 @@
                     "quantity": 2
                 },
                 {
-                    "ID": "DS-01",
+                    "ID": "BG-02",
                     "quantity": 1
                 }
             ],
@@ -27,9 +27,9 @@
             "change": 0
         },
         "feedback": {
-            "rating": 5,
-            "comments": "Great food, will order again!",
-            "response": "Thanks"
+            "rating": "5",
+            "comments": "",
+            "response": ""
         }
     },
     "ORD-002": {
@@ -37,11 +37,11 @@
         "details": {
             "items": [
                 {
-                    "MenuItmID": "BG-03",
+                    "ID": "BG-02",
                     "Quantity": 2
                 },
                 {
-                    "MenuItmID": "PZ-01",
+                    "ID": "BG-01",
                     "Quantity": 1
                 }
             ],
@@ -60,7 +60,36 @@
             "change": 5
         },
         "feedback": {
-            "rating": 4,
+            "rating": "5",
+            "comments": "",
+            "response": "Ok"
+        }
+    },
+    "ORD-003": {
+        "status": "Order Placed",
+        "details": {
+            "items": [
+                {
+                    "ID": "BG-01",
+                    "quantity": 5
+                }
+            ],
+            "totalAmount": 50,
+            "diningOption": "dine-in",
+            "deliveryAddress": "Dine-in"
+        },
+        "date": "14-Oct-2024",
+        "time": "03:11 PM",
+        "customer": "zara",
+        "chef": "N/a",
+        "payment": {
+            "method": "cash",
+            "status": "Paid",
+            "amount": 75,
+            "change": 25
+        },
+        "feedback": {
+            "rating": "",
             "comments": "",
             "response": ""
         }
