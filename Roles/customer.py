@@ -1,36 +1,23 @@
 from tabulate import tabulate
 from Modules.db import *
-from datetime import datetime
-from Modules.functions import get_next_id
-
-def time_object():
-    now = datetime.now()
-    return now.strftime('%d-%b-%Y'), now.strftime('%I:%M %p')
+from Modules.utils import get_next_id, time_object, display_table, wait_for_enter, printD, inp
 
 
-def logout(cur_usr):
-    from main import logout as logout_main
-    logout_main(cur_usr)
-
-def update_profile(cur_user):
-    from main import update_profile as update_profile_main
-    update_profile_main(cur_user)
-
-
+# this function is to start the customer menu
 def start(current_user):
-    print("Customer Menu")
+    printD("Customer Menu", "magenta")
     print("1. View and Order food")
     print("2. View order status")
-    print("3. Send feedback 1")
+    print("3. Send feedback")
     print("4. Update profile")
     print("5. Logout")
-    choice = int(input("Enter a choice: "))
+    choice = inp("Enter a choice: ", "int", [1, 2, 3, 4, 5])
     if choice == 1:
         collect_order(current_user)
     elif choice == 2:
         view_order_status(current_user)
     elif choice == 3:
-        show_feedback(current_user)
+        send_feedback(current_user)
     elif choice == 4:
         update_profile(current_user)
     elif choice == 5:
@@ -39,20 +26,8 @@ def start(current_user):
         print("wrong input")
         start(current_user)
 
-# Function to display the menu
-def show_menu():
-    menu = db_getAllKeys("menu")
-    items = []
-    for item in menu:
-        dbMenuItem = db_getKey("menu", item)
-        menuItem = { "ID": item, "name": dbMenuItem['name'], "category": dbMenuItem["category"], "cuisineType": dbMenuItem["cuisineType"], "price": dbMenuItem["price"] }
-        items.append(menuItem)
 
-    headers = ["Item number", "Item", "Price"]
-    rows = [(items[i]["ID"],items[i]["name"], items[i]["price"]) for i in range(len(items))]
-    table = tabulate(rows, headers, tablefmt="grid")
-    print(table)
-    
+# 1. this function is to collect the order from the customer
 def collect_order(current_user):
     orderItems = []
     while True:
@@ -76,7 +51,7 @@ def collect_order(current_user):
     print("Order Summary")
     headers = ["Item", "Quantity"]
     rows = [(db_getKey("menu", item["ID"])["name"], item["quantity"]) for item in orderItems]
-    print(tabulate(rows, headers, tablefmt="grid"))
+    display_table(rows, headers)
     print(f"Dining Option: {diningOpt}")
     if diningOpt.lower() == "takeaway":
         print(f"Delivery Address: {address}")
@@ -111,16 +86,20 @@ def collect_order(current_user):
         place_order(orderItems, diningOpt, address, current_user, payment_dict)
     else:
         print("Order Cancelled")
+    wait_for_enter("Press Enter to continue...", clear=True)
     start(current_user)
 
 
+# 1.0.1 this function is to place the order
 def place_order(orderItems, diningOpt, address, current_user, payment_dict):
     order_dict = create_order_dict(orderItems, diningOpt, address, current_user, payment_dict)
     order_id = get_next_id("orders")
     db_addKey("orders", order_id, order_dict)
     print(f"Order placed successfully. Your order ID is {order_id}")
-        
 
+
+  
+# 1.0.2 this function is to create the order dictionary
 def create_order_dict(orderItems, diningOpt, address, customer, payment_dict):
     date, time = time_object()
     totalAmt = sum([db_getKey("menu", item["ID"])["price"] * item["quantity"] for item in orderItems])
@@ -141,7 +120,22 @@ def create_order_dict(orderItems, diningOpt, address, customer, payment_dict):
     }
     return order
 
-# this function is to show the order status
+
+# 1.0.3 this function is to display the menu
+def show_menu():
+    menu = db_getAllKeys("menu")
+    items = []
+    for item in menu:
+        dbMenuItem = db_getKey("menu", item)
+        menuItem = { "ID": item, "name": dbMenuItem['name'], "category": dbMenuItem["category"], "cuisineType": dbMenuItem["cuisineType"], "price": dbMenuItem["price"] }
+        items.append(menuItem)
+
+    headers = ["Item number", "Item", "Price"]
+    rows = [(items[i]["ID"],items[i]["name"], items[i]["price"]) for i in range(len(items))]
+    display_table(rows, headers)
+
+
+# 2. this function is to show the order status
 def view_order_status(current_user):
     orders = db_getAllKeys("orders")
     order_list = []
@@ -156,7 +150,7 @@ def view_order_status(current_user):
     headers = ["Order ID", "Status", "Date", "Time", "Total Amount"]
     rows = [(order["ID"], order["status"], order["date"],
              order["time"], order["details"]["totalAmount"]) for order in order_list]
-    print(tabulate(rows, headers, tablefmt="grid"))
+    display_table(rows, headers)
     order_id = input("Enter the order ID to view details: ").upper()
     order_details = db_getKey("orders", order_id)
     if not order_details:
@@ -170,7 +164,7 @@ def view_order_status(current_user):
     print("Items")
     headers = ["Item", "Quantity"]
     rows = [(db_getKey("menu", item["ID"])["name"], item["quantity"]) for item in order_details["details"]["items"]]
-    print(tabulate(rows, headers, tablefmt="grid"))
+    display_table(rows, headers)
     print(f"Total Amount: {order_details['details']['totalAmount']}")
     print(f"Dining Option: {order_details['details']['diningOption']}")
     if order_details['details']['diningOption'].lower() == "takeaway":
@@ -181,8 +175,11 @@ def view_order_status(current_user):
     print(f"Amount: {order_details['payment']['amount']}")
     if order_details['payment']['method'].lower() == "cash":
         print(f"Change: {order_details['payment']['change']}")
+    wait_for_enter("Press Enter to continue...", clear=True)
     start(current_user)
-    
+
+
+# 2.0.1 this function is to show the feedback   
 def show_orders(user=None):
     if not user:
         orders = db_getAllKeys("orders")
@@ -205,12 +202,12 @@ def show_orders(user=None):
     else:
         headers = ["Order ID", "Item ID", "Quantity"]
         rows = [(order["ID"], order["status"], order["date"], order["time"], order["details"]["totalAmount"]) for order in order_list]
-        print(tabulate(rows, headers, tablefmt="grid"))
+        display_table(rows, headers)
         return True
 
 
-# this function is asking the customer for feedbacks
-def show_feedback(current_user):
+# 3. this function is asking the customer for feedbacks
+def send_feedback(current_user):
     show_orders(current_user)
     order_id = input("Enter the order ID to give feedback: ").upper()
     order = db_getKey("orders", order_id)
@@ -239,3 +236,16 @@ def show_feedback(current_user):
     }
     db_updateKey("orders", order_id, order)
     print("Feedback submitted successfully")
+    wait_for_enter("Press Enter to continue...", clear=True)
+
+
+# 4. this function is to update the profile of the user which is loaded in from the main.py
+def update_profile(cur_user):
+    from main import update_profile as update_profile_main
+    update_profile_main(cur_user)
+
+
+# 5. this function is to logout the user which is loaded in from the main.py
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)

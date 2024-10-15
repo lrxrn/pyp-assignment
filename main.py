@@ -8,6 +8,7 @@ from Modules.db import db_addKey, db_getKey, db_updateKey
 from Modules.db import db_getAllKeys, db_getAllValues, db_savePassword
 from Modules.utils import clear_console, inp, wait_for_enter, printD, display_rich_table
 from Modules.utils import generate_password, decode_password, time_object, date_diff
+from Modules.utils import log
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -175,7 +176,6 @@ def main_menu(username, role:str):
     match role:
         case "customer":
             # No need to ask whether to continue as a customer or not
-            clear_console(0.5)
             customer_menu(username)
         case "chef":
             display_rich_table(title="You are a Chef.", data=[["1", "Continue as a Chef"], ["2", "Continue as a Customer"], ["L", "[L]ogout"]], title_style="bright_magenta on white")
@@ -494,7 +494,8 @@ if __name__ == "__main__":
         clear_console()
         printD("\nProgram interrupted. \nExiting...", "red", True)
     except Exception as e:
-        printD(f"\nAn error occurred: {e}. \nForced Logout...", "red", True)
+        log(e, "error", "main.py")
+        printD(f"\nAn error occurred. Error has been logged. \nLogging out...", "red", True)
         logout()
         raise e
     # except:

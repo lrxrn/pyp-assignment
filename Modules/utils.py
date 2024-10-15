@@ -7,11 +7,20 @@ import random
 import configparser
 import base64
 from pwinput import pwinput
+from rich.console import Console
+from rich.table import Table
+from rich import box
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
 config.read(f"{projectRoot}/config.ini")
 
 wordlist_path = config['Misc']['wordlist']
+
+log_path = config['Misc']['log_file']
+
+def log(msg, log_type="info", file_name=None):
+    with open(f"{log_path}","a") as log_file:
+        log_file.write(f"[{datetime.datetime.strftime(datetime.datetime.now(), '%d-%b-%Y %I:%M %p')}] [{log_type.upper()}] [{file_name if file_name is not None else "Program"}] {msg}\n")
 
 def time_object():
     now = datetime.datetime.now()
@@ -116,9 +125,6 @@ def display_table(headers=[], data=[], tablefmt="rounded_grid"):
     print(tabulate.tabulate(data, headers=headers, tablefmt=tablefmt))
     
 def display_rich_table(data, title, title_style="black on white"):
-    from rich.console import Console
-    from rich.table import Table
-    from rich import box
     table = Table(title=title, show_header=False, box=box.ROUNDED, show_lines=False, title_style=title_style, row_styles=["", "dim"])
 
     for row in data:
