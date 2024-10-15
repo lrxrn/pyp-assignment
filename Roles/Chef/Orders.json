@@ -1,6 +1,6 @@
 {
     "ORD-001": {
-        "status": "Delivered",
+        "status": "Delivereds",
         "details": {
             "items": [
                 {
@@ -33,7 +33,7 @@
         }
     },
     "ORD-002": {
-        "status": "Complewted",
+        "status": "Completeds",
         "details": {
             "items": [
                 {
