@@ -122,6 +122,8 @@ def generate_id(name, category):
         
 # Function to display a table
 def display_table(headers=[], data=[], tablefmt="rounded_grid"):
+    # bold out the data using color_text function
+    headers = [color_text(header, "bold") for header in headers]
     print(tabulate.tabulate(data, headers=headers, tablefmt=tablefmt))
     
 def display_rich_table(data, title, title_style="black on white"):
@@ -132,7 +134,27 @@ def display_rich_table(data, title, title_style="black on white"):
 
     console = Console()
     console.print(table)
-    
+
+# Function to color text
+def color_text(text, color="white", bold=False):
+    colors = {
+        "red": "\033[91m",
+        "green": "\033[92m",
+        "yellow": "\033[93m",
+        "blue": "\033[94m",
+        "magenta": "\033[95m",
+        "cyan": "\033[96m",
+        "pink": "\033[95m",
+        "white": "\033[97m",
+        "dim": "\033[2m",
+        "bold": "\033[1m",
+        "end": "\033[0m"
+    }
+    if bold:
+        return f"{colors['bold']}{colors[color]}{text}{colors['end']}"
+    else:
+        return f"{colors[color]}{text}{colors['end']}"
+
 # Function to display messages in color
 def printD(msg, color="white", bold=False):
     colors = {
