@@ -50,11 +50,13 @@ def show_orders(orders_object):
 
 # Function to update the status of an order to either "Completed" or "Delivered"
 def update_order_status(orders_object):
+    active_orders = {key: value for (key, value) in orders_object.items() if not
+    (value["status"] == "Delivered" or value["status"] == "Completed")}
     try:
-        # Checking the boolean value returned by show_orders() function to
-        if show_orders(orders_object):
+        # Checking the boolean value returned by show_orders() function
+        if show_orders(active_orders):
             order_id = input("\nPlease input the order ID to mark as completed\nOrder ID: ").upper().strip()
-            if order_id not in orders_object:
+            if order_id not in active_orders:
                 print("Invalid Order ID")
                 raise ValueError
             else:
@@ -90,7 +92,7 @@ def request_ingredients():
     while True:
         try:
             ingredient = input("\nPlease input the ingredient you want to request\nIngredient: ")
-            if not ingredient.isalpha():
+            if not ingredient.replace(" ", "").isalpha():
                 raise ValueError("Invalid ingredient input. Please enter a valid name.")
         except ValueError as e:
             print(f"{e}")
@@ -212,7 +214,7 @@ def get_ingredients(Ingredient, Quantity, Measure):
     }
 
 
-# Main function to test the functions
+# Main function to run the program
 def main():
     def load_file(file_name):
         with open(file_name) as file:
@@ -243,7 +245,7 @@ def main():
     try:
         # _show_orders_()
         # _update_order_status_()
-        make_request("ING-008", "Jeff")
+        make_request("ING-011", "Feynman")
     except json.JSONDecodeError as e:
         print(f"Error reading JSON file: {e}")
     except Exception as e:
