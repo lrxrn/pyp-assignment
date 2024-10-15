@@ -21,7 +21,7 @@ def start(current_user):
     print("Customer Menu")
     print("1. View and Order food")
     print("2. View order status")
-    print("3. Send feedback to owner")
+    print("3. Send feedback 1")
     print("4. Update profile")
     print("5. Logout")
     choice = int(input("Enter a choice: "))
@@ -38,7 +38,6 @@ def start(current_user):
     else:
         print("wrong input")
         start(current_user)
-
 
 # Function to display the menu
 def show_menu():
@@ -76,12 +75,12 @@ def collect_order(current_user):
         
     print("Order Summary")
     headers = ["Item", "Quantity"]
-    rows = [(db_getKey("menu", item["item"])["name"], item["quantity"]) for item in orderItems]
+    rows = [(db_getKey("menu", item["ID"])["name"], item["quantity"]) for item in orderItems]
     print(tabulate(rows, headers, tablefmt="grid"))
     print(f"Dining Option: {diningOpt}")
     if diningOpt.lower() == "takeaway":
         print(f"Delivery Address: {address}")
-    totalAmt = sum([db_getKey("menu", item["item"])["price"] * item["quantity"] for item in orderItems])
+    totalAmt = sum([db_getKey("menu", item["ID"])["price"] * item["quantity"] for item in orderItems])
     print(f"Total Amount: {totalAmt}")
     confirm = input("Confirm Order? (y/n): ")
     if confirm.lower() == "y":
@@ -124,7 +123,7 @@ def place_order(orderItems, diningOpt, address, current_user, payment_dict):
 
 def create_order_dict(orderItems, diningOpt, address, customer, payment_dict):
     date, time = time_object()
-    totalAmt = sum([db_getKey("menu", item["item"])["price"] * item["quantity"] for item in orderItems])
+    totalAmt = sum([db_getKey("menu", item["ID"])["price"] * item["quantity"] for item in orderItems])
     order = {
         "status": "Order Placed",
         "details": {
@@ -155,7 +154,8 @@ def view_order_status(current_user):
         print("No orders found")
         start(current_user)
     headers = ["Order ID", "Status", "Date", "Time", "Total Amount"]
-    rows = [(order["ID"], order["status"], order["date"], order["time"], order["details"]["totalAmount"]) for order in order_list]
+    rows = [(order["ID"], order["status"], order["date"],
+             order["time"], order["details"]["totalAmount"]) for order in order_list]
     print(tabulate(rows, headers, tablefmt="grid"))
     order_id = input("Enter the order ID to view details: ").upper()
     order_details = db_getKey("orders", order_id)
