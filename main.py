@@ -8,7 +8,7 @@ from Modules.db import db_addKey, db_getKey, db_updateKey
 from Modules.db import db_getAllKeys, db_getAllValues, db_savePassword
 from Modules.utils import clear_console, inp, wait_for_enter, printD, display_rich_table
 from Modules.utils import generate_password, decode_password, time_object, date_diff
-from Modules.utils import log
+from Modules.utils import log, encode_password
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -63,6 +63,8 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
         print(f"Role: {user_data['role']}")
         if user_password_data is None or user_password_data.get('last_login') is None:
             printD("Last Login: unknown", "yellow")
+        elif user_password_data['last_login'] == "never":
+            printD("Last Login: never", "yellow")
         else:
             printD(f"Last Login: {user_password_data['last_login']} ({date_diff(user_password_data['last_login'])})", "white", True)
         if admin_privileges:
@@ -72,37 +74,36 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
                 printD("Password: Locked", "yellow")
             
             display_rich_table(title="Update profile", data=[["1", "Update name"], ["2", "Update email"], ["3", "Update phone number"], ["4", "Update address"], ["5", "Update password"], ["6", "Update role"], ["M", "Go back to [M]ain menu"]], title_style="cyan on white")
-            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
             ch = inp("Enter your choice: ", "str", ["1", "2", "3", "4", "5", "6", "M"], stringUpperSensitive=True)
         else:
             display_rich_table(title="Update profile", data=[["1", "Update name"], ["2", "Update email"], ["3", "Update phone number"], ["4", "Update address"], ["5", "Update password"], ["M", "Go back to [M]ain menu"]], title_style="cyan on white")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
+            ch = inp("Enter your choice: ", "str", ["1", "2", "3", "4", "5", "M"], stringUpperSensitive=True)
     else:
         ch = choice
   
 
     match ch:
-        case 1:
+        case "1":
             new_name = input("Enter new name: ").strip()
             user_data['name'] = new_name
             db_updateKey("users", username, user_data)
             printD("Name updated successfully.", "green")
-        case 2:
+        case "2":
             new_email = inp("Enter new email: ", "email")
             user_data['email'] = new_email
             db_updateKey("users", username, user_data)
             printD("Email updated successfully.", "green")
-        case 3:
+        case "3":
             new_phone = inp("Enter new phone number: ", "phone")
             user_data['PhoneNumber'] = new_phone
             db_updateKey("users", username, user_data)
             printD("Phone number updated successfully.", "green")
-        case 4:
+        case "4":
             new_address = input("Enter new address: ").strip()
             user_data['address'] = new_address
             db_updateKey("users", username, user_data)
             printD("Address updated successfully.", "green")
-        case 5:
+        case "5":
             if user_password_data is None or user_password_data.get('password') is None: # If password is not set
                 if admin_privileges:
                     printD("Password not set. Please set a password for this user.", "yellow")
@@ -119,7 +120,7 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
                     main_menu(username, user_data['role'])
             else:
                 current_password = base64.b64decode(db_getKey("passwords", username)['password']).decode()
-                inp_password = inp("Enter current password: ", "str")
+                inp_password = inp("Enter current password: ", "pwd")
                 if inp_password != current_password:
                     printD("Invalid password.", "red")
                     print("1. Try again  \n2. Forgot Password \n3. Go Back to Main Menu")
@@ -138,13 +139,13 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
                     wait_for_enter("Press Enter to go back to the main menu.", True)
                     main_menu(username, user_data['role'])
                 password_data = {
-                    "password": base64.b64encode(new_password.encode()),
+                    "password": encode_password(new_password),
                     "attempts": 0,
-                    "last_login": "never"
+                    "last_login": user_password_data['last_login']
                 }
                 db_updateKey("passwords", username, password_data)
                 printD("Password updated successfully.", "green")
-        case 6:
+        case "6":
             if admin_privileges:
                 print("1. Customer \n2. Chef \n3. Manager \n4. Administrator")
                 new_role = inp("Enter new role: ", "int", [1, 2, 3, 4])
@@ -154,15 +155,21 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
                 printD("Role updated successfully.", "green")
             else:
                 printD("Invalid choice. Please try again.", "yellow")
-        case _:
+        case "M":
             wait_for_enter("Press Enter to go back to the main menu.", True)
             main_menu(username, user_data['role'])
         
     if return_func:
-        return_func()
+        if admin_username is not None:
+            return_func(admin_username)
+        else:
+            return_func(username)
     else:
         wait_for_enter("Press Enter to go back to the main menu.", True)
-        main_menu(username, user_data['role'])
+        if admin_username is not None:
+            main_menu(admin_username, user_data['role'])
+        else:
+            main_menu(username, user_data['role'])
 
 # Main menu function
 def main_menu(username, role:str):

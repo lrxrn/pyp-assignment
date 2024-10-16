@@ -18,8 +18,8 @@
         },
         "date": "01-Jun-2023",
         "time": "12:30",
-        "customer": "zara",
-        "chef": "john",
+        "customer": "omer",
+        "chef": "antonio",
         "payment": {
             "method": "Credit Card",
             "status": "Paid",
@@ -51,8 +51,8 @@
         },
         "date": "01-Jun-2023",
         "time": "15:05",
-        "customer": "zara",
-        "chef": "john",
+        "customer": "maazin",
+        "chef": "antonio",
         "payment": {
             "method": "Cash",
             "status": "Paid",
@@ -80,7 +80,7 @@
         },
         "date": "14-Oct-2024",
         "time": "03:11 PM",
-        "customer": "zara",
+        "customer": "mikko",
         "chef": "N/a",
         "payment": {
             "method": "cash",
