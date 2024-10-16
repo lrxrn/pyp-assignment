@@ -53,7 +53,7 @@ def update_order_status(orders_object):
     active_orders = {key: value for (key, value) in orders_object.items() if not
     (value["status"] == "Delivered" or value["status"] == "Completed")}
     try:
-        # Checking the boolean value returned by show_orders() function
+        # Checking the boolean value returned by show_orders() function to
         if show_orders(active_orders):
             order_id = input("\nPlease input the order ID to mark as completed\nOrder ID: ").upper().strip()
             if order_id not in active_orders:
@@ -232,7 +232,6 @@ def main():
     def _update_order_status_():
         ORDERS = load_file(ORDERS_FILE)
         orders = update_order_status(ORDERS)
-        print(orders)
         ORDERS.update(orders)
         write_to_file(ORDERS_FILE, orders)
 
@@ -244,8 +243,8 @@ def main():
 
     try:
         # _show_orders_()
-        # _update_order_status_()
-        make_request("ING-011", "Feynman")
+        _update_order_status_()
+        # make_request("ING-011", "Feynman")
     except json.JSONDecodeError as e:
         print(f"Error reading JSON file: {e}")
     except Exception as e:
