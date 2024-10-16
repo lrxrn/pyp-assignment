@@ -91,6 +91,11 @@ def db_getAllValues(DBName):
     data = _db_loadDB(DBName)
     return list(data.values())
 
+## Get a filtered key from the database
+def db_getFilKeys(DBName, filterKey, filterValue):
+    data = _db_loadDB(DBName)
+    return [data[key] for key in data if data[key][filterKey] == filterValue]
+
 ## !! Clear the database
 def db_clearDB(DBName):
     data = {}
