@@ -83,6 +83,7 @@ def update_order_status(current_user):
         order_id = input("\nPlease input the order ID to mark as completed\nOrder ID: ").upper()
         if order_id not in orders_object:
             print("Invalid Order ID")
+            return update_order_status(current_user)
         else:
             dining_option = orders_object[order_id]["details"]["diningOption"]
             orders_object[order_id]["status"] = "Completed" if dining_option == "Dine-in" else "Delivered"
