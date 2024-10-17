@@ -323,16 +323,19 @@ def add_menu(cur_usr):
 
 
 # 2.2.1 Function to edit menu list
-def edit_menu_list(cur_usr, type, goback="", menuitem=""):
+def edit_menu_list(cur_usr, type: str, goback="", menuitem=""):
     menu = loaddatabase("menu", "read")
 
     currentvalue = menu[menuitem][type]
-    print(f"Edit {type}\nCurrent {type.lower()}: {currentvalue}")
+    print(f"Edit {type}\nCurrent {type.capitalize()}: {currentvalue}")
 
-    new_value = input(f"Enter new {type.lower()}: ")
+    new_value = input(f"Enter new {type.capitalize()}: ")
 
     if menu[menuitem]:
-        menu[menuitem][type] = new_value
+        if type.lower() == "price":
+            menu[menuitem][type] = int(new_value)
+        else:
+            menu[menuitem][type] = new_value
         loaddatabase("menu", "write", menu)
         print(f"{type} updated successfully.")
 
@@ -345,20 +348,25 @@ def edit_menu_list(cur_usr, type, goback="", menuitem=""):
 # 2.2 Function to edit menu item
 def edit_menu_item(cur_usr, menuitem=""):
     print("Edit Menu Item")
-    editmenu = loaddatabase("menu", "read")
+    menu = loaddatabase("menu", "read")
+    
+    menuitems = []
+    for key, value in menu.items():
+        value["ID"] = key
+        menuitems.append(value)
 
+    goback = ""
     if menuitem:
         edit_menu_option = menuitem
         goback = "view"
     else:
-        for i in range(len(editmenu)):
-            print(f"{editmenu[i]['MenuItmID']} - {editmenu[i]['Name']}")
+        display_table(["Menu Item ID", "Name", "Cuisine Type", "Price", "Category", "Available"], [(menuitems[i]["ID"], menuitems[i]["name"], menuitems[i]["cuisineType"], menuitems[i]["price"], menuitems[i]["category"], "Yes" if menuitems[i]["available"] else "No") for i in range(len(menu))])
 
     while True:
         if not menuitem:
             edit_menu_option = input("Enter menu item ID to edit: ").upper()
 
-        if len(editmenu) == 0:
+        if len(menu) == 0:
             print(f"Item with MenuItmID '{edit_menu_option}' not found.")
             continue
         else:

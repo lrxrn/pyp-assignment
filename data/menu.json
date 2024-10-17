@@ -2,7 +2,7 @@
     "BG-001": {
         "name": "Chicken Special Burger",
         "cuisineType": "American",
-        "price": 10,
+        "price": 20,
         "category": "Food",
         "available": true
     },
