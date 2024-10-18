@@ -113,7 +113,7 @@ def send_feedback(current_user):
         print("You can only provide feedback for your own orders.")
         start(current_user)
     
-    if order["status"].capitalize() != "Delivered" or order["status"].capitalize() != "Completed":
+    if order["status"] not in ["Delivered", "Completed"]:
         print("Feedback can only be provided for delivered or completed orders.")
         start(current_user)
     
