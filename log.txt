@@ -1,1 +1,2 @@
 _LOG_
+[18-Oct-2024 03:42 PM] [ERROR] [main.py] 'NoneType' object is not subscriptable

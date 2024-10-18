@@ -99,7 +99,7 @@
         }
     },
     "ORD-004": {
-        "status": "Order Placed",
+        "status": "Delivered",
         "details": {
             "items": [
                 {
@@ -114,6 +114,39 @@
         "date": "17-Oct-2024",
         "time": "11:12 AM",
         "customer": "omer",
+        "chef": "N/a",
+        "payment": {
+            "method": "",
+            "status": "",
+            "amount": 0,
+            "change": 0
+        },
+        "feedback": {
+            "rating": "",
+            "comments": "",
+            "response": ""
+        }
+    },
+    "ORD-005": {
+        "status": "Order Placed",
+        "details": {
+            "items": [
+                {
+                    "ID": "BG-001",
+                    "quantity": 100
+                },
+                {
+                    "ID": "BG-002",
+                    "quantity": 200
+                }
+            ],
+            "totalAmount": 4400,
+            "diningOption": "takeaway",
+            "deliveryAddress": "M Vertica Jalan Chreas 5600"
+        },
+        "date": "18-Oct-2024",
+        "time": "03:44 PM",
+        "customer": "antonio",
         "chef": "N/a",
         "payment": {
             "method": "",
