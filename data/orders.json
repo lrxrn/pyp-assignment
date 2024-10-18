@@ -60,7 +60,73 @@
             "change": 5
         },
         "feedback": {
+<<<<<<< Updated upstream
             "rating": 4,
+=======
+            "rating": "5",
+            "comments": "",
+            "response": "Ok"
+        }
+    },
+    "ORD-003": {
+        "status": "Delivered",
+        "details": {
+            "items": [
+                {
+                    "ID": "BG-001",
+                    "quantity": 5
+                },
+                {
+                    "ID": "BG-002",
+                    "quantity": 1
+                }
+            ],
+            "totalAmount": 50,
+            "diningOption": "dine-in",
+            "deliveryAddress": "Dine-in"
+        },
+        "date": "14-Oct-2024",
+        "time": "03:11 PM",
+        "customer": "mikko",
+        "chef": "N/a",
+        "payment": {
+            "method": "cash",
+            "status": "Paid",
+            "amount": 75,
+            "change": 25
+        },
+        "feedback": {
+            "rating": "",
+            "comments": "",
+            "response": ""
+        }
+    },
+    "ORD-004": {
+        "status": "Delivered",
+        "details": {
+            "items": [
+                {
+                    "ID": "BG-001",
+                    "quantity": 1
+                }
+            ],
+            "totalAmount": 20,
+            "diningOption": "takeaway",
+            "deliveryAddress": "house"
+        },
+        "date": "17-Oct-2024",
+        "time": "11:12 AM",
+        "customer": "omer",
+        "chef": "N/a",
+        "payment": {
+            "method": "",
+            "status": "",
+            "amount": 0,
+            "change": 0
+        },
+        "feedback": {
+            "rating": "",
+>>>>>>> Stashed changes
             "comments": "",
             "response": ""
         }
