@@ -60,6 +60,7 @@
             "change": 5
         },
         "feedback": {
+            "rating": 4,
             "rating": "5",
             "comments": "",
             "response": "Ok"
@@ -99,7 +100,7 @@
         }
     },
     "ORD-004": {
-        "status": "Order Placed",
+        "status": "Delivered",
         "details": {
             "items": [
                 {

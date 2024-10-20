@@ -1,0 +1,68 @@
+{
+    "ORD-001": {
+        "status": "Delivered",
+        "details": {
+            "items": [
+                {
+                    "ID": "BG-01",
+                    "quantity": 2
+                },
+                {
+                    "ID": "DS-01",
+                    "quantity": 1
+                }
+            ],
+            "totalAmount": 32,
+            "diningOption": "Delivery",
+            "deliveryAddress": "123 Maple Street, Phoenix, AZ"
+        },
+        "date": "01-Jun-2023",
+        "time": "12:30",
+        "customer": "zara",
+        "chef": "john",
+        "payment": {
+            "method": "Credit Card",
+            "status": "Paid",
+            "amount": 32,
+            "change": 0
+        },
+        "feedback": {
+            "rating": 5,
+            "comments": "Great food, will order again!",
+            "response": "Thanks"
+        }
+    },
+    "ORD-002": {
+        "status": "Completed",
+        "details": {
+            "items": [
+                {
+                    "ID": "BG-03",
+                    "quantity": 2
+                },
+                {
+                    "ID": "PZ-01",
+                    "quantity": 1
+                }
+            ],
+            "totalAmount": 25,
+            "diningOption": "Dine-in",
+            "deliveryAddress": "N/A"
+        },
+        "date": "01-Jun-2023",
+        "time": "15:05",
+        "customer": "zara",
+        "chef": "john",
+        "payment": {
+            "method": "Cash",
+            "status": "Paid",
+            "amount": 30,
+            "change": 5
+        },
+        "feedback": {
+            "rating": 4,
+            "comments": "",
+            "response": ""
+        }
+    }
+}
