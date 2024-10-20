@@ -2,7 +2,7 @@ import json
 import os
 import base64
 import configparser
-from Modules.functions import encode_password
+from Modules.utils import encode_password
 
 projectRoot = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config = configparser.ConfigParser()
@@ -90,6 +90,11 @@ def db_getAllKeys(DBName):
 def db_getAllValues(DBName):
     data = _db_loadDB(DBName)
     return list(data.values())
+
+## Get a filtered key from the database
+def db_getFilKeys(DBName, filterKey, filterValue):
+    data = _db_loadDB(DBName)
+    return [data[key] for key in data if data[key][filterKey] == filterValue]
 
 ## !! Clear the database
 def db_clearDB(DBName):

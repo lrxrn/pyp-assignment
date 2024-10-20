@@ -1,12 +1,14 @@
-# Import the core modules
-import os
-import time
+"""The main program file for the Restaurant Management System."""
+# Import the required modules
 import base64
 import re
 
 # Import the modules
-from Modules.db import db_addKey, db_getKey, db_updateKey, db_getAllKeys, db_getAllValues, db_deleteKey, db_savePassword
-from Modules.functions import clear_console, inp, wait_for_enter, printD, generate_password
+from Modules.db import db_addKey, db_getKey, db_updateKey
+from Modules.db import db_getAllKeys, db_getAllValues, db_savePassword
+from Modules.utils import clear_console, inp, wait_for_enter, printD, display_rich_table
+from Modules.utils import generate_password, decode_password, time_object, date_diff
+from Modules.utils import log, encode_password
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -16,16 +18,30 @@ from Roles.customer import start as customer_menu
 
 # Logout function
 def logout(usr=None):
+    """Function to logout the user and return to the main menu.
+
+    Args:
+        usr (str, optional): The username of the user who is logging out. Defaults to None.
+    """
+    print("\n")
     if usr:
-        print(f"Logging out {usr}...")
+        printD(f"Logging out... \nGoodbye {usr}.", "yellow")
     else:
-        print("Logging out...")
-    clear_console(2)
+        printD("Logging out..", "yellow")
+    clear_console(1)
     main_start()
 
+# Update profile function
 def update_profile(username, admin_username=None, choice=None, return_func=None):
+    """Function to update the profile of a user.
+
+    Args:
+        username (str): The username of the user that the profile is being updated.
+        admin_username (str, optional): The governing admin user if any. Defaults to None.
+        choice (int, optional): The pre-chosen choice option. Defaults to None.
+        return_func (func, optional): The function to return to. Defaults to None.
+    """
     clear_console()
-    global admin_privileges
     admin_privileges = False
     if admin_username:
         admin_user_data = db_getKey("users", admin_username)
@@ -35,73 +51,101 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
         admin_privileges = False
     
     printD("Update Profile", "cyan")
-    print("-"*35)
     print(f"Username: {username}")
     if choice is None:
         user_data = db_getKey("users", username)
+        user_password_data = db_getKey("passwords", username)
         print(f"Name: {user_data['name']}")
         print(f"Email: {user_data['email']}")
         print(f"Phone Number: {user_data['PhoneNumber']}")
-        print(f"Date of Birth: {user_data['DOB']}")
-        print(f"Address: {user_data['Address']}")
-        if admin_privileges:
-            print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Update Role \n7. Go Back to Main Menu")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5, 6])
+        print(f"Date of Birth: {user_data['DOB']} ({date_diff(user_data['DOB'], type='dob')} old)")
+        print(f"Address: {user_data['address']}")
+        print(f"Role: {user_data['role']}")
+        if user_password_data is None or user_password_data.get('last_login') is None:
+            printD("Last Login: unknown", "yellow")
+        elif user_password_data['last_login'] == "never":
+            printD("Last Login: never", "yellow")
         else:
-            print("1. Update Name \n2. Update Email \n3. Update Phone Number \n4. Update Address \n5. Update Password \n6. Go Back to Main Menu")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
+            printD(f"Last Login: {user_password_data['last_login']} ({date_diff(user_password_data['last_login'])})", "white", True)
+        if admin_privileges:
+            if user_password_data is None or user_password_data.get('password') is None:
+                printD("Password: Not set", "yellow")
+            elif user_password_data['attempts'] >= 3:
+                printD("Password: Locked", "yellow")
+            
+            display_rich_table(title="Update profile", data=[["1", "Update name"], ["2", "Update email"], ["3", "Update phone number"], ["4", "Update address"], ["5", "Update password"], ["6", "Update role"], ["M", "Go back to [M]ain menu"]], title_style="cyan on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "3", "4", "5", "6", "M"], stringUpperSensitive=True)
+        else:
+            display_rich_table(title="Update profile", data=[["1", "Update name"], ["2", "Update email"], ["3", "Update phone number"], ["4", "Update address"], ["5", "Update password"], ["M", "Go back to [M]ain menu"]], title_style="cyan on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "3", "4", "5", "M"], stringUpperSensitive=True)
     else:
         ch = choice
   
 
     match ch:
-        case 1:
+        case "1":
             new_name = input("Enter new name: ").strip()
             user_data['name'] = new_name
             db_updateKey("users", username, user_data)
             printD("Name updated successfully.", "green")
-        case 2:
+        case "2":
             new_email = inp("Enter new email: ", "email")
             user_data['email'] = new_email
             db_updateKey("users", username, user_data)
             printD("Email updated successfully.", "green")
-        case 3:
+        case "3":
             new_phone = inp("Enter new phone number: ", "phone")
             user_data['PhoneNumber'] = new_phone
             db_updateKey("users", username, user_data)
             printD("Phone number updated successfully.", "green")
-        case 4:
+        case "4":
             new_address = input("Enter new address: ").strip()
-            user_data['Address'] = new_address
+            user_data['address'] = new_address
             db_updateKey("users", username, user_data)
             printD("Address updated successfully.", "green")
-        case 5:
-            current_password = base64.b64decode(db_getKey("passwords", username)['password']).decode()
-            inp_password = inp("Enter current password: ", "str")
-            if inp_password != current_password:
-                printD("Invalid password.", "red")
-                print("1. Try again  \n2. Forgot Password \n3. Go Back to Main Menu")
-                ch = inp("Enter your choice: ", "int", [1, 2, 3])
-                match ch:
-                    case 1:
-                        update_profile(username, None, 5)
-                    case 2:
-                        reset_password(username)
-                    case 3:
-                        main_menu(username, user_data['role'])
-            new_password = inp("Enter new password: ", "password")
-            new_password_confirm = inp("Confirm new password: ", "password")
-            if new_password != new_password_confirm:
-                printD("Passwords do not match. Please try again.", "yellow")
-                wait_for_enter("Press Enter to go back to the main menu.", True)
-                main_menu(username, user_data['role'])
-            password_data = {
-                "password": base64.b64encode(new_password.encode()),
-                "attempts": 0
-            }
-            db_updateKey("passwords", username, password_data)
-            printD("Password updated successfully.", "green")
-        case 6:
+        case "5":
+            if user_password_data is None or user_password_data.get('password') is None: # If password is not set
+                if admin_privileges:
+                    printD("Password not set. Please set a password for this user.", "yellow")
+                    print("1. Reset Password \n2. Go Back to Main Menu")
+                    ch = inp("Enter your choice: ", "int", [1, 2])
+                    match ch:
+                        case 1:
+                            reset_password(username)
+                        case 2:
+                            main_menu(username, user_data['role'])
+                else:
+                    printD("Password not set. Please contact an administrator to set your password.", "yellow")
+                    wait_for_enter("Press Enter to go back to the main menu.", True)
+                    main_menu(username, user_data['role'])
+            else:
+                current_password = base64.b64decode(db_getKey("passwords", username)['password']).decode()
+                inp_password = inp("Enter current password: ", "pwd")
+                if inp_password != current_password:
+                    printD("Invalid password.", "red")
+                    print("1. Try again  \n2. Forgot Password \n3. Go Back to Main Menu")
+                    ch = inp("Enter your choice: ", "int", [1, 2, 3])
+                    match ch:
+                        case 1:
+                            update_profile(username, None, 5)
+                        case 2:
+                            reset_password(username)
+                        case 3:
+                            main_menu(username, user_data['role'])
+                new_password = inp("Enter new password: ", "password")
+                new_password_confirm = inp("Confirm new password: ", "password")
+                if new_password != new_password_confirm:
+                    printD("Passwords do not match. Please try again.", "yellow")
+                    wait_for_enter("Press Enter to go back to the main menu.", True)
+                    main_menu(username, user_data['role'])
+                password_data = {
+                    "password": encode_password(new_password),
+                    "attempts": 0,
+                    "last_login": user_password_data['last_login']
+                }
+                db_updateKey("passwords", username, password_data)
+                printD("Password updated successfully.", "green")
+        case "6":
             if admin_privileges:
                 print("1. Customer \n2. Chef \n3. Manager \n4. Administrator")
                 new_role = inp("Enter new role: ", "int", [1, 2, 3, 4])
@@ -111,81 +155,79 @@ def update_profile(username, admin_username=None, choice=None, return_func=None)
                 printD("Role updated successfully.", "green")
             else:
                 printD("Invalid choice. Please try again.", "yellow")
-        case _:
+        case "M":
             wait_for_enter("Press Enter to go back to the main menu.", True)
             main_menu(username, user_data['role'])
         
     if return_func:
-        return_func()
+        if admin_username is not None:
+            return_func(admin_username)
+        else:
+            return_func(username)
     else:
         wait_for_enter("Press Enter to go back to the main menu.", True)
-        main_menu(username, user_data['role'])
-            
-        
+        if admin_username is not None:
+            main_menu(admin_username, user_data['role'])
+        else:
+            main_menu(username, user_data['role'])
+
+# Main menu function
 def main_menu(username, role:str):
+    """The main menu function that redirects the user to their respective roles.
+
+    Args:
+        username (str): The username of the user.
+        role (str): The role of the user.
+    """
     role = role.strip().lower()
     match role:
         case "customer":
-            print("You are a Customer. Choose an option:")
-            print("1. Continue as Customer")
-            print("2. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2])
-            match ch:
-                case 1:
-                    clear_console(2)
-                    customer_menu(username)
-                case _:
-                    logout(username)
+            # No need to ask whether to continue as a customer or not
+            customer_menu(username)
         case "chef":
-            print("You are a Chef. Choose an option:")
-            print("1. Continue as Chef")
-            print("2. Continue as a Customer")
-            print("3. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            display_rich_table(title="You are a Chef.", data=[["1", "Continue as a Chef"], ["2", "Continue as a Customer"], ["L", "[L]ogout"]], title_style="bright_magenta on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
+            clear_console(0.5)
             match ch:
-                case 1:
-                    clear_console(2)
+                case "1":
                     chef_menu(username)
-                case 2:
-                    clear_console(2)
+                case "2":
                     customer_menu(username)
                 case _:
                     logout(username)
         case "manager":
-            print("You are a Manager. Choose an option:")
-            print("1. Continue as Manager")
-            print("2. Continue as a Customer")
-            print("3. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            display_rich_table(title="You are a Manager.", data=[["1", "Continue as a Manager"], ["2", "Continue as a Customer"], ["L", "[L]ogout"]], title_style="bright_magenta on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
+            clear_console(0.5)
             match ch:
-                case 1:
-                    clear_console(2)
+                case "1":
                     manager_menu(username)
-                case 2:
-                    clear_console(2)
+                case "2":
                     customer_menu(username)
                 case _:
                     logout(username)
         case "administrator":
-            print("You are an Adminstrator. Choose an option:")
-            print("1. Continue as Admin")
-            print("2. Continue as a Customer")
-            print("3. Logout")
-            ch = inp("Enter your choice: ", "int", [1, 2, 3])
+            display_rich_table(title="You are an Admin.", data=[["1", "Continue as an Administrator"], ["2", "Continue as a Customer"], ["L", "[L]ogout"]], title_style="bright_magenta on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "L"], stringUpperSensitive=True)
+            clear_console(0.5)
             match ch:
-                case 1:
-                    clear_console(2)
+                case "1":
                     admin_menu(username)
-                case 2:
-                    clear_console(2)
+                case "2":
                     customer_menu(username)
                 case _:
                     logout(username)
         case _:
-            printD("Invalid role. Please contact the administrator.", "red")
-            logout()
-            
+            printD("Your user role in our Database is invalid. Please contact an Administrator to reset your user role.", "yellow")
+            logout(username)
+
+# Reset password function
 def reset_password(usr=None):
+    """A function to reset the password of a user.
+
+    Args:
+        usr (str, optional): The username of the user to reset the password of. Defaults to None.
+    """
     clear_console()
     printD("Reset Password", "cyan")
     print("-"*35)
@@ -200,10 +242,10 @@ def reset_password(usr=None):
         return
     else:
         print(f"Hi, {username}. \nBefore resetting your password, we need to verify your identity.")
-        print("1. Email Verification \n2. Phone Verification \n3. Cancel")
-        ch = inp("Enter your choice: ", "int", [1, 2, 3])
+        display_rich_table(title="Identity verification", data=[["1", "Email verification"], ["2", "Phone verification"], ["C", "[C]ancel and Go back to Main menu"]], title_style="green on white")
+        ch = inp("Enter your choice: ", "str", ["1", "2", "C"], stringUpperSensitive=True)
         match ch:
-            case 1:
+            case "1":
                 email = db_getKey("users", username)["email"]
                 print("Please enter your email address to verify your identity.")
                 user_input = inp("Enter your email: ", "email")
@@ -224,7 +266,7 @@ def reset_password(usr=None):
                     printD("Email is not the valid email on file.", "yellow")
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_start()
-            case 2:
+            case "2":
                 phone = db_getKey("users", username)["PhoneNumber"]
                 print("Please enter your phone number to verify your identity.")
                 user_input = inp("Enter your phone number: ", "int")
@@ -245,11 +287,18 @@ def reset_password(usr=None):
                     printD("Phone number is not the valid number on file.", "yellow")
                     wait_for_enter("Press Enter to go back to the main screen.", True)
                     main_start()
-            case 3:
+            case "C":
                 print("Cancelling...")
                 main_start()
-            
+
+# Registration function     
 def register(staff_username=None, return_func=None):
+    """Function to register a new user.
+
+    Args:
+        staff_username (str, optional): The username of the staff that invokes the register function. Defaults to None.
+        return_func (func, optional): The user menu function to return to. Defaults to None.
+    """
     clear_console()
     printD("Registration", "cyan")
     print("-"*35)
@@ -301,16 +350,20 @@ def register(staff_username=None, return_func=None):
         "role": inp_role,
         "PhoneNumber": inp_phone,
         "DOB": inp_dob,
-        "Address": inp_address
+        "address": inp_address
     }
     password_data = {
         "password": base64.b64encode(inp_password.encode()).decode(),
-        "attempts": 0
+        "attempts": 0,
+        "last_login": "never"
     }
     if db_getKey("users", inp_username):
         printD("Username already exists.", "yellow")
         wait_for_enter("Press Enter to go back.", True)
-        return_func(staff_username)
+        if return_func:
+            return_func(staff_username)
+        else:
+            main_start()
         return
     else:
         printD(f"Username: {inp_username}\nPassword: {inp_password} \nRole: {inp_role}", "green")
@@ -322,105 +375,135 @@ def register(staff_username=None, return_func=None):
                 db_addKey("passwords", inp_username, password_data)
                 printD("Registration successful.", "green")
                 wait_for_enter("Press Enter to go back.", True)
-                return_func(staff_username)
+                if return_func:
+                    return_func(staff_username)
+                else:
+                    main_start()
             case "n":
                 printD("Registration cancelled.", "yellow")
                 wait_for_enter("Press Enter to go back.", True)
-                return_func(staff_username)
+                if return_func:
+                    return_func(staff_username)
+                else:
+                    main_start()
 
+# Login function
 def login(usr=None):
+    """Function to login to the system.
+
+    Args:
+        usr (str, optional): The username of the user that is logging in. Defaults to None.
+    """
     clear_console()
     printD("Login to continue.", "cyan")
     if usr:
         inp_username = usr
     else:
-        inp_username = input("Enter username: ").strip().lower()
+        inp_username = input("Enter username / email: ").strip().lower()
 
     # Check if the username is in the database
     usersList = db_getAllKeys("users")
-    if inp_username in usersList:
-        printD(f"Hi, {inp_username}.", "white", True)
-        user_data = dict(db_getKey("users", inp_username))
+    userData = db_getAllValues("users")
+    userDataMap = [{**data, 'username': usersList[userData.index(data)]} for data in userData]
+    userEmails = [i['email'] for i in userData]
+    if inp_username in usersList or inp_username in userEmails:
+        if inp_username in usersList:
+            user_data = dict(db_getKey("users", inp_username))
+            login_usr = inp_username
+        elif inp_username in userEmails:
+            user_data = userDataMap[userEmails.index(inp_username)]
+            login_usr = user_data['username']
+        else:
+            printD("Username / Email not found.", "red")
+            wait_for_enter("Press Enter to go back to the main screen.", True)
+            return main_start()
+            
+        printD(f"Hi, {login_usr}.", "white", True)
         # check if the user has a password
-        user_password_data = db_getKey("passwords", inp_username)
+        user_password_data = db_getKey("passwords", login_usr)
         if not user_password_data:
-            printD("Password not set. Please contact an administrator to reset your password.", "red")
+            printD("Password not set. Please contact an administrator to reset your password.", "yellow")
             wait_for_enter("Press Enter to go back to the main screen.", True)
             main_start()
             
         # check if the attempts is greater than or equal to 3, dont let user login if so
         if user_password_data['attempts'] >= 3:
-            printD("You have exceeded the maximum number of login attempts. Please reset your password to unlock your account.", "red")
-            print("1. Reset Password \n2. Go Back to Main Menu")
-            ch = inp("Enter your choice: ", "int", [1, 2])
+            printD("Your account has been locked due to multiple failed login attempts.", "red")
+            printD("Please reset your password to unlock your account.", "yellow")
+            display_rich_table(title="Forgot password?", data=[["1", "Reset Password"], ["M", "Go back to [M]ain menu"]], title_style="yellow on white")
+            ch = inp("Enter your choice: ", "str", ["1", "M"], stringUpperSensitive=True)
             match ch:
-                case 1:
-                    reset_password(inp_username)
-                case 2:
+                case "1":
+                    reset_password(login_usr)
+                case "M":
                     main_start()
         else:
-            user_password = base64.b64decode(user_password_data['password']).decode()
-            inp_password = input("Enter password: ").strip()
+            user_password = decode_password(user_password_data['password'])
+            inp_password = inp("Enter your password: ", "pwd")
             if inp_password == user_password:
                 user_password_data['attempts'] = 0
-                db_updateKey("passwords", inp_username, user_password_data)
+                user_last_login = user_password_data['last_login']
+                user_password_data['last_login'] = f"{time_object()[0]} {time_object()[1]}"
+                db_updateKey("passwords", login_usr, user_password_data)
                 clear_console(1)
-                printD(f"Welcome Back, {user_data['name']} [{inp_username}]!", "white", True)
-                main_menu(inp_username, user_data['role'])
+                if user_last_login == "never":
+                    printD(f"Welcome, {user_data['name']} [{login_usr}]!\n", "white", True)
+                else:
+                    printD(f"Welcome Back, {user_data['name']} [{login_usr}]!", "white", True)
+                    print(f"Last Successful Login: {user_last_login} ({date_diff(user_last_login)})\n")
+                main_menu(login_usr, user_data['role'])
             elif inp_password == "":
-                printD("Please enter a password.", "red")
-                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "red", True)
-                print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
-                ch = inp("Enter your choice: ", "int", [1, 2, 3])
-                match ch:
-                    case 1:
-                        reset_password(inp_username)
-                    case 2:
-                        login(inp_username)
-                    case 3:
-                        main_start()
+                printD("Please enter your password to login.", "yellow")
             else:
                 clear_console()
                 printD("Invalid password.", "red")
                 user_password_data['attempts'] += 1
-                db_updateKey("passwords", inp_username, user_password_data)
-                printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "red", True)
-                print("Forgot password? \n 1. Reset Password \n 2. Try Again \n 3. Go Back to Main Menu")
-                ch = inp("Enter your choice: ", "int", [1, 2, 3])
-                match ch:
-                    case 1:
-                        reset_password(inp_username)
-                    case 2:
-                        login(inp_username)
-                    case 3:
-                        main_start()
+                db_updateKey("passwords", login_usr, user_password_data)
+            printD(f"Login attempts remaining: {3 - user_password_data['attempts']}", "yellow", True)
+            display_rich_table(title="Forgot password?", data=[["1", "Reset Password"], ["2", "Try again"], ["M", "Go back to [M]ain menu"]], title_style="yellow on white")
+            ch = inp("Enter your choice: ", "str", ["1", "2", "M"], stringUpperSensitive=True)
+            match ch:
+                case "1":
+                    reset_password(login_usr)
+                case "2":
+                    login(login_usr)
+                case "M":
+                    main_start()
     else:
-        printD("Username not found.", "red")
+        printD("Username / Email not found.", "red")
         wait_for_enter("Press Enter to go back to the main screen.", True)
         main_start()
 
 def main_start():
+    """A function to start the main program. This function is the entry point of the program.
+    """
     clear_console()
-    printD("Welcome to the Restaurant Management System.", "cyan", True)
-    print("1. Login \n2. Register \n3. Reset Password \n4. Exit")
-    ch = inp("Enter your choice: ", "int", [1, 2, 3, 4])
+    # Load the users database to run the pre-check and add the default admin user if not present
+    db_getAllKeys("users")
+    printD("Welcome to the Restaurant Management System.", "blue", True)
+    display_rich_table(title="Main Menu", data=[["1", "Login"], ["2", "Register"], ["3", "Reset Password"], ["E", "[E]xit"]])
+    ch = inp("Enter your choice: ", "str", ["1", "2", "3", "E"], stringUpperSensitive=True)
     match ch:
-        case 1:
+        case "1":
             login()
-        case 2:
+        case "2":
             register(None, main_start)
-        case 3:
+        case "3":
             reset_password()
-        case 4:
-            print("Exiting...")
+        case "E":
+            printD("Exiting...", "red", True)
             exit()
-        case _:
-            print("Invalid choice. Please try again.")
-            clear_console(5)
-            main_start()
 
 if __name__ == "__main__":
     try:
         main_start()
     except KeyboardInterrupt:
-        print("\nProgram interrupted. Exiting...")
+        clear_console()
+        printD("\nProgram interrupted. \nExiting...", "red", True)
+    except Exception as e:
+        log(e, "error", "main.py")
+        printD(f"\nAn error occurred. Error has been logged. \nLogging out...", "red", True)
+        logout()
+        raise e
+    # except:
+    #     printD("\nAn error occurred. \nExiting...", "red", True)

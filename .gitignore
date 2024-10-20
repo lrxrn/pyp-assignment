@@ -35,3 +35,6 @@ Thumbs.db
 .venv/
 venv/
 venvm/
+
+# Log
+log.txt

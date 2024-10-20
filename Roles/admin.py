@@ -1,18 +1,9 @@
-import re
 import datetime
-import base64
 
-from Modules.db import db_addKey, db_deleteKey, db_updateKey, db_getKey, db_getAllKeys, db_getAllValues
-from Modules.functions import clear_console, inp, printD, wait_for_enter, generate_password, display_table
+from Modules.db import db_deleteKey, db_updateKey, db_getKey, db_getAllKeys
+from Modules.utils import clear_console, inp, printD, wait_for_enter, display_table
 
-def logout(cur_usr):
-    from main import logout as logout_main
-    logout_main(cur_usr)
-    
-def update_profile(cur_usr, return_func):
-    from main import update_profile as update_profile_main
-    update_profile_main(cur_usr, return_func)
-    
+# 0 - Start function
 def start(cur_usr):
     clear_console()
     printD("Administrator Menu", "magenta")
@@ -33,7 +24,115 @@ def start(cur_usr):
             update_profile(cur_usr, start)
         case 5:
             logout(cur_usr)
-            
+
+# 1 - Manage Staff function
+def manageStaff(cur_usr):
+    clear_console()
+    printD("Admin: Manage Staff", "magenta")
+    print("1. Add staff")
+    print("2. Remove staff")
+    print("3. Update staff")
+    print("4. View staff")
+    print("5. Back")
+    ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
+    match ch:
+        case 1:
+            manageStaff_addStaff(cur_usr)
+        case 2:
+            manageStaff_removeStaff(cur_usr)
+        case 3:
+            manageStaff_updateStaff(cur_usr)
+        case 4:
+            manageStaff_viewStaff(cur_usr)
+        case 5:
+            start(cur_usr)
+
+# 1.1 - Add Staff function
+def manageStaff_addStaff(cur_usr):
+    clear_console()
+    printD("Admin/Manage Staff: Add Staff", "magenta")
+    from main import register as register_main
+    register_main(cur_usr, manageStaff)
+
+# 1.2 - Remove Staff function
+def manageStaff_removeStaff(cur_usr):
+    clear_console()
+    printD("Admin/Manage Staff: Remove Staff", "magenta")
+    username = inp("Enter the username of the staff to remove: ", "str")
+    
+    if username not in db_getAllKeys("users"):
+        print("User not found.")
+        wait_for_enter()
+        manageStaff(cur_usr)
+        return
+    
+    # check if the user is the current user
+    if username == cur_usr:
+        printD("You cannot remove yourself.", "red")
+        wait_for_enter()
+        manageStaff(cur_usr)
+        return
+    
+    # check if the user is a customer
+    if db_getKey("users", username) == "customer":
+        printD("You can remove only staff.", "red")
+        wait_for_enter()
+        manageStaff(cur_usr)
+        return
+    
+    ch = inp(f"Are you sure you want to remove User '{username}'? [y/n]: ", "str", ["y", "n"])
+    ch = ch.lower()
+    match ch:
+        case "y":
+            db_deleteKey("users", username)
+            db_deleteKey("passwords", username)
+            printD("User removed successfully.", "green")
+        case "n":
+            printD("Operation cancelled.", "yellow")
+    
+    wait_for_enter()
+    manageStaff(cur_usr)
+
+# 1.3 - Update Staff function
+def manageStaff_updateStaff(cur_usr):
+    from main import update_profile as update_profile_main
+    clear_console()
+    printD("Admin/Manage Staff: Update Staff", "magenta")
+    usr = inp("Enter the username of the staff to update: ", "str")
+    if usr not in db_getAllKeys("users"):
+        print("User not found.")
+        wait_for_enter()
+        manageStaff(cur_usr)
+        return
+    if usr == cur_usr:
+        printD("You cannot update yourself. Please use the 'Update Profile' option.", "yellow")
+        wait_for_enter()
+        manageStaff(cur_usr)
+        return
+    if db_getKey("users", usr)["role"] == "customer":
+        printD("You can update only staff.", "red")
+        wait_for_enter()
+        manageStaff(cur_usr)
+        return
+    update_profile_main(usr, cur_usr, None, manageStaff) 
+
+# 1.4 - View Staff function
+def manageStaff_viewStaff(cur_usr):
+    clear_console()
+    printD("Admin/Manage Staff: View Staff", "magenta")
+    staff = db_getAllKeys("users")
+    staff = [usr for usr in staff if db_getKey("users", usr)["role"] != "customer"]
+    table_headers = ["#", "Username", "Name", "Role"]
+    table_data = []
+    for i, staff in enumerate(staff):
+        table_data.append([i+1, staff, db_getKey("users", staff)["name"], db_getKey("users", staff)["role"]])
+        
+    display_table(table_headers, table_data)
+    printD(f"Total Staff: {len(table_data)}", "white", True)
+    wait_for_enter()
+    manageStaff(cur_usr)
+
+# 2 - View Sales Report function
 def viewSalesReport(cur_usr):
     clear_console()
     printD("Admin: View Sales Report", "magenta")
@@ -41,7 +140,7 @@ def viewSalesReport(cur_usr):
     sales = []
     for order in orders:
         order_details = db_getKey("orders", order)
-        sales.append({"order_id": order, "customer": order_details["customer"], "chef": order_details["chef"], "date": order_details["date"], "total_price": order_details["OrderDetails"]["TotalAmount"]})
+        sales.append({"order_id": order, "customer": order_details["customer"], "chef": order_details["chef"], "date": order_details["date"], "total_price": order_details["details"]["totalAmount"]})
     
     if sales is []:
         print("No sales available.")
@@ -119,6 +218,7 @@ def viewSalesReport(cur_usr):
     wait_for_enter()
     start(cur_usr)
 
+# 3 - View Feedback function
 def viewFeedback(cur_usr):
     clear_console()
     printD("Admin: View Feedback", "magenta")
@@ -192,105 +292,12 @@ def viewFeedback(cur_usr):
     wait_for_enter()
     start(cur_usr)
 
-
-def manageStaff(cur_usr):
-    clear_console()
-    printD("Admin: Manage Staff", "magenta")
-    print("1. Add staff")
-    print("2. Remove staff")
-    print("3. Update staff")
-    print("4. View staff")
-    print("5. Back")
-    ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
-    match ch:
-        case 1:
-            manageStaff_addStaff(cur_usr)
-        case 2:
-            manageStaff_removeStaff(cur_usr)
-        case 3:
-            manageStaff_updateStaff(cur_usr)
-        case 4:
-            manageStaff_viewStaff(cur_usr)
-        case 5:
-            start(cur_usr)
-
-def manageStaff_addStaff(cur_usr):
-    clear_console()
-    printD("Admin/Manage Staff: Add Staff", "magenta")
-    from main import register as register_main
-    register_main(cur_usr, manageStaff)
-
-def manageStaff_removeStaff(cur_usr):
-    clear_console()
-    printD("Admin/Manage Staff: Remove Staff", "magenta")
-    username = inp("Enter the username of the staff to remove: ", "str")
-    
-    if username not in db_getAllKeys("users"):
-        print("User not found.")
-        wait_for_enter()
-        manageStaff(cur_usr)
-        return
-    
-    # check if the user is the current user
-    if username == cur_usr:
-        printD("You cannot remove yourself.", "red")
-        wait_for_enter()
-        manageStaff(cur_usr)
-        return
-    
-    # check if the user is a customer
-    if db_getKey("usrRoles", username) == "customer":
-        printD("You can remove only staff.", "red")
-        wait_for_enter()
-        manageStaff(cur_usr)
-        return
-    
-    ch = inp(f"Are you sure you want to remove User '{username}'? [y/n]: ", "str", ["y", "n"])
-    ch = ch.lower()
-    match ch:
-        case "y":
-            db_deleteKey("users", username)
-            db_deleteKey("passwords", username)
-            printD("User removed successfully.", "green")
-        case "n":
-            printD("Operation cancelled.", "yellow")
-    
-    wait_for_enter()
-    manageStaff(cur_usr)
-    
-def manageStaff_updateStaff(cur_usr):
+# 4 - Update Profile function
+def update_profile(cur_usr, return_func):
     from main import update_profile as update_profile_main
-    clear_console()
-    printD("Admin/Manage Staff: Update Staff", "magenta")
-    usr = inp("Enter the username of the staff to update: ", "str")
-    if usr not in db_getAllKeys("users"):
-        print("User not found.")
-        wait_for_enter()
-        manageStaff(cur_usr)
-        return
-    if usr == cur_usr:
-        printD("You cannot update yourself. Please use the 'Update Profile' option.", "yellow")
-        wait_for_enter()
-        manageStaff(cur_usr)
-        return
-    if db_getKey("users", usr)["role"] == "customer":
-        printD("You can update only staff.", "red")
-        wait_for_enter()
-        manageStaff(cur_usr)
-        return
-    update_profile_main(usr, cur_usr, None, manageStaff) 
+    update_profile_main(cur_usr, return_func)
 
-def manageStaff_viewStaff(cur_usr):
-    clear_console()
-    printD("Admin/Manage Staff: View Staff", "magenta")
-    staff = db_getAllKeys("users")
-    staff = [usr for usr in staff if db_getKey("users", usr)["role"] != "customer"]
-    table_headers = ["#", "Username", "Name", "Role"]
-    table_data = []
-    for i, staff in enumerate(staff):
-        table_data.append([i+1, staff, db_getKey("users", staff)["name"], db_getKey("users", staff)["role"]])
-        
-    display_table(table_headers, table_data)
-    printD(f"Total Staff: {len(staff)}", "white", True)
-    wait_for_enter()
-    manageStaff(cur_usr)
+# 5 - Logout function
+def logout(cur_usr):
+    from main import logout as logout_main
+    logout_main(cur_usr)

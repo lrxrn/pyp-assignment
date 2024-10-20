@@ -1,12 +1,12 @@
 {
-    "BG-01": {
-        "name": "Chicken Burger",
+    "BG-001": {
+        "name": "Chicken Special Burger",
         "cuisineType": "American",
-        "price": 10,
+        "price": 20,
         "category": "Food",
         "available": true
     },
-    "BG-02": {
+    "BG-002": {
         "name": "Beef Burger",
         "cuisineType": "American",
         "price": 12,

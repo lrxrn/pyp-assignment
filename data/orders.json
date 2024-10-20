@@ -8,7 +8,7 @@
                     "quantity": 2
                 },
                 {
-                    "ID": "DS-01",
+                    "ID": "BG-02",
                     "quantity": 1
                 }
             ],
@@ -18,8 +18,8 @@
         },
         "date": "01-Jun-2023",
         "time": "12:30",
-        "customer": "zara",
-        "chef": "john",
+        "customer": "omer",
+        "chef": "antonio",
         "payment": {
             "method": "Credit Card",
             "status": "Paid",
@@ -27,9 +27,9 @@
             "change": 0
         },
         "feedback": {
-            "rating": 5,
-            "comments": "Great food, will order again!",
-            "response": "Thanks"
+            "rating": "",
+            "comments": "",
+            "response": ""
         }
     },
     "ORD-002": {
@@ -37,12 +37,12 @@
         "details": {
             "items": [
                 {
-                    "MenuItmID": "BG-03",
-                    "Quantity": 2
+                    "ID": "BG-02",
+                    "quantity": 2
                 },
                 {
-                    "MenuItmID": "PZ-01",
-                    "Quantity": 1
+                    "ID": "BG-01",
+                    "quantity": 1
                 }
             ],
             "totalAmount": 25,
@@ -51,8 +51,8 @@
         },
         "date": "01-Jun-2023",
         "time": "15:05",
-        "customer": "zara",
-        "chef": "john",
+        "customer": "maazin",
+        "chef": "antonio",
         "payment": {
             "method": "Cash",
             "status": "Paid",
@@ -60,9 +60,7 @@
             "change": 5
         },
         "feedback": {
-<<<<<<< Updated upstream
             "rating": 4,
-=======
             "rating": "5",
             "comments": "",
             "response": "Ok"
@@ -126,7 +124,6 @@
         },
         "feedback": {
             "rating": "",
->>>>>>> Stashed changes
             "comments": "",
             "response": ""
         }

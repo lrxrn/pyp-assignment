@@ -1,37 +1,32 @@
 {
-    "mazin": {
-        "name": "Ahmed Mazin",
-        "email": "maazin.ahmed@example.com",
+    "mikko": {
+        "name": "Meesum Ahmed",
+        "email": "mikkoahmd@gmail.com",
         "role": "administrator",
-        "PhoneNumber": "+9876543210",
-        "DOB": "19-Mar-1990",
-        "Address": "123 Elm Street, Springfield, IL"
+        "PhoneNumber": "+60103667202",
+        "DOB": "08-Nov-2004",
+        "address": "Garden @ One South, Seri Kembangan, Selangor"
     },
-    "ibaan": {
-        "name": "Ibaan Ibrahim",
-        "email": "ibaan@example.com",
+    "maazin": {
+        "name": "Ahmed Mazin",
+        "email": "mazin@gmail.com",
         "role": "manager",
-        "PhoneNumber": "+1234509876",
-        "DOB": "22-Jul-1995",
-        "Address": "789 Maple Avenue, Phoenix, AZ"
+        "PhoneNumber": "+9607757329",
+        "DOB": "12-Dec-1212",
+        "address": "Flexis @ One south"
     },
-    "john": {
-        "name": "John Hunter",
-        "email": "john@example.com",
+    "antonio": {
+        "name": "Antonio",
+        "email": "antonio@ex.co",
         "role": "chef",
-        "PhoneNumber": "+2489342034",
-        "DOB": "03-May-1985",
-        "Address": "639 Pine Street, Miami, FL"
+        "PhoneNumber": "+93013942323",
+        "DOB": "02-Jan-2001",
+        "address": "M Vertica, KL"
     },
-    "zara": {
-        "name": "Zara Patel",
-        "email": "zara.patel@example.com",
+    "omer": {
+        "name": "Omer",
+        "email": "omer@om.co",
         "role": "customer",
-<<<<<<< Updated upstream
-        "PhoneNumber": "6789341256",
-        "DOB": "18-Nov-1998",
-        "Address": "456 Oak Street, Dallas, TX"
-=======
         "PhoneNumber": "+93010234445",
         "DOB": "12-Feb-2012",
         "address": "Park @ One South"
@@ -43,6 +38,5 @@
         "PhoneNumber": "+60174701107",
         "DOB": "19-Nov-2003",
         "address": "KL M Vertica Jalan cheras"
->>>>>>> Stashed changes
     }
 }
