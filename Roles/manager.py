@@ -299,22 +299,22 @@ def add_menu(cur_usr):
     new_cuisine_type = input("Enter the cuisine type of the new menu item: ")
     while True:
         try:
-            new_price = int(input("Enter the price of the new menu item: "))
+            new_price = float(input("Enter the price of the new menu item: "))
             break
         except ValueError:
             print("Invalid input. Please enter a number")
             continue
-    new_category = input("Enter the category of the new menu item: ")
+    new_category = inp("Enter the category of the new menu item: ", "str", ["Main Course", "Appetizer", "Dessert", "Beverage", "Others"], stringUpperSensitive=True)
 
     new_item = {
         "name": new_menu_name,
         "cuisineType": new_cuisine_type,
         "price": new_price,
-        "category": new_category,
+        "category": new_category.lower(),
         "available": True
     }
     
-    new_item_id = get_next_id("menu", "BG-")
+    new_item_id = get_next_id("menu", "MNI-")
 
     db_addKey("menu", new_item_id, new_item)
 
