@@ -1,16 +1,37 @@
 {
-    "BG-001": {
+    "MNI-001": {
         "name": "Chicken Special Burger",
         "cuisineType": "American",
         "price": 20,
         "category": "Food",
         "available": true
     },
-    "BG-002": {
+    "MNI-002": {
         "name": "Beef Burger",
         "cuisineType": "American",
         "price": 12,
-        "category": " Food",
+        "category": "Food",
+        "available": true
+    },
+    "MNI-003": {
+        "name": "Orange Juice",
+        "cuisineType": "Other",
+        "price": 2,
+        "category": "beverage",
+        "available": true
+    },
+    "MNI-004": {
+        "name": "Fresh Apple Juice",
+        "cuisineType": "Other",
+        "price": 3,
+        "category": "beverage",
+        "available": true
+    },
+    "MNI-005": {
+        "name": "Apple",
+        "cuisineType": "American",
+        "price": 5.8,
+        "category": "others",
         "available": true
     }
 }
