@@ -269,7 +269,6 @@ def update_profile(cur_usr, return_func):
     update_profile_main(cur_usr, return_func)
 
 
-=======
 TABLE_FORMAT = "rounded_outline"  # The table format to be displayed
 
 # Import common functions from functions.py
