@@ -17,21 +17,126 @@
         "name": "Orange Juice",
         "cuisineType": "Other",
         "price": 2,
-        "category": "beverage",
+        "category": "Beverage",
         "available": true
     },
     "MNI-004": {
-        "name": "Fresh Apple Juice",
-        "cuisineType": "Other",
-        "price": 3,
-        "category": "beverage",
+        "name": "Veggie Burger",
+        "cuisineType": "American",
+        "price": 9,
+        "category": "Food",
         "available": true
     },
     "MNI-005": {
-        "name": "Apple",
+        "name": "Fish Burger",
         "cuisineType": "American",
-        "price": 5.8,
-        "category": "others",
+        "price": 11,
+        "category": "Food",
+        "available": false
+    },
+    "MNI-006": {
+        "name": "Grilled Chicken Wrap",
+        "cuisineType": "Mexican",
+        "price": 8,
+        "category": "Food",
+        "available": true
+    },
+    "MNI-007": {
+        "name": "Spicy Tofu Wrap",
+        "cuisineType": "Mexican",
+        "price": 7,
+        "category": "Food",
+        "available": true
+    },
+    "MNI-008": {
+        "name": "Coca-Cola",
+        "cuisineType": "Beverage",
+        "price": 3,
+        "category": "Beverage",
+        "available": true
+    },
+    "MNI-009": {
+        "name": "Lemonade",
+        "cuisineType": "Beverage",
+        "price": 3,
+        "category": "Beverage",
+        "available": true
+    },
+    "MNI-010": {
+        "name": "Chocolate Cake Slice",
+        "cuisineType": "Dessert",
+        "price": 5,
+        "category": "Dessert",
+        "available": false
+    },
+    "MNI-011": {
+        "name": "Fruit Salad",
+        "cuisineType": "Dessert",
+        "price": 4,
+        "category": "Dessert",
+        "available": true
+    },
+    "MNI-012": {
+        "name": "Chicken Caesar Salad",
+        "cuisineType": "American",
+        "price": 7,
+        "category": "Food",
+        "available": true
+    },
+    "MNI-013": {
+        "name": "French Fries",
+        "cuisineType": "American",
+        "price": 3,
+        "category": "Food",
+        "available": true
+    },
+    "MNI-014": {
+        "name": "Iced Coffee",
+        "cuisineType": "Beverage",
+        "price": 4,
+        "category": "Beverage",
+        "available": true
+    },
+    "MNI-015": {
+        "name": "Mango Smoothie",
+        "cuisineType": "Beverage",
+        "price": 5,
+        "category": "Beverage",
+        "available": true
+    },
+    "MNI-016": {
+        "name": "Pasta Carbonara",
+        "cuisineType": "Italian",
+        "price": 10,
+        "category": "Food",
+        "available": true
+    },
+    "MNI-017": {
+        "name": "Margherita Pizza",
+        "cuisineType": "Italian",
+        "price": 8,
+        "category": "Food",
+        "available": true
+    },
+    "MNI-018": {
+        "name": "Chocolate Milkshake",
+        "cuisineType": "Dessert",
+        "price": 6,
+        "category": "Dessert",
+        "available": true
+    },
+    "MNI-019": {
+        "name": "Greek Salad",
+        "cuisineType": "Mediterranean",
+        "price": 7,
+        "category": "Food",
+        "available": true
+    },
+    "MNI-020": {
+        "name": "Avocado Toast",
+        "cuisineType": "Other",
+        "price": 6,
+        "category": "Food",
         "available": true
     }
 }
