@@ -4,7 +4,7 @@
         "items": [
             {
                 "name": "Sugar",
-                "quantity": "500",
+                "quantity": 500,
                 "unit": "g"
             }
         ],
@@ -24,12 +24,12 @@
         "items": [
             {
                 "name": "Salt",
-                "quantity": "2",
+                "quantity": 2,
                 "unit": "KG"
             },
             {
                 "name": "Pepper",
-                "quantity": "400",
+                "quantity": 400,
                 "unit": "g"
             }
         ],
@@ -91,11 +91,52 @@
     },
     "ING-006": {
         "status": "pending",
-        "items": [],
+        "items": [
+            {
+                "name": "Sugar",
+                "quantity": 500,
+                "unit": "g"
+            },
+            {
+                "name": "Cinnamon",
+                "quantity": 100,
+                "unit": "g"
+            },
+            {
+                "name": "Honey",
+                "quantity": 250,
+                "unit": "ml"
+            }
+        ],
         "request_chef": {
             "user": "antonio",
-            "date": "17-Oct-2024",
-            "time": "11:15 AM"
+            "date": "31-Oct-2024",
+            "time": "10:20 PM"
+        },
+        "review_user": {
+            "user": "",
+            "date": "",
+            "time": ""
+        }
+    },
+    "ING-007": {
+        "status": "pending",
+        "items": [
+            {
+                "name": "Salt",
+                "quantity": 2,
+                "unit": "kg"
+            },
+            {
+                "name": "Pepper",
+                "quantity": 400,
+                "unit": "g"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:24 PM"
         },
         "review_user": {
             "user": "",
