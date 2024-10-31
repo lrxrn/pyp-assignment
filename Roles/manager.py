@@ -134,8 +134,8 @@ def edit_customer(cur_usr, username=""):
                 print(f"Edit Date of Birth\nCurrent date of birth: {editusers[user_nm]["DOB"]}")
                 edit_customer_list(cur_usr, "Enter new date of birth: ", user_nm, "DOB")
             case 5:
-                print(f"Edit Address\nCurrent address: {editusers[user_nm]["Address"]}")
-                edit_customer_list(cur_usr, "Enter new address: ", user_nm, "Address")
+                print(f"Edit Address\nCurrent address: {editusers[user_nm]["address"]}")
+                edit_customer_list(cur_usr, "Enter new address: ", user_nm, "address")
             case 6:
                 edit_customer_list(cur_usr, "Enter new password: ", user_nm, "password")
             case 7:
@@ -237,7 +237,7 @@ def view_customer_list(cur_usr):
         print("No customers found")
         manage_customer(cur_usr)
 
-    display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i + 1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["Address"]) for i in range(len(customers))])
+    display_table(["No.", "Username", "Name", "Email", "Phone Number", "Date of Birth", "Address"], [(i + 1, customers[i]["username"], customers[i]["name"], customers[i]["email"], customers[i]["PhoneNumber"], customers[i]["DOB"], customers[i]["address"]) for i in range(len(customers))])
 
     while True:
         option = input("Enter the customer number to edit or delete (type \"c\" to cancel): ")
