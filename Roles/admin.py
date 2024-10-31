@@ -2,27 +2,23 @@ import datetime
 
 from Modules.db import db_deleteKey, db_updateKey, db_getKey, db_getAllKeys
 from Modules.utils import clear_console, inp, printD, wait_for_enter, display_table
+from Modules.utils import display_rich_table
 
 # 0 - Start function
 def start(cur_usr):
     clear_console()
-    printD("Administrator Menu", "magenta")
-    print("1. Manage staff")
-    print("2. View sales report")
-    print("3. View feedback")
-    print("4. Update profile")
-    print("5. Logout")
-    ch = inp("Enter your choice: ", "int", [1, 2, 3, 4, 5])
+    display_rich_table(title="Administrator Menu", data=[["1", "Manage staff"], ["2", "View sales report"], ["3", "View feedback"], ["4", "Update profile"], ["L", "[L]ogout"]], title_style="magenta on black")
+    ch = inp("Enter your choice: ", "str", ["1", "2", "3", "4", "L"], stringUpperSensitive=True)
     match ch:
-        case 1:
+        case "1":
             manageStaff(cur_usr)
-        case 2:
+        case "2":
             viewSalesReport(cur_usr)
-        case 3:
+        case "3":
             viewFeedback(cur_usr)
-        case 4:
+        case "4":
             update_profile(cur_usr, start)
-        case 5:
+        case "L":
             logout(cur_usr)
 
 # 1 - Manage Staff function

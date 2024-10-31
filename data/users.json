@@ -30,5 +30,13 @@
         "PhoneNumber": "+93010234445",
         "DOB": "12-Feb-2012",
         "address": "Park @ One South"
+    },
+    "solonexus365": {
+        "name": "Solo Nexus",
+        "email": "solonexus365@gmail.com",
+        "role": "customer",
+        "PhoneNumber": "+60174701107",
+        "DOB": "19-Nov-2003",
+        "address": "KL M Vertica Jalan cheras"
     }
 }

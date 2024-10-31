@@ -8,7 +8,7 @@ from Modules.db import db_addKey, db_getKey, db_updateKey
 from Modules.db import db_getAllKeys, db_getAllValues, db_savePassword
 from Modules.utils import clear_console, inp, wait_for_enter, printD, display_rich_table
 from Modules.utils import generate_password, decode_password, time_object, date_diff
-from Modules.utils import log, encode_password
+from Modules.utils import log, encode_password, wait_for
 
 # Import the roles
 from Roles.admin import start as admin_menu
@@ -422,7 +422,7 @@ def login(usr=None):
         # check if the user has a password
         user_password_data = db_getKey("passwords", login_usr)
         if not user_password_data:
-            printD("Password not set. Please contact an administrator to reset your password.", "yellow")
+            printD("User has no password set. Please contact an administrator to reset your password.", "yellow")
             wait_for_enter("Press Enter to go back to the main screen.", True)
             main_start()
             
@@ -440,6 +440,11 @@ def login(usr=None):
         else:
             user_password = decode_password(user_password_data['password'])
             inp_password = inp("Enter your password: ", "pwd")
+            wait_for(0.5)
+            clear_console()
+            printD("Logging in...", "cyan")
+            wait_for(2)
+            clear_console()
             if inp_password == user_password:
                 user_password_data['attempts'] = 0
                 user_last_login = user_password_data['last_login']
@@ -477,7 +482,7 @@ def login(usr=None):
 def main_start():
     """A function to start the main program. This function is the entry point of the program.
     """
-    clear_console()
+    clear_console(2)
     # Load the users database to run the pre-check and add the default admin user if not present
     db_getAllKeys("users")
     printD("Welcome to the Restaurant Management System.", "blue", True)

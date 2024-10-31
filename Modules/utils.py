@@ -19,10 +19,22 @@ wordlist_path = config['Misc']['wordlist']
 log_path = config['Misc']['log_file']
 
 def log(msg, log_type="info", file_name=None):
+    """Function to log messages to a log file
+
+    Args:
+        msg (str): The message to log
+        log_type (str, optional): Type of log entry. Defaults to "info".
+        file_name (str, optional): File to save log entry to. Defaults to None.
+    """
     with open(f"{log_path}","a") as log_file:
         log_file.write(f"[{datetime.datetime.strftime(datetime.datetime.now(), '%d-%b-%Y %I:%M %p')}] [{log_type.upper()}] [{file_name if file_name is not None else "Program"}] {msg}\n")
 
 def time_object():
+    """Function to get the current date and time
+
+    Returns:
+        tuple: A tuple containing the current date and time
+    """
     now = datetime.datetime.now()
     return now.strftime('%d-%b-%Y'), now.strftime('%I:%M %p')
 
@@ -88,13 +100,16 @@ def date_diff(datetime1, datetime2=datetime.datetime.now().strftime("%d-%b-%Y %I
 def clear_console(wait_time=None):
     # Wait for specifc time before clearing the console
     if wait_time:
-        time.sleep(wait_time)
+        wait_for(wait_time)
     
     # Clear the console
     if os.name == "posix":
         os.system("clear")
     else:
         os.system("cls")
+        
+def wait_for(seconds=1):
+    time.sleep(seconds)
 
 # Function to wait for user to press Enter
 def wait_for_enter(msg="Press Enter to proceed...", clear=False):
@@ -157,6 +172,13 @@ def color_text(text, color="white", bold=False):
 
 # Function to display messages in color
 def printD(msg, color="white", bold=False):
+    """Function to display messages in color
+
+    Args:
+        msg (str): The message to display
+        color (str, optional): The color to display the message in. Defaults to "white".
+        bold (bool, optional): If True, the message will be displayed in bold. Defaults to False.
+    """
     colors = {
         "red": "\033[91m",
         "green": "\033[92m",
