@@ -6,7 +6,8 @@ FUNCTION manage_menuandpricing():
     PRINT "4. View Menu"
     PRINT "5. Back"
 
-    Prompt user to choose an option
+    PROMPT user to choose an option
+    READ option
 
     IF option = 1:
         CALL add_menu_item()
