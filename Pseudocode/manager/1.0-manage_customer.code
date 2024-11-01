@@ -7,7 +7,7 @@ FUNCTION manage_customer()
     PRINT "5: Go Back"
 
     PROMPT user to choose an option
-    read option
+    READ option
 
     IF option = 1:
         CALL add_customer()
