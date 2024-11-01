@@ -11,7 +11,7 @@ Function edit_customer():
 
         If there are no customers:
             Print "No customers found"
-            CALL manage_customer
+            CALL manage_customer()
 
         Print "Edit Customer"
         Display customer list with numbering
@@ -19,7 +19,7 @@ Function edit_customer():
         Repeat until a valid customer is selected or the user cancels:
             Prompt user to select a customer to edit or cancel
             If option = cancel:
-                CALL manage_customer
+                CALL manage_customer()
             Else
                 If a valid number is chosen:
                     user_nm = customer_list[selected_number]
@@ -51,7 +51,7 @@ Function edit_customer():
         Else if option = 6:
             CALL edit_customer_list("password")
         Else if option = 7:
-            CALL manage_customer
+            CALL manage_customer()
         Else:
             Print "Invalid option. Please choose a valid option."
 
@@ -68,7 +68,7 @@ Function edit_customer_list(type):
         Update password for the selected user
         Save updated "passwords" database
 
-        CALL manage_customer
+        CALL manage_customer()
 
     Else:
         Prompt user for new value
@@ -76,4 +76,4 @@ Function edit_customer_list(type):
         Update value for the selected user
         Save updated "users" database
 
-        CALL manage_customer
+        CALL manage_customer()
