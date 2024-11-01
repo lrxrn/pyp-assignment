@@ -1,12 +1,13 @@
 FUNCTION manage_customer()
-    print "Manage Customer"
-    print "1: Add Customer"
-    print "2: Edit Customer"
-    print "3: Delete Customer"
-    print "4: View Customer List"
-    print "5: Go Back"
+    PRINT "Manage Customer"
+    PRINT "1: Add Customer"
+    PRINT "2: Edit Customer"
+    PRINT "3: Delete Customer"
+    PRINT "4: View Customer List"
+    PRINT "5: Go Back"
 
-    option = INPUT("Choose an option from 1 to 5: ")
+    PROMPT user to choose an option
+    read option
 
     IF option = 1:
         CALL add_customer()
@@ -19,5 +20,5 @@ FUNCTION manage_customer()
     ELSE IF option = 5:
         CALL start()
     ELSE:
-        print "Invalid option. Please choose a valid option."
+        PRINT "Invalid option. Please choose a valid option."
         CALL manage_customer()
