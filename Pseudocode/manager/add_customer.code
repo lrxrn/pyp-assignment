@@ -19,7 +19,8 @@ FUNCTION add_customer(cur_usr):
 
     addpasswords[new_customer_username] = {
         "password": new_customer_password
-        "attempts": 0
+        "attempts": 0,
+        "last_login": "never"
     }
 
     CALL loaddatabase("passwords", "write", addpasswords)
