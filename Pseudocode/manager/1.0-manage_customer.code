@@ -1,4 +1,4 @@
-FUNCTION manage_customer(current_user)
+FUNCTION manage_customer()
     print "Manage Customer"
     print "1: Add Customer"
     print "2: Edit Customer"
@@ -9,15 +9,15 @@ FUNCTION manage_customer(current_user)
     option = INPUT("Choose an option from 1 to 5: ")
 
     IF option = 1:
-        CALL add_customer(current_user)
+        CALL add_customer()
     ELSE IF option = 2:
-        CALL edit_customer(current_user)
+        CALL edit_customer()
     ELSE IF option = 3:
-        CALL delete_customer(current_user)
+        CALL delete_customer()
     ELSE IF option = 4:
-        CALL view_customer_list(current_user)
+        CALL view_customer_list()
     ELSE IF option = 5:
-        CALL start(current_user)
+        CALL start()
     ELSE:
         print "Invalid option. Please choose a valid option."
-        CALL manage_customer(current_user)
+        CALL manage_customer()
