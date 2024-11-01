@@ -1,0 +1,33 @@
+Function delete_customer():
+    Print "Delete Customer"
+
+    users = Load "users" database
+    customer_list = []
+    If user role = "customer":
+        Add user to the customer_list
+
+    If no customers are found:
+        Print "No customers found"
+        CALL manage_customer
+
+    Repeat until a valid username is provided:
+        Prompt for a username or "c" to cancel
+        If option = "c":
+            CALL manage_customer
+        If username is not in customer_list:
+            Print "Invalid username. Please choose a valid customer."
+        Else:
+            username = option
+
+        users = Load "users" database
+        If username exists in users database:
+            Delete the user from users database and save
+        Else:
+            Print "User not found"
+
+        passwords = Load "passwords" database
+        If the username exists in passwords database:
+            Delete the user from passwords database and save
+            Print "User deleted"
+
+        CALL manage_customer
