@@ -25,5 +25,5 @@ FUNCTION add_customer():
 
     update passwords database with new customer password
 
-    print "Customer added successfully."
+    PRINT "Customer added successfully."
     CALL manage_customer()
