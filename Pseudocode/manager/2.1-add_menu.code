@@ -1,8 +1,8 @@
-Function add_menu():
+FUNCTION add_menu():
     menu = Load "menu" database
 
-    Prompt user for new item's name, cuisine type, price, and category
-    Read new_item_name, new_item_cuisine, new_item_price, new_item_category
+    PROMPT user for new item's name, cuisine type, price, and category
+    READ new_item_name, new_item_cuisine, new_item_price, new_item_category
 
     new_item_id = Generate new item ID
 
@@ -13,7 +13,7 @@ Function add_menu():
         "category": new_item_category
     }
 
-    update menu database with new item
+    update "menu" database with new item
 
-    Print "Menu item added successfully."
+    PRINT "Menu item added successfully."
     CALL manage_menuandpricing()
