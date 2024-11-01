@@ -11,7 +11,8 @@ FUNCTION delete_customer():
         CALL manage_customer()
 
     Repeat until a valid username is provided:
-        Prompt for a username or "c" to cancel
+        PROMPT for a username or "c" to cancel
+        READ option
         IF option = "c":
             CALL manage_customer()
         IF username is not in customer_list:
