@@ -1,4 +1,4 @@
-FUNCTION add_customer(cur_usr):
+FUNCTION add_customer():
     PROMPT user for new customer's username, name, email, phone number, DOB, address, and password
     READ new_customer_username, new_customer_name, new_customer_email, new_customer_phonenumber, new_customer_dob, new_customer_address, new_customer_password
 
@@ -26,4 +26,4 @@ FUNCTION add_customer(cur_usr):
     CALL loaddatabase("passwords", "write", addpasswords)
 
     print "Customer added successfully."
-    CALL manage_customer(cur_usr)
+    CALL manage_customer()
