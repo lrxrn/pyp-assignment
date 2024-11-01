@@ -8,12 +8,12 @@ Function delete_customer():
 
     If no customers are found:
         Print "No customers found"
-        CALL manage_customer
+        CALL manage_customer()
 
     Repeat until a valid username is provided:
         Prompt for a username or "c" to cancel
         If option = "c":
-            CALL manage_customer
+            CALL manage_customer()
         If username is not in customer_list:
             Print "Invalid username. Please choose a valid customer."
         Else:
@@ -30,4 +30,4 @@ Function delete_customer():
             Delete the user from passwords database and save
             Print "User deleted"
 
-        CALL manage_customer
+        CALL manage_customer()
