@@ -117,6 +117,9 @@ def update_order_status(current_user):
         else:
             dining_option = orders_object[order_id]["details"]["diningOption"]
             orders_object[order_id]["status"] = "Completed" if dining_option == "Dine-in" else "Delivered"
+            orders_object[order_id]["chef"] = current_user
+            orders_object[order_id]["time"] = time_object()[1]
+            orders_object[order_id]["date"] = time_object()[0]
             save_orders(orders_object)
 
 
