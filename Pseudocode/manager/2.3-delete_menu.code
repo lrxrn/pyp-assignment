@@ -1,0 +1,19 @@
+FUNCTION delete_menu_item():
+    PRINT "Delete Menu Item"
+    menu = Load "menu" database
+
+    IF there are no menu items
+        PRINT "No feedback available"
+            CALL manage_menuandpricing()
+        ELSE
+            Display the list of menu items with details
+
+    Repeat until a valid menu item ID is chosen:
+        PROMPT user for the ID of the menu item to delete
+        READ item_id
+
+        IF the menu item exists:
+            Delete the menu item from the database
+            PRINT "Menu item deleted successfully"
+        ELSE:
+            PRINT "Item not found"
