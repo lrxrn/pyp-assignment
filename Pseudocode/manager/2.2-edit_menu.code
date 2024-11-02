@@ -1,0 +1,48 @@
+FUNCTION edit_menu_item():
+    PRINT "Edit Menu Item"
+    menu = Load "menu" database
+
+    Repeat until a valid menu item ID is chosen:
+        PROMPT user to enter the menu item ID to edit or "b" to go back
+        READ menu_item_id
+        IF menu_item_id = "b":
+            CALL manage_menuandpricing()
+        ELSE IF menu_item_id not in menu:
+            PRINT "Invalid menu item ID. Please choose a valid menu item."
+        ELSE:
+            PRINT "1: Edit Name"
+            PRINT "2: Edit Cuisine"
+            PRINT "3: Edit Price"
+            PRINT "4: Edit Category"
+            PRINT "5: Go Back"
+
+            Repeat until a valid option is chosen:
+                PROMPT user to choose an option
+                READ option
+
+                IF option = 1:
+                    CALL edit_menu_list("name")
+                ELSE IF option = 2:
+                    CALL edit_menu_list("cuisine")
+                ELSE IF option = 3:
+                    CALL edit_menu_list("price")
+                ELSE IF option = 4:
+                    CALL edit_menu_list("category")
+                ELSE IF option = 5:
+                    CALL manage_menuandpricing()
+                ELSE:
+                    PRINT "Invalid option. Please choose a valid option."
+
+FUNCTION edit_menu_list(type):
+    menu = Load "menu" database
+
+    PRINT the current value of the chosen type
+
+    PROMPT user to enter a new value
+
+    Update the menu item with the new value
+    Save changes to the "menu" database
+
+    PRINT "Menu item updated successfully."
+
+    CALL manage_menuandpricing()
