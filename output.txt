@@ -1,0 +1,194 @@
+Processing .github/workflows/pylint.yml
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing .gitignore
+   5 Meesum Ahmed: 62.50%
+   3 lrxrn: 37.50%
+
+
+
+Processing CODE_OF_CONDUCT.md
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing LICENSE
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing Modules/db.py
+   1 Ahmed Mazin Mahir: 11.11%
+   5 lrxrn: 55.56%
+   3 Meesum Ahmed: 33.33%
+
+
+
+Processing Modules/utils.py
+   1 Ahmed Mazin Mahir: 9.09%
+  10 Meesum Ahmed: 90.91%
+
+
+
+Processing Pseudocode/login.code
+   2 Meesum Ahmed: 100.00%
+
+
+
+Processing Pseudocode/manager/add_customer.code
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing Pseudocode/manager/edit_customer.code
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing Pseudocode/manager/manage_customer.code
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing Pseudocode/update-profile.code
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing README.md
+   1 Ahmed Mazin Mahir: 12.50%
+   7 lrxrn: 87.50%
+
+
+
+Processing Roles/Ingredients.json
+   1 SoloNexus: 100.00%
+
+
+
+Processing Roles/Orders.json
+   1 SoloNexus: 100.00%
+
+
+
+Processing Roles/admin.py
+   1 Ahmed Mazin Mahir: 6.67%
+  13 Meesum Ahmed: 86.67%
+   1 lrxrn: 6.67%
+
+
+
+Processing Roles/chef.py
+   1 Ahmed Mazin Mahir: 7.69%
+   4 SoloNexus: 30.77%
+   1 lrxrn: 7.69%
+   7 Meesum Ahmed: 53.85%
+
+
+
+Processing Roles/customer.py
+   8 Meesum Ahmed: 66.67%
+   1 lrxrn: 8.33%
+   3 KARDIINAAl: 25.00%
+
+
+
+Processing Roles/manager.py
+   1 Ahmed Mazin Mahir: 1.61%
+   2 lrxrn: 3.23%
+  13 Meesum Ahmed: 20.97%
+  46 Mazin: 74.19%
+
+
+
+Processing config.ini
+   4 Meesum Ahmed: 80.00%
+   1 lrxrn: 20.00%
+
+
+
+Processing data/.gitkeep
+   1 Meesum Ahmed: 100.00%
+
+
+
+Processing data/ingredients.json
+   1 SoloNexus: 14.29%
+   1 Mazin: 14.29%
+   5 Meesum Ahmed: 71.43%
+
+
+
+Processing data/menu.json
+   4 Meesum Ahmed: 80.00%
+   1 Mazin: 20.00%
+
+
+
+Processing data/orders.json
+   1 SoloNexus: 7.14%
+   1 Mazin: 7.14%
+  12 Meesum Ahmed: 85.71%
+
+
+
+Processing data/passwords.json
+   2 SoloNexus: 6.45%
+   1 Ahmed Mazin Mahir: 3.23%
+  21 Meesum Ahmed: 67.74%
+   3 Mazin: 9.68%
+   3 lrxrn: 9.68%
+   1 KARDIINAAl: 3.23%
+
+
+
+Processing data/users.json
+   1 Ahmed Mazin Mahir: 4.35%
+   5 Mazin: 21.74%
+   1 SoloNexus: 4.35%
+   4 lrxrn: 17.39%
+  12 Meesum Ahmed: 52.17%
+
+
+
+Processing file_strcuture.txt
+   1 Ahmed Mazin Mahir: 20.00%
+   1 lrxrn: 20.00%
+   3 Meesum Ahmed: 60.00%
+
+
+
+Processing log.txt
+   2 Meesum Ahmed: 100.00%
+
+
+
+Processing main.py
+   1 Ahmed Mazin Mahir: 2.94%
+   2 Mazin: 5.88%
+  27 Meesum Ahmed: 79.41%
+   4 lrxrn: 11.76%
+
+
+
+Processing requirements.txt
+   1 Ahmed Mazin Mahir: 33.33%
+   1 lrxrn: 33.33%
+   1 Meesum Ahmed: 33.33%
+
+
+
+Processing test.py
+   1 Ahmed Mazin Mahir: 12.50%
+   6 Meesum Ahmed: 75.00%
+   1 lrxrn: 12.50%
+
+
+
+Processing wordlist.txt
+   1 Meesum Ahmed: 100.00%
+
+
+
