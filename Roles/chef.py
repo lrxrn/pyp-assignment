@@ -228,3 +228,8 @@ def add_request_to_file(request_id, request_object):
 def update_profile(cur_usr, return_func):
     from main import update_profile as update_profile_main
     update_profile_main(cur_usr, return_func)
+    
+# 5 - Logout
+def logout(current_user):
+    from main import logout as logout_main
+    logout_main(current_user)
