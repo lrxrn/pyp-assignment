@@ -1,20 +1,15 @@
 .
+├── CODE_OF_CONDUCT.md
 ├── Data
 │   ├── ingredients.json
 │   ├── menu.json
 │   ├── orders.json
 │   ├── passwords.json
 │   └── users.json
+├── LICENSE
 ├── Modules
 │   ├── db.py
 │   └── utils.py
-├── Pseudocode
-│   ├── login.code
-│   ├── manager
-│   │   ├── add_customer.code
-│   │   ├── edit_customer.code
-│   │   └── manage_customer.code
-│   └── update-profile.code
 ├── README.md
 ├── Roles
 │   ├── admin.py
@@ -24,8 +19,8 @@
 ├── config.ini
 ├── file_strcuture.txt
 ├── main.py
+├── output.txt
 ├── requirements.txt
-├── test.py
 └── wordlist.txt
 
-6 directories, 23 files
+4 directories, 20 files
