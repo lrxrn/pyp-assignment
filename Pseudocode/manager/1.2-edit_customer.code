@@ -1,0 +1,83 @@
+FUNCTION edit_customer():
+    editusers = Load "users" database
+
+    IF username is provided:
+        user_nm = username
+    ELSE:
+        customer_list = []
+        FOR each user in editusers:
+            IF user role = "customer":
+                Add user to the customer_list
+
+        IF there are no customers:
+            PRINT "No customers found"
+            CALL manage_customer()
+
+        PRINT "Edit Customer"
+        Display customer list with numbering
+
+        Repeat until a valid customer is selected or the user cancels:
+            PROMPT user to select a customer to edit or "c" to cancel
+            READ option
+            IF option = cancel:
+                CALL manage_customer()
+            ELSE
+                IF a valid number is chosen:
+                    user_nm = customer_list[selected_number]
+                ELSE:
+                    PRINT "Invalid option. Please choose a valid customer."
+
+    PRINT "Edit Customer"
+    PRINT "1: Edit Name"
+    PRINT "2: Edit Email"
+    PRINT "3: Edit Phone Number"
+    PRINT "4: Edit Date of Birth"
+    PRINT "5: Edit Address"
+    PRINT "6: Edit Password"
+    PRINT "7: Go Back"
+
+    Repeat until a valid option is chosen:
+        PROMPT user to choose an option
+        READ option
+
+        IF option = 1:
+            CALL edit_customer_list("name")
+        ELSE IF option = 2:
+            CALL edit_customer_list("email")
+        ELSE IF option = 3:
+            CALL edit_customer_list("phone number")
+        ELSE IF option = 4:
+            CALL edit_customer_list("date of birth")
+        ELSE IF option = 5:
+            CALL edit_customer_list("address")
+        ELSE IF option = 6:
+            CALL edit_customer_list("password")
+        ELSE IF option = 7:
+            CALL manage_customer()
+        ELSE:
+            PRINT "Invalid option. Please choose a valid option."
+
+Function edit_customer_list(type):
+    IF type is "password":
+        Repeat until passwords match:
+            PROMPT user for new_password and confirm_password
+            READ new_password, confirm_password
+            IF new_password = confirm_password:
+                Break
+            ELSE:
+                PRINT "Passwords do not match. Please try again."
+
+        passwords = Load "passwords" database
+        Update password for the selected user
+        Save updated "passwords" database
+
+        CALL manage_customer()
+
+    ELSE:
+        PROMPT user for new value
+        READ new_value
+        users = Load "users" database
+        Update value for the selected user
+        Save updated "users" database
+
+        CALL manage_customer()

@@ -1,0 +1,24 @@
+FUNCTION manage_customer()
+    PRINT "Manage Customer"
+    PRINT "1: Add Customer"
+    PRINT "2: Edit Customer"
+    PRINT "3: Delete Customer"
+    PRINT "4: View Customer List"
+    PRINT "5: Go Back"
+
+    PROMPT user to choose an option
+    READ option
+
+    IF option = 1:
+        CALL add_customer()
+    ELSE IF option = 2:
+        CALL edit_customer()
+    ELSE IF option = 3:
+        CALL delete_customer()
+    ELSE IF option = 4:
+        CALL view_customer_list()
+    ELSE IF option = 5:
+        CALL start()
+    ELSE:
+        PRINT "Invalid option. Please choose a valid option."
+        CALL manage_customer()

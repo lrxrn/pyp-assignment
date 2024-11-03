@@ -4,7 +4,7 @@
         "items": [
             {
                 "name": "Sugar",
-                "quantity": "500",
+                "quantity": 500,
                 "unit": "g"
             }
         ],
@@ -24,12 +24,12 @@
         "items": [
             {
                 "name": "Salt",
-                "quantity": "2",
+                "quantity": 2,
                 "unit": "KG"
             },
             {
                 "name": "Pepper",
-                "quantity": "400",
+                "quantity": 400,
                 "unit": "g"
             }
         ],
@@ -90,17 +90,383 @@
         }
     },
     "ING-006": {
-        "status": "pending",
-        "items": [],
+        "status": "completed",
+        "items": [
+            {
+                "name": "Sugar",
+                "quantity": 500,
+                "unit": "g"
+            },
+            {
+                "name": "Cinnamon",
+                "quantity": 100,
+                "unit": "g"
+            },
+            {
+                "name": "Honey",
+                "quantity": 250,
+                "unit": "ml"
+            }
+        ],
         "request_chef": {
             "user": "antonio",
-            "date": "17-Oct-2024",
-            "time": "11:15 AM"
+            "date": "31-Oct-2024",
+            "time": "10:20 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:39 PM"
+        }
+    },
+    "ING-007": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Salt",
+                "quantity": 2,
+                "unit": "kg"
+            },
+            {
+                "name": "Pepper",
+                "quantity": 400,
+                "unit": "g"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:24 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:39 PM"
+        }
+    },
+    "ING-008": {
+        "status": "rejected",
+        "items": [
+            {
+                "name": "Cheese",
+                "quantity": 500,
+                "unit": "grams"
+            },
+            {
+                "name": "Pasta",
+                "quantity": 700,
+                "unit": "grams"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:29 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:40 PM"
+        }
+    },
+    "ING-009": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Eggs",
+                "quantity": 10,
+                "unit": "Cartons"
+            },
+            {
+                "name": "Butter",
+                "quantity": 2,
+                "unit": "kg"
+            },
+            {
+                "name": "Cream",
+                "quantity": 500,
+                "unit": "ml"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:30 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:40 PM"
+        }
+    },
+    "ING-010": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Tomato",
+                "quantity": 3,
+                "unit": "kg"
+            },
+            {
+                "name": "Cucumber",
+                "quantity": 2,
+                "unit": "kg"
+            },
+            {
+                "name": "Lettuce",
+                "quantity": 1,
+                "unit": "kg"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:31 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:41 PM"
+        }
+    },
+    "ING-011": {
+        "status": "pending",
+        "items": [
+            {
+                "name": "Olive Oil",
+                "quantity": 1,
+                "unit": "l"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:32 PM"
         },
         "review_user": {
             "user": "",
             "date": "",
             "time": ""
+        }
+    },
+    "ING-012": {
+        "status": "rejected",
+        "items": [
+            {
+                "name": "Flour",
+                "quantity": 5,
+                "unit": "kg"
+            },
+            {
+                "name": "Yeast",
+                "quantity": 50,
+                "unit": "g"
+            },
+            {
+                "name": "Baking Powder",
+                "quantity": 100,
+                "unit": "g"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:32 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:41 PM"
+        }
+    },
+    "ING-013": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Butter",
+                "quantity": 2,
+                "unit": "kg"
+            },
+            {
+                "name": "Garlic",
+                "quantity": 300,
+                "unit": "g"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:33 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:42 PM"
+        }
+    },
+    "ING-014": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Milk",
+                "quantity": 10,
+                "unit": "l"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:33 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:42 PM"
+        }
+    },
+    "ING-015": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Basil",
+                "quantity": 200,
+                "unit": "g"
+            },
+            {
+                "name": "Thyme",
+                "quantity": 100,
+                "unit": "g"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:34 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:42 PM"
+        }
+    },
+    "ING-016": {
+        "status": "pending",
+        "items": [
+            {
+                "name": "Chocolate",
+                "quantity": 1,
+                "unit": "kg"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:34 PM"
+        },
+        "review_user": {
+            "user": "",
+            "date": "",
+            "time": ""
+        }
+    },
+    "ING-017": {
+        "status": "rejected",
+        "items": [
+            {
+                "name": "Raisins",
+                "quantity": 500,
+                "unit": "g"
+            },
+            {
+                "name": "Almonds",
+                "quantity": 300,
+                "unit": "g"
+            },
+            {
+                "name": "Walnuts",
+                "quantity": 200,
+                "unit": "g"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:34 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:43 PM"
+        }
+    },
+    "ING-018": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Rice",
+                "quantity": 10,
+                "unit": "kg"
+            },
+            {
+                "name": "Lentils",
+                "quantity": 5,
+                "unit": "kg"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:35 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:43 PM"
+        }
+    },
+    "ING-019": {
+        "status": "pending",
+        "items": [
+            {
+                "name": "Tomato Sauce",
+                "quantity": 3,
+                "unit": "l"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:35 PM"
+        },
+        "review_user": {
+            "user": "",
+            "date": "",
+            "time": ""
+        }
+    },
+    "ING-020": {
+        "status": "completed",
+        "items": [
+            {
+                "name": "Bread",
+                "quantity": 20,
+                "unit": "loaves"
+            },
+            {
+                "name": "Butter",
+                "quantity": 2,
+                "unit": "kg"
+            }
+        ],
+        "request_chef": {
+            "user": "antonio",
+            "date": "31-Oct-2024",
+            "time": "10:36 PM"
+        },
+        "review_user": {
+            "user": "maazin",
+            "date": "31-Oct-2024",
+            "time": "10:44 PM"
         }
     }
 }

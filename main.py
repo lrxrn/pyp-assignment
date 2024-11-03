@@ -269,7 +269,7 @@ def reset_password(usr=None):
             case "2":
                 phone = db_getKey("users", username)["PhoneNumber"]
                 print("Please enter your phone number to verify your identity.")
-                user_input = inp("Enter your phone number: ", "int")
+                user_input = inp("Enter your phone number: ", "str")
                 if user_input == phone:
                     printD("Identity verified.", "green")
                     new_password = inp("Enter new password: ", "password")

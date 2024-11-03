@@ -4,11 +4,11 @@
         "details": {
             "items": [
                 {
-                    "ID": "BG-01",
+                    "ID": "MNI-01",
                     "quantity": 2
                 },
                 {
-                    "ID": "BG-02",
+                    "ID": "MNI-02",
                     "quantity": 1
                 }
             ],
@@ -17,7 +17,7 @@
             "deliveryAddress": "123 Maple Street, Phoenix, AZ"
         },
         "date": "01-Jun-2023",
-        "time": "12:30",
+        "time": "12:30 PM",
         "customer": "omer",
         "chef": "antonio",
         "payment": {
@@ -37,11 +37,11 @@
         "details": {
             "items": [
                 {
-                    "ID": "BG-02",
+                    "ID": "MNI-02",
                     "quantity": 2
                 },
                 {
-                    "ID": "BG-01",
+                    "ID": "MNI-01",
                     "quantity": 1
                 }
             ],
@@ -70,11 +70,11 @@
         "details": {
             "items": [
                 {
-                    "ID": "BG-001",
+                    "ID": "MNI-001",
                     "quantity": 5
                 },
                 {
-                    "ID": "BG-002",
+                    "ID": "MNI-002",
                     "quantity": 1
                 }
             ],
@@ -103,7 +103,7 @@
         "details": {
             "items": [
                 {
-                    "ID": "BG-001",
+                    "ID": "MNI-001",
                     "quantity": 1
                 }
             ],
@@ -113,6 +113,72 @@
         },
         "date": "17-Oct-2024",
         "time": "11:12 AM",
+        "customer": "omer",
+        "chef": "N/a",
+        "payment": {
+            "method": "",
+            "status": "",
+            "amount": 0,
+            "change": 0
+        },
+        "feedback": {
+            "rating": "",
+            "comments": "",
+            "response": ""
+        }
+    },
+    "ORD-005": {
+        "status": "Delivered",
+        "details": {
+            "items": [
+                {
+                    "ID": "MNI-011",
+                    "quantity": 3
+                },
+                {
+                    "ID": "MNI-003",
+                    "quantity": 2
+                },
+                {
+                    "ID": "MNI-020",
+                    "quantity": 1
+                }
+            ],
+            "totalAmount": 22,
+            "diningOption": "dine-in",
+            "deliveryAddress": "Dine-in"
+        },
+        "date": "31-Oct-2024",
+        "time": "10:58 PM",
+        "customer": "omer",
+        "chef": "N/a",
+        "payment": {
+            "method": "",
+            "status": "",
+            "amount": 0,
+            "change": 0
+        },
+        "feedback": {
+            "rating": "",
+            "comments": "",
+            "response": ""
+        }
+    },
+    "ORD-006": {
+        "status": "Order Placed",
+        "details": {
+            "items": [
+                {
+                    "ID": "MNI-002",
+                    "quantity": 1
+                }
+            ],
+            "totalAmount": 12,
+            "diningOption": "takeaway",
+            "deliveryAddress": "Flexis @ One South"
+        },
+        "date": "31-Oct-2024",
+        "time": "11:00 PM",
         "customer": "omer",
         "chef": "N/a",
         "payment": {

@@ -1,0 +1,24 @@
+FUNCTION manage_menuandpricing():
+    PRINT "Manage Menu and Pricing"
+    PRINT "1. Add Menu Item"
+    PRINT "2. Edit Menu Item"
+    PRINT "3. Delete Menu Item"
+    PRINT "4. View Menu"
+    PRINT "5. Back"
+
+    PROMPT user to choose an option
+    READ option
+
+    IF option = 1:
+        CALL add_menu_item()
+    ELSE IF option = 2:
+        CALL edit_menu_item()
+    ELSE IF option = 3:
+        CALL delete_menu_item()
+    ELSE IF option = 4:
+        CALL view_menu()
+    ELSE IF option = 5:
+        CALL manage_customer()
+    ELSE:
+        PRINT "Invalid option. Please choose a valid option."
+        CALL manage_menuandpricing()

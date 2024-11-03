@@ -322,29 +322,6 @@ def add_menu(cur_usr):
     manage_menuandpricing(cur_usr)
 
 
-# 2.2.1 Function to edit menu list
-def edit_menu_list(cur_usr, type: str, goback="", menuitem=""):
-    menu = loaddatabase("menu", "read")
-
-    currentvalue = menu[menuitem][type]
-    print(f"Edit {type}\nCurrent {type.capitalize()}: {currentvalue}")
-
-    new_value = input(f"Enter new {type.capitalize()}: ")
-
-    if menu[menuitem]:
-        if type.lower() == "price":
-            menu[menuitem][type] = int(new_value)
-        else:
-            menu[menuitem][type] = new_value
-        loaddatabase("menu", "write", menu)
-        print(f"{type} updated successfully.")
-
-    if goback == "view":
-        view_menu(cur_usr)
-    else:
-        manage_menuandpricing(cur_usr)
-
-
 # 2.2 Function to edit menu item
 def edit_menu_item(cur_usr, menuitem=""):
     print("Edit Menu Item")
@@ -385,6 +362,29 @@ def edit_menu_item(cur_usr, menuitem=""):
                     edit_menu_list(cur_usr, "category", goback, menuitem)
                 case 5:
                     manage_menuandpricing(cur_usr)
+
+
+# 2.2.1 Function to edit menu list
+def edit_menu_list(cur_usr, type: str, goback="", menuitem=""):
+    menu = loaddatabase("menu", "read")
+
+    currentvalue = menu[menuitem][type]
+    print(f"Edit {type}\nCurrent {type.capitalize()}: {currentvalue}")
+
+    new_value = input(f"Enter new {type.capitalize()}: ")
+
+    if menu[menuitem]:
+        if type.lower() == "price":
+            menu[menuitem][type] = int(new_value)
+        else:
+            menu[menuitem][type] = new_value
+        loaddatabase("menu", "write", menu)
+        print(f"{type} updated successfully.")
+
+    if goback == "view":
+        view_menu(cur_usr)
+    else:
+        manage_menuandpricing(cur_usr)
 
 
 # 2.3 Function to delete menu item
