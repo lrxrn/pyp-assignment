@@ -3,14 +3,14 @@
         "name": "Chicken Special Burger",
         "cuisineType": "American",
         "price": 20,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-002": {
         "name": "Beef Burger",
         "cuisineType": "American",
         "price": 12,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-003": {
@@ -24,28 +24,28 @@
         "name": "Veggie Burger",
         "cuisineType": "American",
         "price": 9,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-005": {
         "name": "Fish Burger",
         "cuisineType": "American",
         "price": 11,
-        "category": "Food",
+        "category": "Main Course",
         "available": false
     },
     "MNI-006": {
         "name": "Grilled Chicken Wrap",
         "cuisineType": "Mexican",
         "price": 8,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-007": {
         "name": "Spicy Tofu Wrap",
         "cuisineType": "Mexican",
         "price": 7,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-008": {
@@ -80,14 +80,14 @@
         "name": "Chicken Caesar Salad",
         "cuisineType": "American",
         "price": 7,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-013": {
         "name": "French Fries",
         "cuisineType": "American",
         "price": 3,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-014": {
@@ -108,14 +108,14 @@
         "name": "Pasta Carbonara",
         "cuisineType": "Italian",
         "price": 10,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-017": {
         "name": "Margherita Pizza",
         "cuisineType": "Italian",
         "price": 8,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-018": {
@@ -129,14 +129,14 @@
         "name": "Greek Salad",
         "cuisineType": "Mediterranean",
         "price": 7,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     },
     "MNI-020": {
         "name": "Avocado Toast",
         "cuisineType": "Other",
         "price": 6,
-        "category": "Food",
+        "category": "Main Course",
         "available": true
     }
 }
