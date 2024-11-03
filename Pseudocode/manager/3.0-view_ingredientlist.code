@@ -1,0 +1,40 @@
+FUNCTION view_ingredientlist():
+    ingredient = Load "ingredient" database
+
+    FOR each request in ingredients:
+        IF request_status = "pending":
+            PRINT request_id, ingredients, status, requested_by, reviewed_by
+
+    IF no pending requests:
+        PRINT "No pending ingredient requests"
+        CALL start()
+
+    ELSE:
+        Repeat until a valid action is taken:
+            PRINT "Pending Ingredient requests"
+            PRINT pending requests with details
+
+            PROMPT user for request ID to change status or "c" to cancel
+            READ request_id
+
+            IF request_id = "c":
+                PRINT "Cancelled"
+                CALL start()
+
+            IF a valid request ID is chosen:
+                PRINT request details
+
+                PROMPT user for status (approve/reject)
+                READ status
+                IF status = "approve" or status = "reject":
+                    Update the request status and add review information
+                    Save updated ingredient data
+                    PRINT "Request updated successfully"
+                    CALL view_ingredientlist()
+                ELSE:
+                    PRINT "Invalid input"
+                    CALL view_ingredientlist()
+
+            ELSE:
+                PRINT "Request ID not found"
+                CALL view_ingredientlist()
