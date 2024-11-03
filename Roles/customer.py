@@ -35,8 +35,13 @@ def show_menu():
 
 # Function to display the orders
 def show_orders(current_user):
-    orders = db_getAllKeys("orders")
-    user_orders = [db_getKey("orders", order_id) for order_id in orders if db_getKey("orders", order_id)["customer"] == current_user]
+    order_keys = db_getAllKeys("orders")
+    orders = []
+    for order_id in order_keys:
+        order = db_getKey("orders", order_id)
+        order["order_id"] = order_id
+        orders.append(order)
+    user_orders = [order for order in orders if order["customer"] == current_user]
     
     if not user_orders:
         print("No orders.")
@@ -44,8 +49,8 @@ def show_orders(current_user):
 
     headers = ["Order ID", "Status", "Date", "Time", "Total Amount"]
     rows = [
-        (order_id, order["status"], order["date"], order["time"], order["details"]["totalAmount"]) 
-        for order_id, order in zip(orders, user_orders)
+        (order["order_id"], order["status"], order["date"], order["time"], order["details"]["totalAmount"]) 
+        for order in user_orders
     ]
     display_table(headers, rows)
 
